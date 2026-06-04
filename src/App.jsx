@@ -8,6 +8,7 @@ import { SFX } from "./sound";                    // BGM/SE
 import { PixelWeldon, LevelUpEvent, LEVELS, getLv, getNxt } from "./Weldon"; // キャラ+レベル
 import { TreeScreen, CostScreen } from "./Tree";  // ツリー+コスト
 import { SymbolScreen } from "./Symbol";           // 溶接記号+図面の見方
+import { CalcScreen } from "./Calc";               // 溶接計算ツール
 
 // ============================================================
 // STAGE 2 分岐設定（問題はquestions.jsから取得）
@@ -221,7 +222,7 @@ export default function App(){
 
       {/* タブ */}
       <div style={{display:"flex",width:"100%",maxWidth:400,background:"white",borderBottom:"2px solid #E2E8F0"}}>
-        {[{id:"quiz",l:"🎮 クイズ"},{id:"tree",l:"🗺️ ツリー"},{id:"cost",l:"💰 コスト"},{id:"symbol",l:"📐 記号"}].map(t=>(
+        {[{id:"quiz",l:"🎮 クイズ"},{id:"tree",l:"🗺️ ツリー"},{id:"cost",l:"💰 コスト"},{id:"symbol",l:"📐 記号"},{id:"calc",l:"🔢 計算"}].map(t=>(
           <button key={t.id} onClick={()=>setTab(t.id)} style={{flex:1,padding:"11px 0",border:"none",borderBottom:`3px solid ${tab===t.id?"#E85D04":"transparent"}`,background:"white",color:tab===t.id?"#1E293B":"#94A3B8",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:F,transition:"all .2s"}}>{t.l}</button>
         ))}
       </div>
@@ -302,6 +303,9 @@ export default function App(){
 
         {/* ── 記号タブ ── */}
         {tab==="symbol"&&<SymbolScreen/>}
+
+        {/* ── 計算タブ ── */}
+        {tab==="calc"&&<CalcScreen/>}
 
       </div>
     </div>
@@ -458,4 +462,3 @@ export default function App(){
 
   return null;
 }
-
