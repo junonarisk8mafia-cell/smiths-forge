@@ -6,6 +6,31 @@ import { useState, useEffect } from "react";
 import { QUIZ_STAGES } from "./questions";       // 既存の問題データ
 import { SFX } from "./sound";                    // BGM/SE
 import { PixelWeldon, LevelUpEvent, LEVELS, getLv, getNxt } from "./Weldon"; // キャラ+レベル
+
+// ── WELDON リアル画像コンポーネント ──
+function WeldonImg({size=110, mood="smile", bounce=false, hit=false}){
+  const src =
+    mood==="happy"    ? "https://raw.githubusercontent.com/junonarisk8mafia-cell/weldons-forge/main/weldon-smile.png"    :
+    mood==="hurt"     ? "https://raw.githubusercontent.com/junonarisk8mafia-cell/weldons-forge/main/weldon-surprised.png":
+    mood==="neutral"  ? "https://raw.githubusercontent.com/junonarisk8mafia-cell/weldons-forge/main/weldon-neutral.png"  :
+    mood==="surprised"? "https://raw.githubusercontent.com/junonarisk8mafia-cell/weldons-forge/main/weldon-surprised.png":
+                        "https://raw.githubusercontent.com/junonarisk8mafia-cell/weldons-forge/main/weldon-normal.png";
+  return(
+    <img
+      src={src}
+      width={size}
+      height={size}
+      alt="WELDON"
+      style={{
+        objectFit:"contain",
+        transform: bounce?"translateY(-10px)": hit?"translateX(8px) scale(0.95)":"translateY(0)",
+        transition:"transform .15s ease",
+        filter: hit?"brightness(0.7) sepia(1) saturate(5) hue-rotate(-30deg)":"none",
+        imageRendering:"auto",
+      }}
+    />
+  );
+}
 import { TreeScreen, CostScreen } from "./Tree";  // ツリー+コスト
 import { SymbolScreen } from "./Symbol";           // 溶接記号+図面の見方
 import { CalcScreen } from "./Calc";               // 溶接計算ツール
@@ -347,7 +372,7 @@ export default function App(){
       {/* ヘッダー（暗め） */}
       <div style={{width:"100%",background:"linear-gradient(135deg,#1E293B,#0F172A)",padding:"20px 16px 24px",textAlign:"center"}}>
         <div style={{animation:"bounce 1.5s ease-in-out infinite",display:"inline-block"}}>
-          <PixelWeldon size={110} mood="smile" col={lv.wCol} level={lv.level}/>
+          <WeldonImg size={110} mood="smile"/>
         </div>
         <div style={{marginTop:6}}>
           <div style={{fontSize:9,letterSpacing:6,color:"#E85D04"}}>WELDON'S</div>
@@ -586,7 +611,7 @@ export default function App(){
           <div style={{background:"white",border:"3px solid #334155",borderRadius:6,padding:"7px 9px",width:92,flexShrink:0,boxShadow:"0 2px 8px rgba(0,0,0,0.1)"}}>
             <div style={{color:"#475569",fontSize:7,fontWeight:700,marginBottom:3,overflow:"hidden",whiteSpace:"nowrap",textOverflow:"ellipsis"}}>{lv.name}</div>
             <div style={{position:"relative"}}>
-              <PixelWeldon size={66} mood={mood} bounce={bounce} hit={wHit} col={lv.wCol} level={lv.level}/>
+              <WeldonImg size={66} mood={mood} bounce={bounce} hit={wHit}/>
               {dmg?.t==="p"&&<div style={{position:"absolute",top:0,left:"50%",transform:"translateX(-50%)",color:"#DC2626",fontSize:16,fontWeight:900,animation:"dmg .8s ease forwards",zIndex:10}}>{dmg.val}</div>}
             </div>
             <div style={{marginTop:2}}>
@@ -640,7 +665,7 @@ export default function App(){
           </div>
         )}
         <div style={{display:"flex",justifyContent:"center",marginTop:10}}>
-          <PixelWeldon size={85} mood={score>=MAX_Q*0.7?"happy":"neutral"} col={lv.wCol} level={lv.level}/>
+          <WeldonImg size={85} mood={score>=MAX_Q*0.7?"happy":"neutral"}/>
         </div>
       </div>
 
