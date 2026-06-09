@@ -81,26 +81,570 @@ const F  = "'Courier New',monospace";
 const MAX_Q = 20;
 
 // ============================================================
-// 敵キャラ（センター配置・C案名前・爆発対応）
+// 敵キャラ（7体個別SVGアート・浮遊アニメ対応）
 // ============================================================
 function Enemy({st, hit, hp, maxHP, exploding}){
   const pct = Math.max(0,(hp/maxHP)*100);
   const hc  = pct>50?"#4CAF50":pct>25?"#FF9800":"#F44336";
-  const ec  = {
-    "1":["#795548","#FF6B00"], "2A":["#1E3A5F","#60A5FA"],
-    "2B":["#7C2D12","#FB923C"],"2C":["#164E63","#22D3EE"],
-    "3":["#E65100","#FFB300"], "4":["#7F1D1D","#F87171"],
-    "5":["#4A148C","#CE93D8"],
+  const id  = String(st?.id);
+  const AC  = {"1":"#FF6B00","2A":"#60A5FA","2B":"#FB923C","2C":"#22D3EE","3":"#FFB300","4":"#F87171","5":"#CE93D8"};
+  const ac  = AC[id]||"#aaa";
+
+  const wrapAnim = exploding ? "explode 0.8s ease forwards"
+                 : pct<=20&&pct>0 ? "shake 0.5s infinite"
+                 : id==="5" ? "monSway 3s ease-in-out infinite"
+                 : "monFloat 3s ease-in-out infinite";
+
+  const svgBase = {
+    display:"block",
+    transform: hit ? "translateX(-14px)" : "translateX(0)",
+    transition:"transform .15s",
+    filter:`drop-shadow(0 0 ${8+Math.round((1-pct/100)*10)}px ${ac})`,
+    overflow:"visible",
   };
-  const [bg,ac] = ec[String(st?.id)]||["#555","#aaa"];
-  // HP残量で震えアニメ
-  const shakeStyle = pct<=20&&pct>0 ? {animation:"shake 0.5s infinite"} : {};
-  // 爆発スタイル
-  const explodeStyle = exploding ? {animation:"explode 0.8s ease forwards"} : {};
+
+  // ────────────────────────────────────────────────────────
+  // 1. スラグ鬼 — 溶けたスラグの悪魔
+  // ────────────────────────────────────────────────────────
+  const slag = (
+    <svg width="160" height="180" viewBox="0 0 160 180" style={svgBase}>
+      <ellipse cx="80" cy="172" rx="38" ry="6" fill="#000" opacity="0.35"/>
+      {/* 外オーラ */}
+      <ellipse cx="80" cy="115" rx="58" ry="50" fill="#FF3300" opacity="0.07">
+        <animate attributeName="rx" dur="1.8s" repeatCount="indefinite" values="54;64;54"/>
+        <animate attributeName="opacity" dur="1.8s" repeatCount="indefinite" values="0.07;0.13;0.07"/>
+      </ellipse>
+      {/* 不定形ボディ */}
+      <path d="M38,168 Q20,148 18,118 Q16,86 28,60 Q38,38 58,28 Q72,18 95,24 Q114,30 126,54 Q138,78 136,112 Q134,144 120,164 Q105,178 80,180 Q58,180 38,168Z" fill="#8B1A00"/>
+      <path d="M44,162 Q28,142 28,114 Q27,86 38,63 Q48,44 65,36 Q77,28 96,34 Q112,40 122,62 Q132,86 130,114 Q128,138 116,158 Q102,172 80,174 Q60,174 44,162Z" fill="#CC2200"/>
+      {/* 溶岩の内部光 */}
+      <path d="M55,70 Q65,90 55,115 Q70,100 90,110 Q80,85 95,68Z" fill="#FF4400" opacity="0.25"/>
+      {/* 亀裂ライン */}
+      <path d="M52,45 L58,72 L50,100 L56,128 L52,155" stroke="#FFB300" strokeWidth="3" fill="none" strokeLinecap="round">
+        <animate attributeName="opacity" dur="0.5s" repeatCount="indefinite" values="0.9;0.3;0.9"/>
+      </path>
+      <path d="M88,42 L94,68 L86,96 L94,122 L88,150" stroke="#FF6600" strokeWidth="2.5" fill="none" strokeLinecap="round">
+        <animate attributeName="opacity" dur="0.7s" repeatCount="indefinite" values="0.8;0.2;0.8"/>
+      </path>
+      <path d="M110,65 L114,90 L108,118" stroke="#FF4400" strokeWidth="2" fill="none" opacity="0.7"/>
+      {/* 亀裂の芯光 */}
+      <path d="M52,45 L58,72 L50,100" stroke="#FFE500" strokeWidth="0.8" fill="none">
+        <animate attributeName="opacity" dur="0.4s" repeatCount="indefinite" values="0.7;0;0.7"/>
+      </path>
+      {/* ドリップ */}
+      <path d="M46,162 Q48,172 46,178" stroke="#CC2200" strokeWidth="7" strokeLinecap="round" fill="none"/>
+      <path d="M112,158 Q114,168 112,174" stroke="#AA1800" strokeWidth="6" strokeLinecap="round" fill="none"/>
+      <ellipse cx="48" cy="176" rx="7" ry="4" fill="#990000" opacity="0.7"/>
+      {/* 目（左） */}
+      <ellipse cx="63" cy="90" rx="14" ry="14" fill="#FF0000" opacity="0.9">
+        <animate attributeName="opacity" dur="2s" repeatCount="indefinite" values="0.9;0.4;0.9"/>
+      </ellipse>
+      <ellipse cx="63" cy="90" rx="9" ry="10" fill="#FFE500"/>
+      <ellipse cx="63" cy="91" rx="5" ry="6" fill="#180000"/>
+      <ellipse cx="61" cy="88" rx="2" ry="2" fill="white" opacity="0.9"/>
+      {/* 目（右） */}
+      <ellipse cx="100" cy="87" rx="14" ry="14" fill="#FF0000" opacity="0.9">
+        <animate attributeName="opacity" dur="1.7s" repeatCount="indefinite" values="0.9;0.3;0.9"/>
+      </ellipse>
+      <ellipse cx="100" cy="87" rx="9" ry="10" fill="#FFE500"/>
+      <ellipse cx="100" cy="88" rx="5" ry="6" fill="#180000"/>
+      <ellipse cx="98" cy="85" rx="2" ry="2" fill="white" opacity="0.9"/>
+      {/* 口 */}
+      <path d="M58,118 Q80,134 102,118" stroke="#FFB300" strokeWidth="3" fill="none" strokeLinecap="round"/>
+      {[64,72,80,88,96].map(x=>(
+        <line key={x} x1={x} y1="120" x2={x+2} y2="130" stroke="#FF4400" strokeWidth="2.5" strokeLinecap="round"/>
+      ))}
+      {/* 角 */}
+      <path d="M52,30 L38,4 L54,22Z" fill="#8B1A00" stroke="#FF4400" strokeWidth="1"/>
+      <path d="M106,28 L120,4 L104,20Z" fill="#8B1A00" stroke="#FF4400" strokeWidth="1"/>
+    </svg>
+  );
+
+  // ────────────────────────────────────────────────────────
+  // 2. ラメラテア将軍 — 層状鉄板鎧の将軍
+  // ────────────────────────────────────────────────────────
+  const lamellar = (
+    <svg width="160" height="180" viewBox="0 0 160 180" style={svgBase}>
+      <ellipse cx="80" cy="174" rx="40" ry="6" fill="#000" opacity="0.3"/>
+      {/* 金属オーラ */}
+      <ellipse cx="80" cy="115" rx="60" ry="52" fill="#1E40AF" opacity="0.07">
+        <animate attributeName="rx" dur="2.5s" repeatCount="indefinite" values="57;66;57"/>
+      </ellipse>
+      {/* 鎧本体（層状） */}
+      {[168,154,140,126,112,98,85,72].map((y,i)=>(
+        <g key={i}>
+          <rect x={26+i*2} y={y} width={108-i*4} height={15} rx="3"
+            fill={i%2===0?"#1E3A5F":"#243F72"}
+            stroke="#60A5FA" strokeWidth="0.8" opacity={0.95-i*0.03}/>
+          {/* 層ハイライト */}
+          <rect x={28+i*2} y={y+2} width={35} height={3} rx="1" fill="white" opacity="0.07"/>
+          {/* 層の端の金属感 */}
+          <rect x={26+i*2} y={y} width={4} height={15} rx="1" fill="#60A5FA" opacity="0.18"/>
+          <rect x={130-i*6} y={y} width={4} height={15} rx="1" fill="#60A5FA" opacity="0.18"/>
+        </g>
+      ))}
+      {/* 層間の光 */}
+      {[154,126,98].map((y,i)=>(
+        <line key={i} x1="30" y1={y} x2="130" y2={y} stroke="#60A5FA" strokeWidth="0.8" opacity="0.4">
+          <animate attributeName="opacity" dur={`${1.5+i*0.6}s`} repeatCount="indefinite" values="0.4;0.1;0.4"/>
+        </line>
+      ))}
+      {/* 頭部 */}
+      <rect x="42" y="24" width="76" height="55" rx="5" fill="#1E3A5F" stroke="#60A5FA" strokeWidth="1.5"/>
+      <rect x="46" y="28" width="68" height="47" rx="4" fill="#243F72"/>
+      {/* 兜の層装飾 */}
+      {[18,10,4].map((y,i)=>(
+        <rect key={i} x={48+i*5} y={y} width={64-i*10} height={11} rx="2"
+          fill="#1E3A5F" stroke="#60A5FA" strokeWidth="0.8"/>
+      ))}
+      <rect x="38" y="22" width="84" height="6" rx="2" fill="#1A336B" stroke="#60A5FA" strokeWidth="1"/>
+      {/* バイザースリット（目） */}
+      <rect x="50" y="44" width="22" height="7" rx="2" fill="#60A5FA" opacity="0.95">
+        <animate attributeName="opacity" dur="3s" repeatCount="indefinite" values="0.95;0.3;0.95"/>
+      </rect>
+      <rect x="88" y="44" width="22" height="7" rx="2" fill="#60A5FA" opacity="0.95">
+        <animate attributeName="opacity" dur="2.5s" repeatCount="indefinite" values="0.95;0.2;0.95"/>
+      </rect>
+      <rect x="48" y="42" width="26" height="11" rx="3" fill="#60A5FA" opacity="0.15"/>
+      <rect x="86" y="42" width="26" height="11" rx="3" fill="#60A5FA" opacity="0.15"/>
+      {/* 剣状の左腕突起 */}
+      <path d="M26,88 L8,54 L18,62 L12,38 L24,58 L20,66 L34,96Z" fill="#1E3A5F" stroke="#60A5FA" strokeWidth="1.2"/>
+      <path d="M18,62 L12,38 L24,58" fill="#60A5FA" opacity="0.55"/>
+      <line x1="18" y1="62" x2="12" y2="38" stroke="#BFDBFE" strokeWidth="0.8" opacity="0.7"/>
+      {/* 右腕突起 */}
+      <path d="M134,88 L152,54 L142,62 L148,38 L136,58 L140,66 L126,96Z" fill="#1E3A5F" stroke="#60A5FA" strokeWidth="1.2"/>
+      <path d="M142,62 L148,38 L136,58" fill="#60A5FA" opacity="0.55"/>
+      <line x1="142" y1="62" x2="148" y2="38" stroke="#BFDBFE" strokeWidth="0.8" opacity="0.7"/>
+      {/* 胸の紋章 */}
+      <rect x="62" y="100" width="36" height="20" rx="3" fill="#1A336B" stroke="#60A5FA" strokeWidth="1"/>
+      <text x="80" y="114" textAnchor="middle" fill="#60A5FA" fontSize="9" fontWeight="900" fontFamily="monospace" opacity="0.9">WT</text>
+    </svg>
+  );
+
+  // ────────────────────────────────────────────────────────
+  // 3. 高圧蒸気鬼 — 煙突の角・圧力ゲージ
+  // ────────────────────────────────────────────────────────
+  const steam = (
+    <svg width="160" height="180" viewBox="0 0 160 180" style={svgBase}>
+      <ellipse cx="80" cy="173" rx="37" ry="6" fill="#000" opacity="0.3"/>
+      {/* 蒸気（背景エフェクト） */}
+      {[38,62,88,112].map((x,i)=>(
+        <ellipse key={i} cx={x} cy={30} rx="9" ry="14" fill="white" opacity="0.15">
+          <animate attributeName="cy" dur={`${1.3+i*0.3}s`} repeatCount="indefinite" values={`${30};${-20};${30}`} begin={`${i*0.2}s`}/>
+          <animate attributeName="opacity" dur={`${1.3+i*0.3}s`} repeatCount="indefinite" values="0.15;0;0.15" begin={`${i*0.2}s`}/>
+          <animate attributeName="rx" dur={`${1.3+i*0.3}s`} repeatCount="indefinite" values="9;16;9" begin={`${i*0.2}s`}/>
+        </ellipse>
+      ))}
+      {/* ボディ */}
+      <rect x="28" y="68" width="104" height="105" rx="9" fill="#6B2410"/>
+      <rect x="32" y="72" width="96" height="97" rx="7" fill="#8B3412"/>
+      {/* ボディのリベット */}
+      {[80,100,120,140,160].map(y=>(
+        [35,123].map(x=>(
+          <circle key={`${x}-${y}`} cx={x} cy={y} r="3" fill="#5A1E08" stroke="#FB923C" strokeWidth="0.8"/>
+        ))
+      ))}
+      {/* 圧力ゲージ（中央） */}
+      <circle cx="80" cy="118" r="20" fill="#4A1508" stroke="#FB923C" strokeWidth="2.5"/>
+      <circle cx="80" cy="118" r="16" fill="#350E04"/>
+      <circle cx="80" cy="118" r="12" fill="#2A0A02"/>
+      {[0,45,90,135,180,225,270,315].map((a,i)=>(
+        <line key={i}
+          x1={80+10*Math.cos(a*Math.PI/180)} y1={118+10*Math.sin(a*Math.PI/180)}
+          x2={80+14*Math.cos(a*Math.PI/180)} y2={118+14*Math.sin(a*Math.PI/180)}
+          stroke="#FB923C" strokeWidth={i%2===0?1.5:0.8}/>
+      ))}
+      {/* 針 */}
+      <line x1="80" y1="118" x2="80" y2="107" stroke="#FB923C" strokeWidth="2" strokeLinecap="round">
+        <animateTransform attributeName="transform" type="rotate" from="-30 80 118" to="210 80 118" dur="3s" repeatCount="indefinite"/>
+      </line>
+      <circle cx="80" cy="118" r="2.5" fill="#FB923C"/>
+      {/* 煙突の角（左） */}
+      <rect x="38" y="18" width="18" height="55" rx="5" fill="#6B2410" stroke="#FB923C" strokeWidth="1.5"/>
+      <rect x="34" y="14" width="26" height="9" rx="2" fill="#4A1508" stroke="#FB923C" strokeWidth="1.2"/>
+      {/* 煙突の角（右） */}
+      <rect x="104" y="12" width="18" height="60" rx="5" fill="#6B2410" stroke="#FB923C" strokeWidth="1.5"/>
+      <rect x="100" y="8" width="26" height="9" rx="2" fill="#4A1508" stroke="#FB923C" strokeWidth="1.2"/>
+      {/* 角から噴出蒸気 */}
+      <ellipse cx="47" cy="8" rx="12" ry="7" fill="white" opacity="0.4">
+        <animate attributeName="cy" dur="0.85s" repeatCount="indefinite" values="8;-16;8"/>
+        <animate attributeName="opacity" dur="0.85s" repeatCount="indefinite" values="0.4;0;0.4"/>
+        <animate attributeName="rx" dur="0.85s" repeatCount="indefinite" values="12;20;12"/>
+      </ellipse>
+      <ellipse cx="113" cy="3" rx="12" ry="7" fill="white" opacity="0.4">
+        <animate attributeName="cy" dur="0.95s" repeatCount="indefinite" values="3;-18;3"/>
+        <animate attributeName="opacity" dur="0.95s" repeatCount="indefinite" values="0.4;0;0.4"/>
+        <animate attributeName="rx" dur="0.95s" repeatCount="indefinite" values="12;22;12"/>
+      </ellipse>
+      {/* 顔 */}
+      <rect x="36" y="68" width="88" height="60" rx="6" fill="#8B3412"/>
+      {/* 目 */}
+      <ellipse cx="57" cy="92" rx="12" ry="12" fill="#FB923C" opacity="0.9">
+        <animate attributeName="opacity" dur="3.5s" repeatCount="indefinite" values="0.9;0.5;0.9"/>
+      </ellipse>
+      <ellipse cx="57" cy="92" rx="7" ry="8" fill="#180800"/>
+      <ellipse cx="55" cy="90" rx="2.5" ry="2.5" fill="white" opacity="0.9"/>
+      <ellipse cx="103" cy="92" rx="12" ry="12" fill="#FB923C" opacity="0.9">
+        <animate attributeName="opacity" dur="2.8s" repeatCount="indefinite" values="0.9;0.4;0.9"/>
+      </ellipse>
+      <ellipse cx="103" cy="92" rx="7" ry="8" fill="#180800"/>
+      <ellipse cx="101" cy="90" rx="2.5" ry="2.5" fill="white" opacity="0.9"/>
+      {/* 眉（逆ハの字） */}
+      <path d="M44,80 Q57,75 68,80" stroke="#4A1508" strokeWidth="3.5" fill="none" strokeLinecap="round"/>
+      <path d="M92,80 Q103,75 116,80" stroke="#4A1508" strokeWidth="3.5" fill="none" strokeLinecap="round"/>
+      {/* 口（牙あり） */}
+      <path d="M54,112 Q80,126 106,112" stroke="#FB923C" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+      {[60,68,76,84,92,100].map(x=>(
+        <line key={x} x1={x} y1="114" x2={x+2} y2="122" stroke="#FB923C" strokeWidth="2" strokeLinecap="round"/>
+      ))}
+      {/* 腕 */}
+      <rect x="6" y="88" width="26" height="12" rx="5" fill="#6B2410"/>
+      <circle cx="12" cy="94" r="12" fill="#8B3412" stroke="#FB923C" strokeWidth="1"/>
+      <rect x="128" y="88" width="26" height="12" rx="5" fill="#6B2410"/>
+      <circle cx="148" cy="94" r="12" fill="#8B3412" stroke="#FB923C" strokeWidth="1"/>
+    </svg>
+  );
+
+  // ────────────────────────────────────────────────────────
+  // 4. 深海溶接怪人 — ダイバーヘルメット・気泡
+  // ────────────────────────────────────────────────────────
+  const diver = (
+    <svg width="160" height="180" viewBox="0 0 160 180" style={svgBase}>
+      <ellipse cx="80" cy="174" rx="38" ry="6" fill="#000" opacity="0.3"/>
+      {/* 気泡 */}
+      {[28,50,72,96,118,140].map((x,i)=>(
+        <circle key={i} cx={x} cy={145} r={2.5+i%3} fill="none" stroke="#22D3EE" strokeWidth="1.2" opacity="0.65">
+          <animate attributeName="cy" dur={`${2.2+i*0.35}s`} repeatCount="indefinite" values={`${145};${-10};${145}`} begin={`${i*0.45}s`}/>
+          <animate attributeName="opacity" dur={`${2.2+i*0.35}s`} repeatCount="indefinite" values="0.65;0;0.65" begin={`${i*0.45}s`}/>
+          <animate attributeName="r" dur={`${2.2+i*0.35}s`} repeatCount="indefinite" values={`${2.5+i%3};${5+i%3};${2.5+i%3}`} begin={`${i*0.45}s`}/>
+        </circle>
+      ))}
+      {/* 海中フィルタ */}
+      <rect x="0" y="0" width="160" height="180" fill="#0A3050" opacity="0.10" rx="8"/>
+      {/* スーツ本体 */}
+      <rect x="30" y="78" width="100" height="96" rx="10" fill="#0A4060"/>
+      <rect x="34" y="82" width="92" height="88" rx="8" fill="#0D5272"/>
+      {/* スーツ縫い目 */}
+      <line x1="80" y1="82" x2="80" y2="170" stroke="#22D3EE" strokeWidth="1.5" opacity="0.35"/>
+      <line x1="53" y1="82" x2="53" y2="170" stroke="#22D3EE" strokeWidth="0.7" opacity="0.18"/>
+      <line x1="107" y1="82" x2="107" y2="170" stroke="#22D3EE" strokeWidth="0.7" opacity="0.18"/>
+      {/* 酸素ボンベ（両脇） */}
+      <rect x="18" y="90" width="14" height="55" rx="5" fill="#073A58" stroke="#22D3EE" strokeWidth="1.2"/>
+      <rect x="20" y="88" width="10" height="6" rx="2" fill="#22D3EE" opacity="0.5"/>
+      <rect x="128" y="90" width="14" height="55" rx="5" fill="#073A58" stroke="#22D3EE" strokeWidth="1.2"/>
+      <rect x="130" y="88" width="10" height="6" rx="2" fill="#22D3EE" opacity="0.5"/>
+      {/* ダイバーヘルメット */}
+      <ellipse cx="80" cy="52" rx="40" ry="40" fill="#0A4060" stroke="#22D3EE" strokeWidth="2.2"/>
+      <ellipse cx="80" cy="52" rx="36" ry="36" fill="#0D5272"/>
+      {/* ヘルメットのバンド */}
+      <rect x="40" y="70" width="80" height="8" rx="3" fill="#073A58" stroke="#22D3EE" strokeWidth="1"/>
+      {/* フロントバイザー */}
+      <ellipse cx="80" cy="50" rx="26" ry="24" fill="#001830" stroke="#22D3EE" strokeWidth="2"/>
+      <ellipse cx="80" cy="50" rx="23" ry="21" fill="#00213E"/>
+      {/* バイザー反射 */}
+      <ellipse cx="69" cy="41" rx="9" ry="5" fill="white" opacity="0.08"/>
+      <ellipse cx="87" cy="38" rx="5" ry="3" fill="white" opacity="0.06"/>
+      {/* 目（バイザー越し） */}
+      <ellipse cx="68" cy="52" rx="9" ry="9" fill="#22D3EE" opacity="0.85">
+        <animate attributeName="opacity" dur="3s" repeatCount="indefinite" values="0.85;0.25;0.85"/>
+      </ellipse>
+      <ellipse cx="92" cy="52" rx="9" ry="9" fill="#22D3EE" opacity="0.85">
+        <animate attributeName="opacity" dur="2.6s" repeatCount="indefinite" values="0.85;0.2;0.85"/>
+      </ellipse>
+      <ellipse cx="68" cy="52" rx="5" ry="6" fill="#000E1C"/>
+      <ellipse cx="92" cy="52" rx="5" ry="6" fill="#000E1C"/>
+      <ellipse cx="66" cy="49" rx="2" ry="2" fill="white" opacity="0.9"/>
+      <ellipse cx="90" cy="49" rx="2" ry="2" fill="white" opacity="0.9"/>
+      {/* ヘルメットボルト */}
+      {[46,80,114].map((x,i)=>(
+        <circle key={i} cx={x} cy={22} r="3.5" fill="#073A58" stroke="#22D3EE" strokeWidth="1.2"/>
+      ))}
+      {/* 水中溶接トーチ（左手） */}
+      <rect x="6" y="102" width="28" height="8" rx="3" fill="#073A58" stroke="#22D3EE" strokeWidth="1"/>
+      <rect x="3" y="98" width="10" height="16" rx="3" fill="#0A4060" stroke="#22D3EE" strokeWidth="1"/>
+      {/* 水中アーク（水中独特の青白い色） */}
+      {[8,14,20].map((x,i)=>(
+        <circle key={i} cx={x} cy={100} r="2.5" fill="#00D4FF" opacity="0.9">
+          <animate attributeName="opacity" dur={`${0.18+i*0.07}s`} repeatCount="indefinite" values="0.9;0;0.9"/>
+        </circle>
+      ))}
+      {/* 腕パイプ */}
+      <rect x="6" y="90" width="28" height="8" rx="4" fill="#0A4060" stroke="#22D3EE" strokeWidth="0.8"/>
+      <rect x="126" y="90" width="28" height="8" rx="4" fill="#0A4060" stroke="#22D3EE" strokeWidth="0.8"/>
+      {/* 足（フィン） */}
+      <path d="M44,168 L38,178 L68,172 L62,162Z" fill="#073A58" stroke="#22D3EE" strokeWidth="1"/>
+      <path d="M92,168 L98,178 L122,172 L116,162Z" fill="#073A58" stroke="#22D3EE" strokeWidth="1"/>
+    </svg>
+  );
+
+  // ────────────────────────────────────────────────────────
+  // 5. ブローホール将軍 — 気孔だらけ・不気味オーラ
+  // ────────────────────────────────────────────────────────
+  const blowhole = (
+    <svg width="160" height="180" viewBox="0 0 160 180" style={svgBase}>
+      <ellipse cx="80" cy="173" rx="38" ry="6" fill="#000" opacity="0.38"/>
+      {/* 不気味な外オーラ */}
+      <ellipse cx="80" cy="115" rx="58" ry="50" fill="#5A2800" opacity="0.45">
+        <animate attributeName="rx" dur="2.2s" repeatCount="indefinite" values="55;66;55"/>
+        <animate attributeName="opacity" dur="2.2s" repeatCount="indefinite" values="0.45;0.15;0.45"/>
+      </ellipse>
+      {/* ボディ */}
+      <rect x="26" y="68" width="108" height="106" rx="10" fill="#4A2000"/>
+      <rect x="30" y="72" width="100" height="98" rx="8" fill="#6A3000"/>
+      {/* 穴群（ボディ） */}
+      {[
+        [44,82,9],[66,78,7],[92,80,8],[112,85,6],
+        [36,102,7],[58,108,10],[82,102,7],[104,100,9],[122,105,6],
+        [42,128,7],[64,132,9],[84,125,7],[105,130,7],[120,127,5],
+        [50,152,8],[76,148,6],[100,154,9],[116,150,5],
+      ].map(([x,y,r],i)=>(
+        <g key={i}>
+          <circle cx={x} cy={y} r={r} fill="#180800"/>
+          <circle cx={x} cy={y} r={r-1.2} fill="#0A0400"/>
+          <ellipse cx={x-r*0.35} cy={y-r*0.35} rx={r*0.45} ry={r*0.35} fill="#2A1000" opacity="0.5"/>
+          {/* 穴の不気味な輝き */}
+          <circle cx={x} cy={y} r={r*0.55} fill="#FF3300" opacity="0.12">
+            <animate attributeName="opacity" dur={`${1.2+i*0.15}s`} repeatCount="indefinite" values="0.08;0.22;0.08"/>
+          </circle>
+        </g>
+      ))}
+      {/* 頭部 */}
+      <rect x="32" y="22" width="96" height="62" rx="8" fill="#6A3000"/>
+      {/* 頭部の穴 */}
+      {[[48,34,7],[80,28,6],[112,36,8],[60,50,6],[96,48,7]].map(([x,y,r],i)=>(
+        <g key={i}>
+          <circle cx={x} cy={y} r={r} fill="#180800"/>
+          <circle cx={x} cy={y} r={r-1} fill="#0A0400"/>
+          <circle cx={x} cy={y} r={r*0.5} fill="#FF3300" opacity="0.1">
+            <animate attributeName="opacity" dur={`${1+i*0.2}s`} repeatCount="indefinite" values="0.06;0.18;0.06"/>
+          </circle>
+        </g>
+      ))}
+      {/* 兜の縁 */}
+      <path d="M32,26 Q80,8 128,26" stroke="#FFB300" strokeWidth="3" fill="none" strokeLinecap="round"/>
+      {/* 目 */}
+      <ellipse cx="60" cy="54" rx="15" ry="15" fill="#180800"/>
+      <ellipse cx="100" cy="54" rx="15" ry="15" fill="#180800"/>
+      <ellipse cx="60" cy="54" rx="9" ry="10" fill="#FF3300" opacity="0.95">
+        <animate attributeName="opacity" dur="1.5s" repeatCount="indefinite" values="0.95;0.25;0.95"/>
+      </ellipse>
+      <ellipse cx="100" cy="54" rx="9" ry="10" fill="#FF3300" opacity="0.95">
+        <animate attributeName="opacity" dur="1.8s" repeatCount="indefinite" values="0.95;0.15;0.95"/>
+      </ellipse>
+      <ellipse cx="60" cy="54" rx="5" ry="6" fill="#030000"/>
+      <ellipse cx="100" cy="54" rx="5" ry="6" fill="#030000"/>
+      <ellipse cx="58" cy="51" rx="2" ry="2" fill="white" opacity="0.55"/>
+      <ellipse cx="98" cy="51" rx="2" ry="2" fill="white" opacity="0.55"/>
+      {/* 口（穴あり歯茎） */}
+      <path d="M50,70 Q80,84 110,70" stroke="#FFB300" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+      {[56,64,72,80,88,96,104].map(x=>(
+        <circle key={x} cx={x} cy={74} r="3.5" fill="#180800"/>
+      ))}
+      {/* 腕 */}
+      <rect x="4" y="90" width="26" height="12" rx="5" fill="#4A2000"/>
+      <circle cx="10" cy="96" r="13" fill="#6A3000"/>
+      <circle cx="10" cy="96" r="6" fill="#180800"/>
+      <rect x="130" y="90" width="26" height="12" rx="5" fill="#4A2000"/>
+      <circle cx="150" cy="96" r="13" fill="#6A3000"/>
+      <circle cx="150" cy="96" r="6" fill="#180800"/>
+    </svg>
+  );
+
+  // ────────────────────────────────────────────────────────
+  // 6. CWI検査鬼 — 厳格な検査官・眼鏡・クリップボード
+  // ────────────────────────────────────────────────────────
+  const cwi = (
+    <svg width="160" height="180" viewBox="0 0 160 180" style={svgBase}>
+      <ellipse cx="80" cy="173" rx="36" ry="6" fill="#000" opacity="0.3"/>
+      {/* スーツ */}
+      <rect x="28" y="70" width="104" height="105" rx="6" fill="#160404"/>
+      <rect x="32" y="74" width="96" height="97" rx="5" fill="#1F0808"/>
+      {/* スーツの縦ライン */}
+      <line x1="80" y1="74" x2="80" y2="171" stroke="#F87171" strokeWidth="0.8" opacity="0.3"/>
+      {/* ネクタイ */}
+      <path d="M70,74 L80,106 L90,74Z" fill="#7F1D1D"/>
+      <path d="M72,74 L80,92 L88,74Z" fill="#991B1B"/>
+      <rect x="75" y="104" width="10" height="8" rx="1" fill="#7F1D1D"/>
+      {/* ポケットチーフ */}
+      <path d="M34,82 L42,86 L36,90Z" fill="#F87171" opacity="0.7"/>
+      {/* クリップボード（右腕） */}
+      <rect x="96" y="88" width="40" height="54" rx="3" fill="#F5F5DC" stroke="#B8860B" strokeWidth="1.5"/>
+      <rect x="96" y="86" width="40" height="10" rx="2" fill="#B8860B"/>
+      <circle cx="116" cy="91" r="3.5" fill="#8B6914"/>
+      {/* チェック欄 */}
+      {[0,1,2,3].map(i=>(
+        <g key={i}>
+          <rect x="100" y={102+i*10} width="8" height="7" rx="1" fill="none" stroke="#888" strokeWidth="0.8"/>
+          <line x1="112" y1={104+i*10} x2="130" y2={104+i*10} stroke="#888" strokeWidth="0.8"/>
+          <line x1="112" y1={108+i*10} x2="126" y2={108+i*10} stroke="#888" strokeWidth="0.6"/>
+        </g>
+      ))}
+      {/* NG スタンプ */}
+      <text x="110" y="148" fill="#CC0000" fontSize="10" fontWeight="900" fontFamily="monospace">✗NG</text>
+      {/* 右腕 */}
+      <rect x="126" y="90" width="26" height="10" rx="4" fill="#160404"/>
+      <circle cx="150" cy="95" r="11" fill="#1F0808" stroke="#F87171" strokeWidth="0.8"/>
+      {/* 頭部 */}
+      <rect x="36" y="18" width="88" height="62" rx="6" fill="#1F0808" stroke="#F87171" strokeWidth="1.2"/>
+      <rect x="40" y="22" width="80" height="54" rx="5" fill="#260C0C"/>
+      {/* 眼鏡 */}
+      <rect x="46" y="38" width="26" height="18" rx="9" fill="none" stroke="#F87171" strokeWidth="2.8"/>
+      <rect x="88" y="38" width="26" height="18" rx="9" fill="none" stroke="#F87171" strokeWidth="2.8"/>
+      <line x1="72" y1="47" x2="88" y2="47" stroke="#F87171" strokeWidth="2.2"/>
+      <path d="M72,46 Q80,52 88,46" stroke="#F87171" strokeWidth="1.5" fill="none"/>
+      {/* 眼鏡の蔓 */}
+      <line x1="46" y1="47" x2="38" y2="44" stroke="#F87171" strokeWidth="2" strokeLinecap="round"/>
+      <line x1="114" y1="47" x2="122" y2="44" stroke="#F87171" strokeWidth="2" strokeLinecap="round"/>
+      {/* 目 */}
+      <ellipse cx="59" cy="47" rx="8" ry="8" fill="#F87171" opacity="0.95">
+        <animate attributeName="opacity" dur="4s" repeatCount="indefinite" values="0.95;0.5;0.95"/>
+      </ellipse>
+      <ellipse cx="101" cy="47" rx="8" ry="8" fill="#F87171" opacity="0.95">
+        <animate attributeName="opacity" dur="3.5s" repeatCount="indefinite" values="0.95;0.4;0.95"/>
+      </ellipse>
+      <ellipse cx="59" cy="47" rx="4.5" ry="5" fill="#080000"/>
+      <ellipse cx="101" cy="47" rx="4.5" ry="5" fill="#080000"/>
+      <ellipse cx="57" cy="44" rx="2" ry="2" fill="white" opacity="0.9"/>
+      <ellipse cx="99" cy="44" rx="2" ry="2" fill="white" opacity="0.9"/>
+      {/* 眉（への字・厳格） */}
+      <path d="M44,32 L72,28" stroke="#F87171" strokeWidth="3" strokeLinecap="round"/>
+      <path d="M88,28 L116,32" stroke="#F87171" strokeWidth="3" strokeLinecap="round"/>
+      {/* 口（へのじ） */}
+      <path d="M54,62 Q80,56 106,62" stroke="#F87171" strokeWidth="2" fill="none" strokeLinecap="round"/>
+      {/* 角 */}
+      <path d="M52,22 L44,2 L58,16Z" fill="#7F1D1D" stroke="#F87171" strokeWidth="0.8"/>
+      <path d="M108,22 L116,2 L102,16Z" fill="#7F1D1D" stroke="#F87171" strokeWidth="0.8"/>
+      {/* 検査器具（左手） */}
+      <rect x="20" y="100" width="20" height="10" rx="3" fill="#222" stroke="#F87171" strokeWidth="1"/>
+      <rect x="12" y="96" width="10" height="18" rx="2.5" fill="#111" stroke="#F87171" strokeWidth="1"/>
+      <line x1="22" y1="105" x2="40" y2="105" stroke="#F87171" strokeWidth="1.2">
+        <animate attributeName="opacity" dur="1.2s" repeatCount="indefinite" values="1;0.3;1"/>
+      </line>
+      <rect x="10" y="90" width="26" height="10" rx="4" fill="#160404"/>
+    </svg>
+  );
+
+  // ────────────────────────────────────────────────────────
+  // 7. 溶接魔王IWE — 最終ボス・王冠・炎・電撃
+  // ────────────────────────────────────────────────────────
+  const iweBoss = (
+    <svg width="160" height="180" viewBox="0 0 160 180" style={svgBase}>
+      <ellipse cx="80" cy="174" rx="44" ry="8" fill="#000" opacity="0.4"/>
+      {/* 大外オーラ */}
+      <ellipse cx="80" cy="105" rx="78" ry="68" fill="#7C3AED" opacity="0.09">
+        <animate attributeName="rx" dur="2s" repeatCount="indefinite" values="74;88;74"/>
+        <animate attributeName="opacity" dur="2s" repeatCount="indefinite" values="0.09;0.18;0.09"/>
+      </ellipse>
+      {/* 電撃ボルト（四隅） */}
+      {[
+        {d:"M18,155 L26,135 L20,128 L30,108", c:"#CE93D8"},
+        {d:"M142,155 L134,135 L140,128 L130,108", c:"#CE93D8"},
+        {d:"M10,100 L22,80 L16,72 L28,52", c:"#A855F7"},
+        {d:"M150,100 L138,80 L144,72 L132,52", c:"#A855F7"},
+      ].map((l,i)=>(
+        <path key={i} d={l.d} stroke={l.c} strokeWidth="1.8" fill="none" opacity="0.7">
+          <animate attributeName="opacity" dur={`${0.25+i*0.08}s`} repeatCount="indefinite" values="0.7;0.05;0.7"/>
+        </path>
+      ))}
+      {/* 足元の炎 */}
+      {[42,56,68,80,92,104,118].map((x,i)=>(
+        <ellipse key={i} cx={x} cy={164} rx={7+i%3} ry={13+i%4} fill={i%2===0?"#FF4400":"#FF6600"} opacity="0.55">
+          <animate attributeName="ry" dur={`${0.38+i*0.09}s`} repeatCount="indefinite" values={`${13+i%4};${20+i%4};${13+i%4}`}/>
+          <animate attributeName="opacity" dur={`${0.38+i*0.09}s`} repeatCount="indefinite" values="0.55;0.2;0.55"/>
+          <animate attributeName="cy" dur={`${0.38+i*0.09}s`} repeatCount="indefinite" values="164;157;164"/>
+        </ellipse>
+      ))}
+      {/* マント外側 */}
+      <path d="M22,82 Q6,136 14,168 Q42,158 80,162 Q118,158 146,168 Q154,136 138,82Z" fill="#2D0452" opacity="0.95"/>
+      <path d="M22,82 Q6,136 14,168 Q42,158 80,162 Q118,158 146,168 Q154,136 138,82Z" fill="none" stroke="#A855F7" strokeWidth="1.2" opacity="0.6"/>
+      {/* マント内側 */}
+      <path d="M30,82 Q16,130 22,162 Q46,154 80,158 Q114,154 138,162 Q144,130 130,82Z" fill="#1A0330" opacity="0.75"/>
+      {/* ボディ鎧 */}
+      <rect x="36" y="74" width="88" height="84" rx="9" fill="#2D0452"/>
+      <rect x="40" y="78" width="80" height="76" rx="7" fill="#3D0764"/>
+      {/* 鎧のライン装飾 */}
+      <path d="M40,98 Q80,92 120,98" stroke="#A855F7" strokeWidth="1" fill="none" opacity="0.5"/>
+      <path d="M40,114 Q80,108 120,114" stroke="#A855F7" strokeWidth="1" fill="none" opacity="0.5"/>
+      {/* 胸のルーン紋章 */}
+      <ellipse cx="80" cy="108" rx="22" ry="14" fill="none" stroke="#CE93D8" strokeWidth="1.5" opacity="0.8">
+        <animate attributeName="opacity" dur="1.5s" repeatCount="indefinite" values="0.8;1;0.8"/>
+      </ellipse>
+      <text x="80" y="112" textAnchor="middle" fill="#CE93D8" fontSize="11" fontWeight="900" fontFamily="serif" opacity="0.9">IWE</text>
+      {/* 頭部 */}
+      <ellipse cx="80" cy="46" rx="38" ry="36" fill="#2D0452" stroke="#A855F7" strokeWidth="1.8"/>
+      <ellipse cx="80" cy="46" rx="34" ry="32" fill="#3D0764"/>
+      {/* 王冠 */}
+      <path d="M42,22 L52,4 L62,18 L72,0 L80,14 L88,0 L98,18 L108,4 L118,22 L118,32 L42,32Z" fill="#FFD700" stroke="#FF8C00" strokeWidth="1.5"/>
+      <path d="M42,28 L118,28 L118,32 L42,32Z" fill="#FFA500" opacity="0.5"/>
+      {/* 宝石 */}
+      <circle cx="52" cy="6" r="5" fill="#FF4500"/>
+      <circle cx="52" cy="6" r="5" fill="#FF6600" opacity="0.6">
+        <animate attributeName="opacity" dur="0.9s" repeatCount="indefinite" values="0.6;1;0.6"/>
+      </circle>
+      <circle cx="72" cy="2" r="4.5" fill="#00BFFF"/>
+      <circle cx="80" cy="16" r="3.5" fill="#FF4500"/>
+      <circle cx="88" cy="2" r="4.5" fill="#FF4500"/>
+      <circle cx="88" cy="2" r="4.5" fill="#FF6600" opacity="0.6">
+        <animate attributeName="opacity" dur="0.7s" repeatCount="indefinite" values="0.6;1;0.6"/>
+      </circle>
+      <circle cx="108" cy="6" r="5" fill="#00BFFF"/>
+      {/* 目 */}
+      <ellipse cx="64" cy="48" rx="13" ry="13" fill="#12002A"/>
+      <ellipse cx="96" cy="48" rx="13" ry="13" fill="#12002A"/>
+      <ellipse cx="64" cy="48" rx="9" ry="10" fill="#CE93D8" opacity="0.98">
+        <animate attributeName="opacity" dur="2s" repeatCount="indefinite" values="0.98;0.35;0.98"/>
+      </ellipse>
+      <ellipse cx="96" cy="48" rx="9" ry="10" fill="#CE93D8" opacity="0.98">
+        <animate attributeName="opacity" dur="1.7s" repeatCount="indefinite" values="0.98;0.25;0.98"/>
+      </ellipse>
+      <ellipse cx="64" cy="48" rx="5" ry="6" fill="#050008"/>
+      <ellipse cx="96" cy="48" rx="5" ry="6" fill="#050008"/>
+      <ellipse cx="61" cy="44" rx="2.5" ry="2.5" fill="white" opacity="0.95"/>
+      <ellipse cx="93" cy="44" rx="2.5" ry="2.5" fill="white" opacity="0.95"/>
+      {/* 眉 */}
+      <path d="M52,36 Q64,30 76,36" stroke="#CE93D8" strokeWidth="3" fill="none" strokeLinecap="round"/>
+      <path d="M84,36 Q96,30 108,36" stroke="#CE93D8" strokeWidth="3" fill="none" strokeLinecap="round"/>
+      {/* 口（牙） */}
+      <path d="M58,64 Q80,78 102,64" stroke="#CE93D8" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+      {[64,72,80,88,96].map(x=>(
+        <line key={x} x1={x} y1="66" x2={x+2} y2="76" stroke="#CE93D8" strokeWidth="2" strokeLinecap="round"/>
+      ))}
+      {/* 溶接トーチ（右手武器） */}
+      <g transform="rotate(28,128,120)">
+        <rect x="118" y="92" width="9" height="60" rx="4" fill="#1C1C1C"/>
+        <rect x="120" y="78" width="6" height="20" rx="2" fill="#2C2C2C"/>
+        <rect x="122" y="66" width="18" height="8" rx="2" fill="#BDC3C7"/>
+        <rect x="122" y="72" width="18" height="3" rx="1" fill="#D4AC0D"/>
+        <rect x="136" y="62" width="6" height="14" rx="2" fill="#7F8C8D"/>
+      </g>
+      {/* トーチ火花群 */}
+      {[
+        {x:145,y:58,c:"#FFE500",d:"0.15s"},{x:150,y:52,c:"#00D4FF",d:"0.11s"},
+        {x:142,y:64,c:"#FFE500",d:"0.18s"},{x:154,y:60,c:"#FFFFFF",d:"0.12s"},
+        {x:148,y:68,c:"#FF6B00",d:"0.14s"},
+      ].map((s,i)=>(
+        <circle key={i} cx={s.x} cy={s.y} r="2.8" fill={s.c} opacity="0.95">
+          <animate attributeName="opacity" dur={s.d} repeatCount="indefinite" values="0.95;0;0.95"/>
+          <animate attributeName="cy" dur={s.d} repeatCount="indefinite" values={`${s.y};${s.y-10};${s.y}`}/>
+        </circle>
+      ))}
+      {/* 電気アーク */}
+      <path d="M146,60 L154,52 L148,46 L158,38" stroke="#00D4FF" strokeWidth="2.2" fill="none" opacity="0.85">
+        <animate attributeName="opacity" dur="0.18s" repeatCount="indefinite" values="0.85;0.1;0.85"/>
+      </path>
+      {/* 左拳 */}
+      <rect x="20" y="92" width="22" height="10" rx="4" fill="#2D0452" stroke="#A855F7" strokeWidth="0.8"/>
+      <circle cx="18" cy="97" r="14" fill="#3D0764" stroke="#A855F7" strokeWidth="1.2"/>
+      <ellipse cx="18" cy="97" rx="7" ry="8" fill="#CE93D8" opacity="0.15">
+        <animate attributeName="opacity" dur="1.8s" repeatCount="indefinite" values="0.15;0.35;0.15"/>
+      </ellipse>
+    </svg>
+  );
+
+  const monsterMap = {"1":slag,"2A":lamellar,"2B":steam,"2C":diver,"3":blowhole,"4":cwi,"5":iweBoss};
 
   return(
     <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
-      {/* C案：名前エリア別枠 */}
       <div style={{
         background:`${ac}22`,border:`2px solid ${ac}`,
         borderRadius:8,padding:"5px 16px",
@@ -109,28 +653,13 @@ function Enemy({st, hit, hp, maxHP, exploding}){
         textShadow:`0 0 10px ${ac}`,
         letterSpacing:2,
       }}>{st?.enemy}</div>
-      {/* HPバー */}
-      <div style={{width:160,background:"#1A1A2E",borderRadius:4,height:14,border:`1px solid ${ac}40`,overflow:"hidden",position:"relative"}}>
+      <div style={{width:180,background:"#1A1A2E",borderRadius:4,height:14,border:`1px solid ${ac}40`,overflow:"hidden",position:"relative"}}>
         <div style={{width:`${pct}%`,height:"100%",background:hc,transition:"width .4s ease"}}/>
         <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontSize:10,fontWeight:700,fontFamily:"monospace"}}>{Math.round(hp)} / {maxHP} HP</div>
       </div>
-      {/* モンスター本体 */}
-      <svg width="150" height="120" viewBox="0 0 130 110" style={{imageRendering:"pixelated",transform:hit?"translateX(-10px)":"translateX(0)",transition:"transform .15s",...shakeStyle,...explodeStyle}}>
-      <ellipse cx="65" cy="105" rx="28" ry="5" fill="#000" opacity="0.3"/>
-      <rect x="30" y="38" width="70" height="80" rx="6" fill={`${bg}CC`}/>
-      <rect x="33" y="41" width="64" height="74" rx="5" fill={bg}/>
-      <rect x="42" y="56" width="16" height="12" rx="2" fill={ac}/>
-      <rect x="72" y="56" width="16" height="12" rx="2" fill={ac}/>
-      <rect x="46" y="58" width="8" height="8" fill="#111"/>
-      <rect x="76" y="58" width="8" height="8" fill="#111"/>
-      <rect x="42" y="80" width="46" height="8" rx="3" fill={`${bg}AA`}/>
-      {[46,56,66,76].map(x=><rect key={x} x={x} y="82" width="6" height="6" rx="1" fill={ac} opacity="0.8"/>)}
-      <rect x="10" y="50" width="22" height="10" rx="3" fill={bg}/>
-      <rect x="98" y="50" width="22" height="10" rx="3" fill={bg}/>
-      <rect x="40" y="28" width="50" height="14" rx="3" fill={`${bg}CC`}/>
-      <rect x="60" y="20" width="10" height="14" rx="2" fill={ac} opacity="0.8"/>
-      {st?.id==="5"&&<ellipse cx="65" cy="88" rx="50" ry="55" fill={ac} opacity="0.05"><animate attributeName="rx" dur="2s" repeatCount="indefinite" values="50;56;50"/></ellipse>}
-    </svg>
+      <div style={{animation:wrapAnim}}>
+        {monsterMap[id] || monsterMap["1"]}
+      </div>
     </div>
   );
 }
@@ -155,6 +684,8 @@ const css=`
   @keyframes victory{0%{transform:scale(0.5) rotate(-5deg);opacity:0}60%{transform:scale(1.2) rotate(2deg)}100%{transform:scale(1) rotate(0);opacity:1}}
   @keyframes spark{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-60px) scale(0);opacity:0}}
   @keyframes gameover{0%{opacity:0;transform:scale(0.5)}60%{transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}
+  @keyframes monFloat{0%,100%{transform:translateY(0px)}50%{transform:translateY(-10px)}}
+  @keyframes monSway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
 `;
 
 // ============================================================
