@@ -686,6 +686,11 @@ const css=`
   @keyframes gameover{0%{opacity:0;transform:scale(0.5)}60%{transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}
   @keyframes monFloat{0%,100%{transform:translateY(0px)}50%{transform:translateY(-10px)}}
   @keyframes monSway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+  @keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(220px) rotate(360deg);opacity:0}}
+  @keyframes resultSpark{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0}}
+  @keyframes goldGlow{0%,100%{text-shadow:0 0 12px #FFE500,0 0 24px #FF8C00}50%{text-shadow:0 0 28px #FFE500,0 0 56px #FF6B00,0 0 80px #FFD700}}
+  @keyframes clearPop{0%{transform:scale(0) rotate(-12deg);opacity:0}55%{transform:scale(1.25) rotate(4deg);opacity:1}75%{transform:scale(0.95) rotate(-2deg)}100%{transform:scale(1) rotate(0deg);opacity:1}}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 `;
 
 // ============================================================
@@ -1205,18 +1210,67 @@ export default function App(){
       <style>{css}</style>
 
       {/* スコア */}
-      <div style={{background:"linear-gradient(135deg,#1E293B,#0F172A)",borderRadius:14,padding:"16px",marginBottom:12,textAlign:"center",boxShadow:"0 4px 16px rgba(0,0,0,0.15)"}}>
-        <div style={{fontSize:9,color:"#94A3B8",letterSpacing:4,marginBottom:4}}>★ BATTLE RESULT ★</div>
-        <div style={{fontSize:38,fontWeight:900,color:"#FFE500"}}>{score} / {MAX_Q}</div>
-        <div style={{color:"#94A3B8",fontSize:11,marginTop:2}}>+{earned} XP 獲得</div>
+      <div style={{background:"linear-gradient(135deg,#1E293B,#0F172A)",borderRadius:14,padding:"16px",marginBottom:12,textAlign:"center",boxShadow:"0 4px 16px rgba(0,0,0,0.15)",position:"relative",overflow:"hidden"}}>
+
+        {/* 勝利時：紙吹雪 */}
+        {score>=MAX_Q*0.7 && Array.from({length:24}).map((_,i)=>{
+          const left = Math.random()*100;
+          const colors=["#FFE500","#FF6B00","#22C55E","#3B82F6","#EC4899","#FFFFFF"];
+          return <div key={i} style={{
+            position:"absolute",top:"-10%",left:`${left}%`,
+            width:6,height:10,background:colors[i%colors.length],
+            opacity:0.9,borderRadius:1,
+            animation:`confettiFall ${1.4+Math.random()*1.2}s ${Math.random()*0.6}s ease-in infinite`,
+            zIndex:1,
+          }}/>;
+        })}
+
+        {score>=MAX_Q*0.7 ? (
+          <div style={{fontSize:24,fontWeight:900,color:"#FFE500",letterSpacing:3,marginBottom:4,animation:"clearPop 0.8s cubic-bezier(.34,1.56,.64,1) forwards, goldGlow 1.6s ease-in-out infinite",position:"relative",zIndex:2}}>
+            🏆 STAGE CLEAR! 🏆
+          </div>
+        ):(
+          <div style={{fontSize:9,color:"#94A3B8",letterSpacing:4,marginBottom:4,position:"relative",zIndex:2}}>★ BATTLE RESULT ★</div>
+        )}
+
+        <div style={{fontSize:38,fontWeight:900,color:"#FFE500",position:"relative",zIndex:2}}>{score} / {MAX_Q}</div>
+        <div style={{color:"#94A3B8",fontSize:11,marginTop:2,position:"relative",zIndex:2}}>+{earned} XP 獲得</div>
         {/* STAGE2分岐の合否 */}
         {STAGE2_BRANCHES.some(b=>b.id===selSt?.id)&&(
-          <div style={{marginTop:8,padding:"7px 12px",background:score>=MAX_Q*0.6?"rgba(22,163,74,0.15)":"rgba(220,38,38,0.15)",border:"1px solid "+(score>=MAX_Q*0.6?"#16A34A":"#DC2626"),borderRadius:8,fontSize:11,color:score>=MAX_Q*0.6?"#4ADE80":"#F87171"}}>
+          <div style={{marginTop:8,padding:"7px 12px",background:score>=MAX_Q*0.6?"rgba(22,163,74,0.15)":"rgba(220,38,38,0.15)",border:"1px solid "+(score>=MAX_Q*0.6?"#16A34A":"#DC2626"),borderRadius:8,fontSize:11,color:score>=MAX_Q*0.6?"#4ADE80":"#F87171",position:"relative",zIndex:2}}>
             {score>=MAX_Q*0.6 ? "🎉 合格！ "+selSt.badge+" → STAGE 3解放！" : "不合格（"+score+"/"+MAX_Q+"）60%以上で合格 → 再挑戦！"}
           </div>
         )}
-        <div style={{display:"flex",justifyContent:"center",marginTop:10}}>
-          <WeldonImg size={102} mood={score>=MAX_Q*0.7?"happy":"neutral"}/>
+
+        <div style={{display:"flex",justifyContent:"center",marginTop:10,position:"relative",zIndex:2}}>
+          <div style={{position:"relative"}}>
+            {/* 勝利時：白い光彩＋スパーク */}
+            {score>=MAX_Q*0.7 && (
+              <>
+                <div style={{
+                  position:"absolute",inset:-30,borderRadius:"50%",
+                  background:"radial-gradient(circle, rgba(255,255,255,0.45) 0%, rgba(255,229,0,0.2) 45%, transparent 75%)",
+                  animation:"float 2s ease-in-out infinite",
+                  zIndex:0,
+                }}/>
+                {Array.from({length:14}).map((_,i)=>{
+                  const ang=(i/14)*Math.PI*2;
+                  const dist=70+Math.random()*40;
+                  return <div key={i} style={{
+                    position:"absolute",left:"50%",top:"45%",
+                    width:3,height:3,borderRadius:"50%",background:"#FFE500",
+                    boxShadow:"0 0 6px 2px #FFA500",
+                    "--dx":`${Math.cos(ang)*dist}px`,"--dy":`${Math.sin(ang)*dist}px`,
+                    animation:`resultSpark ${0.6+Math.random()*0.6}s ${Math.random()*0.5}s ease-out infinite`,
+                    zIndex:1,
+                  }}/>;
+                })}
+              </>
+            )}
+            <div style={{position:"relative",zIndex:2,filter: score>=MAX_Q*0.7 ? "drop-shadow(0 0 18px rgba(255,255,255,0.95)) drop-shadow(0 0 34px rgba(255,229,0,0.6))" : "none"}}>
+              <WeldonImg size={153} mood={score>=MAX_Q*0.7?"happy":"neutral"}/>
+            </div>
+          </div>
         </div>
       </div>
 
