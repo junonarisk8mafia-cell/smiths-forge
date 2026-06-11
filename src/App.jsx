@@ -880,6 +880,16 @@ export default function App(){
       ))}
       <div style={{animation:"victory 0.9s cubic-bezier(.34,1.56,.64,1) forwards",textAlign:"center",zIndex:1}}>
         <div style={{fontSize:50,marginBottom:8}}>🎊</div>
+        <div style={{position:"relative",display:"inline-block",marginBottom:8}}>
+          <div style={{
+            position:"absolute",inset:-30,borderRadius:"50%",
+            background:"radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(255,229,0,0.25) 45%, transparent 75%)",
+            animation:"float 2s ease-in-out infinite",zIndex:0,
+          }}/>
+          <div style={{position:"relative",zIndex:1,filter:"drop-shadow(0 0 18px rgba(255,255,255,0.95)) drop-shadow(0 0 34px rgba(255,229,0,0.6))"}}>
+            <WeldonImg size={120} mood="happy" bounce/>
+          </div>
+        </div>
         <div style={{fontSize:38,fontWeight:900,color:"#FFE500",textShadow:"0 0 30px #FFE500,0 0 60px #D97706",letterSpacing:3}}>VICTORY!</div>
         <div style={{color:"#4ADE80",fontSize:13,marginTop:6,marginBottom:16}}>{selSt?.enemy}を撃破！！</div>
         <div style={{background:"rgba(255,229,0,0.1)",border:"2px solid #FFE500",borderRadius:12,padding:"12px 20px",marginBottom:20}}>
