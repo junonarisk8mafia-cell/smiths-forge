@@ -5,7 +5,7 @@
 import { useState, useEffect } from "react";
 import { QUIZ_STAGES } from "./questions";       // 既存の問題データ
 import { SFX } from "./sound";                    // BGM/SE
-import { PixelWeldon, LevelUpEvent, LEVELS, getLv, getNxt } from "./Weldon"; // キャラ+レベル
+import { LevelUpEvent, LEVELS, getLv, getNxt } from "./Weldon"; // キャラ+レベル
 
 // ── WELDON リアル画像コンポーネント ──
 const WELDON_IMGS={
