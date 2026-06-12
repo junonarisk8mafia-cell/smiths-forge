@@ -1278,7 +1278,7 @@ export default function App(){
               </>
             )}
             <div style={{position:"relative",zIndex:2,filter:"drop-shadow(0 0 18px rgba(255,255,255,0.95)) drop-shadow(0 0 34px rgba(255,229,0,0.6))"}}>
-              <img src="/weldon-levelup-normal.png" alt="WELDON" width={280}/>
+              <img src={score>=MAX_Q*0.7 ? "/weldon-smile.png" : "/weldon-levelup-normal.png"} alt="WELDON" width={280}/>
             </div>
           </div>
         </div>
