@@ -1,10 +1,10 @@
 // ============================================================
-// WELDON'S FORGE — ENGLISH EDITION
+// SMITH'S FORGE — METAL EDITION
 // App.jsx — Complete game for foreign welding trainees in Japan
 // ============================================================
 
 import { useState, useEffect, useRef } from 'react'
-import { QUIZ_STAGES } from './questions_en.js'
+import { QUIZ_STAGES } from './questions_smith.js'
 
 // ── CONSTANTS ───────────────────────────────────────────────
 const P_HP   = 100   // player max HP
@@ -16,12 +16,12 @@ const P_DMG  = 20    // damage to player per wrong answer
 
 // ── MONSTER DATA ────────────────────────────────────────────
 const MONSTERS = [
-  { name:'KINSHI DAEMON',    emoji:'🚫', color:'#E85D04', flavor:'Blocks all without proper permits!' },
-  { name:'GURAINDAA GOLEM',  emoji:'⚙️', color:'#1565C0', flavor:'Built from neglected equipment!' },
-  { name:'GATAGATA GHOST',   emoji:'👻', color:'#D97706', flavor:'Speaks only in job site slang!' },
-  { name:'KAISAKI KNIGHT',   emoji:'⚔️', color:'#059669', flavor:'Master of all welding positions!' },
-  { name:'BUROOHORU BEAST',  emoji:'💀', color:'#7C3AED', flavor:'Breeds defects and cracks!' },
-  { name:'SHIKAKU DRAGON',   emoji:'🐉', color:'#DC2626', flavor:'The final boss of certification!' },
+  { name:'TORQUE TITAN',      emoji:'🛡️', color:'#1E90FF', flavor:'Blocks all without proper permits!' },
+  { name:'CHIP CRUSHER',      emoji:'⚙️', color:'#00CED1', flavor:'Built from neglected equipment!' },
+  { name:'PRESS PHANTOM',     emoji:'🔨', color:'#4169E1', flavor:'Master of bending and blanking!' },
+  { name:'MILLING MENACE',    emoji:'⚙️', color:'#6A5ACD', flavor:'Carves through steel and patience alike!' },
+  { name:'TOLERANCE TERROR',  emoji:'📐', color:'#483D8B', flavor:'Demands precision to the micron!' },
+  { name:'QUALITY DRAGON',    emoji:'🐉', color:'#2F4F4F', flavor:'The final boss of certification!' },
 ]
 
 // ── CSS ANIMATIONS ──────────────────────────────────────────
@@ -40,7 +40,7 @@ const MONSTERS = [
     @keyframes wf-doverlay{ 0%{opacity:0}   100%{opacity:0.82} }
     @keyframes wf-pcollapse{ 0%{transform:scaleY(1);opacity:1} 100%{transform:scaleY(0.05);opacity:0;transform-origin:top} }
     /* ── new visuals ── */
-    @keyframes wf-pulse-glow { 0%,100%{text-shadow:0 0 18px #FF660077,0 0 36px #FF660033} 50%{text-shadow:0 0 28px #FF6600CC,0 0 56px #FF660088,0 0 80px #FF660044} }
+    @keyframes wf-pulse-glow { 0%,100%{text-shadow:0 0 18px #1E90FF77,0 0 36px #1E90FF33} 50%{text-shadow:0 0 28px #1E90FFCC,0 0 56px #1E90FF88,0 0 80px #1E90FF44} }
     @keyframes wf-bob        { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
     @keyframes wf-mon-entry  { 0%{transform:translateY(-28px);opacity:0} 100%{transform:translateY(0);opacity:1} }
     @keyframes wf-stripe     { 0%{background-position:0 0} 100%{background-position:20px 0} }
@@ -60,7 +60,7 @@ const MONSTERS = [
     @keyframes wf-ember-7 { 0%{transform:translate(0,0)scale(0.7);opacity:1} 100%{transform:translate(-10px,-100px)scale(0);opacity:0} }
     @keyframes wf-ember-8 { 0%{transform:translate(0,0)scale(1);opacity:0.9} 100%{transform:translate(18px,-125px)scale(0);opacity:0} }
     /* ── button border glow ── */
-    @keyframes wf-btn-glow { 0%,100%{box-shadow:0 0 10px #FF660088,0 0 20px #FF660044,0 4px 16px #FF660044} 50%{box-shadow:0 0 24px #FF6600DD,0 0 48px #FF660099,0 0 80px #FF660044,0 4px 16px #FF660044} }
+    @keyframes wf-btn-glow { 0%,100%{box-shadow:0 0 10px #1E90FF88,0 0 20px #1E90FF44,0 4px 16px #1E90FF44} 50%{box-shadow:0 0 24px #1E90FFDD,0 0 48px #1E90FF99,0 0 80px #1E90FF44,0 4px 16px #1E90FF44} }
     /* ── screen shake (applied to body) ── */
     @keyframes wf-body-shake { 0%,100%{transform:translateX(0)} 10%{transform:translateX(-8px) translateY(3px)} 20%{transform:translateX(8px) translateY(-3px)} 30%{transform:translateX(-10px) translateY(2px)} 40%{transform:translateX(10px) translateY(-2px)} 55%{transform:translateX(-6px) translateY(1px)} 70%{transform:translateX(6px) translateY(-1px)} 85%{transform:translateX(-2px)} }
     /* ── full-screen red damage flash ── */
@@ -88,7 +88,7 @@ const MONSTERS = [
     }
     .wf-shine-btn:hover::after { animation:wf-shine 0.52s ease forwards; }
     .wf-answer-btn { transition: all 0.15s !important; }
-    .wf-answer-btn:not([disabled]):hover { transform:scale(1.025) !important; box-shadow:0 0 12px #FF660055 !important; border-color:#FF660088 !important; background:#252525 !important; }
+    .wf-answer-btn:not([disabled]):hover { transform:scale(1.025) !important; box-shadow:0 0 12px #1E90FF55 !important; border-color:#1E90FF88 !important; background:#252525 !important; }
     .wf-locked-card { position:relative; overflow:hidden; }
     .wf-locked-card::after {
       content:''; position:absolute; inset:0; pointer-events:none;
@@ -163,21 +163,21 @@ function shuffle(arr) {
   return a
 }
 
-// ── WELDON SVG CHARACTER ────────────────────────────────────
-function WeldonSVG({ size = 80 }) {
+// ── SMITH SVG CHARACTER ────────────────────────────────────
+function SmithSVG({ size = 80 }) {
   const aspect = 120 / 100
   const h = Math.round(size * aspect)
   return (
     <svg width={size} height={h} viewBox="0 0 100 120"
       style={{
-        filter:'drop-shadow(0 0 14px #FF660099) drop-shadow(0 0 4px #FFB80066)',
+        filter:'drop-shadow(0 0 14px #1E90FF99) drop-shadow(0 0 4px #FFB80066)',
         animation:'wf-bob 3s ease-in-out infinite',
       }}>
       <defs>
         {/* Visor glow gradient */}
         <radialGradient id="wf-visor-glow" cx="50%" cy="50%" r="50%">
           <stop offset="0%"   stopColor="#FFB800" stopOpacity="0.9"/>
-          <stop offset="60%"  stopColor="#FF6600" stopOpacity="0.6"/>
+          <stop offset="60%"  stopColor="#1E90FF" stopOpacity="0.6"/>
           <stop offset="100%" stopColor="#CC2200" stopOpacity="0"/>
         </radialGradient>
         {/* Chest plate gradient */}
@@ -189,7 +189,7 @@ function WeldonSVG({ size = 80 }) {
         <radialGradient id="wf-arc-grad" cx="50%" cy="80%" r="60%">
           <stop offset="0%"   stopColor="#ffffff"/>
           <stop offset="30%"  stopColor="#FFE066"/>
-          <stop offset="70%"  stopColor="#FF6600"/>
+          <stop offset="70%"  stopColor="#1E90FF"/>
           <stop offset="100%" stopColor="#CC220000"/>
         </radialGradient>
         {/* Armor edge highlight */}
@@ -221,13 +221,13 @@ function WeldonSVG({ size = 80 }) {
       <path d="M38 50 L36 82 L64 82 L62 50Z" fill="#252535" stroke="#444455" strokeWidth="0.6"/>
       {/* Chest plate highlight line */}
       <line x1="39" y1="51" x2="37" y2="81" stroke="#555566" strokeWidth="1" opacity="0.6"/>
-      {/* "WF" engraved text */}
+      {/* "SF" engraved text */}
       <text x="50" y="68" textAnchor="middle" fontFamily="monospace" fontWeight="900"
-        fontSize="9" fill="#FF6600" opacity="0.85" letterSpacing="1"
-        style={{ filter:'url(#wf-visor-glow)' }}>WF</text>
-      {/* WF glow behind text */}
+        fontSize="9" fill="#1E90FF" opacity="0.85" letterSpacing="1"
+        style={{ filter:'url(#wf-visor-glow)' }}>SF</text>
+      {/* SF glow behind text */}
       <text x="50" y="68" textAnchor="middle" fontFamily="monospace" fontWeight="900"
-        fontSize="9" fill="#FF660033" letterSpacing="1" stroke="#FF660022" strokeWidth="3">WF</text>
+        fontSize="9" fill="#1E90FF33" letterSpacing="1" stroke="#1E90FF22" strokeWidth="3">SF</text>
       {/* Shoulder pauldrons */}
       <path d="M28 60 L20 52 L16 58 L20 66 L28 68Z" fill="#2a2a3a" stroke="#444455" strokeWidth="0.7"/>
       <path d="M72 60 L80 52 L84 58 L80 66 L72 68Z" fill="#2a2a3a" stroke="#444455" strokeWidth="0.7"/>
@@ -236,7 +236,7 @@ function WeldonSVG({ size = 80 }) {
       <path d="M80 52 L72 60" stroke="#666677" strokeWidth="1" opacity="0.5"/>
       {/* Belt / waist armor */}
       <rect x="30" y="82" width="40" height="6" rx="1" fill="#1e1e2e" stroke="#3a3a4e" strokeWidth="0.6"/>
-      <rect x="46" y="83" width="8" height="4" rx="1" fill="#FF6600" opacity="0.6"/>
+      <rect x="46" y="83" width="8" height="4" rx="1" fill="#1E90FF" opacity="0.6"/>
 
       {/* ── LEFT ARM (shield side — hanging) ── */}
       <path d="M20 66 L14 72 L12 84 L18 86 L22 74 L28 68Z" fill="#252535" stroke="#3a3a4e" strokeWidth="0.6"/>
@@ -263,7 +263,7 @@ function WeldonSVG({ size = 80 }) {
 
       {/* ── ARC FLAME at torch tip ── */}
       {/* Outer glow halo */}
-      <ellipse cx="80" cy="4" rx="10" ry="10" fill="#FF660022"/>
+      <ellipse cx="80" cy="4" rx="10" ry="10" fill="#1E90FF22"/>
       <ellipse cx="80" cy="4" rx="7"  ry="7"  fill="#FF880033"/>
       {/* Main flame body */}
       <path d="M78 8 Q76 2 80 -2 Q82 -5 81 -1 Q85 -6 82 2 Q86 -2 84 4 Q82 8 80 8 Q78 8 78 8Z"
@@ -274,13 +274,13 @@ function WeldonSVG({ size = 80 }) {
       {/* Arc sputter lines */}
       <line x1="80" y1="3" x2="72" y2="-4" stroke="#FFE066" strokeWidth="1"   opacity="0.8" strokeLinecap="round"/>
       <line x1="80" y1="3" x2="88" y2="-2" stroke="#FFB800" strokeWidth="0.8" opacity="0.7" strokeLinecap="round"/>
-      <line x1="80" y1="3" x2="74" y2="10" stroke="#FF6600" strokeWidth="0.8" opacity="0.6" strokeLinecap="round"/>
+      <line x1="80" y1="3" x2="74" y2="10" stroke="#1E90FF" strokeWidth="0.8" opacity="0.6" strokeLinecap="round"/>
       <line x1="80" y1="3" x2="87" y2="8"  stroke="#FFB800" strokeWidth="0.7" opacity="0.5" strokeLinecap="round"/>
       {/* Spark dots */}
       <circle cx="71" cy="-3" r="1.2" fill="#FFE066" opacity="0.9"/>
       <circle cx="88" cy="-1" r="1.0" fill="#ffffff"  opacity="0.85"/>
       <circle cx="90" cy="7"  r="0.8" fill="#FFB800"  opacity="0.8"/>
-      <circle cx="73" cy="11" r="0.9" fill="#FF6600"  opacity="0.75"/>
+      <circle cx="73" cy="11" r="0.9" fill="#1E90FF"  opacity="0.75"/>
       <circle cx="84" cy="-7" r="0.7" fill="#FFE066"  opacity="0.7"/>
       <circle cx="76" cy="-7" r="1.0" fill="#ffffff"  opacity="0.65"/>
 
@@ -294,7 +294,7 @@ function WeldonSVG({ size = 80 }) {
       {/* Helmet top ridge / crest */}
       <path d="M42 6 L40 2 L50 0 L60 2 L58 6Z" fill="#333344" stroke="#555566" strokeWidth="0.5"/>
       {/* Crest glow line */}
-      <line x1="50" y1="0" x2="50" y2="6" stroke="#FF660066" strokeWidth="1.5"/>
+      <line x1="50" y1="0" x2="50" y2="6" stroke="#1E90FF66" strokeWidth="1.5"/>
       {/* Side angular cheek guards */}
       <path d="M26 36 L22 30 L24 22 L28 18" fill="#222233" stroke="#3a3a4e" strokeWidth="0.7"/>
       <path d="M74 36 L78 30 L76 22 L72 18" fill="#222233" stroke="#3a3a4e" strokeWidth="0.7"/>
@@ -305,14 +305,14 @@ function WeldonSVG({ size = 80 }) {
 
       {/* ── VISOR ── */}
       {/* Visor slot — angular futuristic shape */}
-      <path d="M30 28 L32 22 L68 22 L70 28 L66 34 L34 34Z" fill="#0d0d18" stroke="#FF660055" strokeWidth="0.8"/>
+      <path d="M30 28 L32 22 L68 22 L70 28 L66 34 L34 34Z" fill="#0d0d18" stroke="#1E90FF55" strokeWidth="0.8"/>
       {/* Visor glow fill */}
       <path d="M31 28 L33 23 L67 23 L69 28 L65 33 L35 33Z" fill="url(#wf-visor-glow)" opacity="0.35"/>
       {/* Horizontal visor scan line */}
-      <line x1="32" y1="28" x2="68" y2="28" stroke="#FF660044" strokeWidth="0.6"/>
+      <line x1="32" y1="28" x2="68" y2="28" stroke="#1E90FF44" strokeWidth="0.6"/>
       {/* Glowing eyes behind visor */}
-      <ellipse cx="41" cy="28" rx="5.5" ry="3.5" fill="#FF6600" opacity="0.75"/>
-      <ellipse cx="59" cy="28" rx="5.5" ry="3.5" fill="#FF6600" opacity="0.75"/>
+      <ellipse cx="41" cy="28" rx="5.5" ry="3.5" fill="#1E90FF" opacity="0.75"/>
+      <ellipse cx="59" cy="28" rx="5.5" ry="3.5" fill="#1E90FF" opacity="0.75"/>
       <ellipse cx="41" cy="28" rx="3"   ry="2"   fill="#FFB800" opacity="0.9"/>
       <ellipse cx="59" cy="28" rx="3"   ry="2"   fill="#FFB800" opacity="0.9"/>
       <ellipse cx="41" cy="28" rx="1.2" ry="0.9" fill="#ffffff"  opacity="0.8"/>
@@ -322,7 +322,7 @@ function WeldonSVG({ size = 80 }) {
         fill="none" stroke="url(#wf-armor-hi)" strokeWidth="1.2" opacity="0.6"/>
 
       {/* ── GROUND SHADOW ── */}
-      <ellipse cx="50" cy="116" rx="22" ry="3" fill="#FF660011"/>
+      <ellipse cx="50" cy="116" rx="22" ry="3" fill="#1E90FF11"/>
     </svg>
   )
 }
@@ -360,14 +360,14 @@ function HPBar({ cur, max, label }) {
 
 // ── TITLE SCREEN ────────────────────────────────────────────
 const EMBER_CONFIGS = [
-  { left:'12%', top:'70%', size:5, color:'#FF6600', anim:'wf-ember-1 2.4s 0.0s ease-in infinite' },
+  { left:'12%', top:'70%', size:5, color:'#1E90FF', anim:'wf-ember-1 2.4s 0.0s ease-in infinite' },
   { left:'28%', top:'75%', size:4, color:'#FFB800', anim:'wf-ember-2 2.8s 0.4s ease-in infinite' },
   { left:'45%', top:'80%', size:6, color:'#FF4400', anim:'wf-ember-3 2.2s 0.8s ease-in infinite' },
-  { left:'62%', top:'72%', size:4, color:'#FF6600', anim:'wf-ember-4 3.0s 0.2s ease-in infinite' },
+  { left:'62%', top:'72%', size:4, color:'#1E90FF', anim:'wf-ember-4 3.0s 0.2s ease-in infinite' },
   { left:'78%', top:'78%', size:5, color:'#FFB800', anim:'wf-ember-5 2.6s 0.6s ease-in infinite' },
   { left:'20%', top:'65%', size:3, color:'#FF8800', anim:'wf-ember-6 2.1s 1.0s ease-in infinite' },
   { left:'55%', top:'68%', size:4, color:'#FF4400', anim:'wf-ember-7 2.9s 0.3s ease-in infinite' },
-  { left:'85%', top:'65%', size:6, color:'#FF6600', anim:'wf-ember-8 2.3s 0.7s ease-in infinite' },
+  { left:'85%', top:'65%', size:6, color:'#1E90FF', anim:'wf-ember-8 2.3s 0.7s ease-in infinite' },
   { left:'38%', top:'82%', size:3, color:'#FFB800', anim:'wf-ember-1 3.1s 1.2s ease-in infinite' },
   { left:'70%', top:'60%', size:4, color:'#FF8800', anim:'wf-ember-3 2.5s 0.9s ease-in infinite' },
 ]
@@ -411,13 +411,13 @@ function TitleScreen({ onStart, totalXP }) {
       <div style={{
         position:'absolute', top:'30%', left:'50%', transform:'translate(-50%,-50%)',
         width:300, height:200,
-        background:'radial-gradient(ellipse, #FF660022 0%, transparent 70%)',
+        background:'radial-gradient(ellipse, #1E90FF22 0%, transparent 70%)',
         pointerEvents:'none', zIndex:1,
       }}/>
 
       <div style={{ position:'relative', zIndex:2 }}>
         <div style={{ animation:'wf-bob 2.2s ease-in-out infinite' }}>
-          <WeldonSVG size={110}/>
+          <SmithSVG size={110}/>
         </div>
 
         {/* Main title — metallic orange gradient text */}
@@ -425,20 +425,20 @@ function TitleScreen({ onStart, totalXP }) {
           fontSize:'clamp(2rem, 8vw, 3.2rem)', fontWeight:'900',
           fontFamily:"'Orbitron',monospace",
           letterSpacing:'0.06em', marginTop:16,
-          background:'linear-gradient(180deg, #FFB800 0%, #FF6600 40%, #CC2200 80%, #FF6600 100%)',
+          background:'linear-gradient(180deg, #FFB800 0%, #1E90FF 40%, #CC2200 80%, #1E90FF 100%)',
           WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
           backgroundClip:'text',
-          filter:'drop-shadow(0 0 12px #FF660088)',
+          filter:'drop-shadow(0 0 12px #1E90FF88)',
           animation:'wf-pulse-glow 2s ease-in-out infinite',
           lineHeight:1.05,
         }}>
-          WELDON'S<br/>FORGE
+          SMITH'S<br/>FORGE
         </div>
 
         <div style={{ color:'#FFB800', fontSize:'0.75rem', fontFamily:"'Orbitron',monospace",
           letterSpacing:'0.22em', marginBottom:8, marginTop:8,
           textShadow:'0 0 10px #FFB80088' }}>
-          ⚡ ENGLISH EDITION ⚡
+          ⚡ METAL EDITION ⚡
         </div>
 
         {/* Typewriter subtitle */}
@@ -446,7 +446,7 @@ function TitleScreen({ onStart, totalXP }) {
           fontFamily:"'Share Tech Mono',monospace", lineHeight:1.7,
           minHeight:'2.4em', textAlign:'center' }}>
           {typed}<span style={{ animation:'wf-pulse-glow 0.8s ease-in-out infinite',
-            color:'#FF6600', fontSize:'0.8rem' }}>|</span>
+            color:'#1E90FF', fontSize:'0.8rem' }}>|</span>
         </div>
 
         {/* Glowing START BATTLE button */}
@@ -458,7 +458,7 @@ function TitleScreen({ onStart, totalXP }) {
           style={{
             background: btnHover
               ? 'linear-gradient(135deg,#FF8800,#FF3300)'
-              : 'linear-gradient(135deg,#FF6600,#CC2200)',
+              : 'linear-gradient(135deg,#1E90FF,#CC2200)',
             color:'#fff', border:'2px solid #FF880066', borderRadius:10,
             padding:'16px 52px', fontWeight:'900',
             cursor:'pointer', fontFamily:"'Orbitron',monospace",
@@ -511,7 +511,7 @@ function StageSelect({ stages, totalXP, stageProgress, onSelect, onBack }) {
       <div style={{ display:'flex', alignItems:'center', marginBottom:14 }}>
         <button onClick={onBack} style={S.btnGhost}>←</button>
         <div style={{ marginLeft:12, flex:1 }}>
-          <div style={{ color:'#FF6600', fontWeight:'700',
+          <div style={{ color:'#1E90FF', fontWeight:'700',
             fontFamily:"'Orbitron',monospace", fontSize:'0.82rem',
             letterSpacing:'0.06em' }}>SELECT STAGE</div>
         </div>
@@ -615,7 +615,7 @@ function MonsterKinshi() {
       <defs>
         <radialGradient id="k1-eye" cx="50%" cy="50%" r="50%">
           <stop offset="0%" stopColor="#FFE066"/>
-          <stop offset="60%" stopColor="#FF6600"/>
+          <stop offset="60%" stopColor="#1E90FF"/>
           <stop offset="100%" stopColor="#CC2200" stopOpacity="0"/>
         </radialGradient>
         <radialGradient id="k1-glow" cx="50%" cy="50%" r="50%">
@@ -1090,9 +1090,9 @@ function MonsterShikaku() {
       <circle cx="54" cy="35" r="2" fill="#7F1D1D"/>
       <circle cx="66" cy="35" r="2" fill="#7F1D1D"/>
       {/* Fire breath */}
-      <path d="M50 38 Q44 50 40 60 Q36 68 42 72" stroke="#FF6600" strokeWidth="2.5" fill="none" strokeLinecap="round" opacity="0.85"/>
+      <path d="M50 38 Q44 50 40 60 Q36 68 42 72" stroke="#1E90FF" strokeWidth="2.5" fill="none" strokeLinecap="round" opacity="0.85"/>
       <path d="M60 40 Q56 52 54 64 Q52 72 56 76" stroke="#FFB800" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.8"/>
-      <path d="M70 38 Q76 50 78 62 Q80 70 76 74" stroke="#FF6600" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.75"/>
+      <path d="M70 38 Q76 50 78 62 Q80 70 76 74" stroke="#1E90FF" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.75"/>
       <circle cx="42" cy="72" r="4" fill="#FF4400" opacity="0.6"/>
       <circle cx="56" cy="76" r="3" fill="#FF8800" opacity="0.6"/>
       <circle cx="76" cy="74" r="3.5" fill="#FF4400" opacity="0.55"/>
@@ -1202,7 +1202,7 @@ function Battle({
                    : playerShake           ? 'wf-pshake 0.32s ease'
                    : 'none',
         }}>
-          <HPBar cur={pHP} max={P_HP} label="⚡ WELDON (YOU)"/>
+          <HPBar cur={pHP} max={P_HP} label="⚡ SMITH (YOU)"/>
           {floatPlayer && (
             <div key={floatPlayer.k} style={{
               position:'absolute', top:'50%', left:'50%',
@@ -1276,9 +1276,9 @@ function Battle({
 
         {/* Question */}
         <div ref={questionRef} style={{ background:'#111', borderRadius:10, padding:'12px 14px', marginBottom:10,
-          borderLeft:'4px solid #FF6600', border:'1px solid #2a2a2a',
-          borderLeftWidth:4, borderLeftColor:'#FF6600', borderLeftStyle:'solid' }}>
-          <div style={{ fontSize:'0.58rem', color:'#FF660099', marginBottom:6,
+          borderLeft:'4px solid #1E90FF', border:'1px solid #2a2a2a',
+          borderLeftWidth:4, borderLeftColor:'#1E90FF', borderLeftStyle:'solid' }}>
+          <div style={{ fontSize:'0.58rem', color:'#1E90FF99', marginBottom:6,
             fontFamily:"'Share Tech Mono',monospace", letterSpacing:'0.06em' }}>
             [{q.cat}]&nbsp;&nbsp;<span style={{ color:'#FFB80088' }}>+{q.xp} XP if correct</span>
           </div>
@@ -1290,7 +1290,7 @@ function Battle({
             <button key={i}
               className={`wf-answer-btn${done && i === q.a ? ' wf-correct-btn' : ''}`}
               onClick={() => !done && onAnswer(i)} style={optStyle(i)}>
-              <span style={{ color:'#FF6600', fontWeight:'bold', marginRight:8,
+              <span style={{ color:'#1E90FF', fontWeight:'bold', marginRight:8,
                 fontFamily:"'Orbitron',monospace", fontSize:'0.7rem' }}>{OPTS[i]}.</span>
               {opt}
             </button>
@@ -1360,16 +1360,16 @@ function Victory({ stage, si, sessionXP, correct, miss, onContinue, onReview }) 
       )}
       {/* Confetti explosion */}
       {[
-        { left:'10%', top:'5%',  color:'#FF6600', size:10, anim:'wf-conf-1 2.2s 0.0s ease-out forwards' },
+        { left:'10%', top:'5%',  color:'#1E90FF', size:10, anim:'wf-conf-1 2.2s 0.0s ease-out forwards' },
         { left:'22%', top:'8%',  color:'#FFB800', size:8,  anim:'wf-conf-2 2.5s 0.1s ease-out forwards' },
         { left:'35%', top:'3%',  color:'#22c55e', size:12, anim:'wf-conf-3 2.0s 0.2s ease-out forwards' },
         { left:'50%', top:'6%',  color:'#FF4400', size:9,  anim:'wf-conf-4 2.3s 0.05s ease-out forwards' },
         { left:'63%', top:'4%',  color:'#FFB800', size:11, anim:'wf-conf-5 2.1s 0.3s ease-out forwards' },
         { left:'75%', top:'7%',  color:'#22c55e', size:8,  anim:'wf-conf-1 2.4s 0.15s ease-out forwards' },
-        { left:'88%', top:'2%',  color:'#FF6600', size:10, anim:'wf-conf-2 2.6s 0.25s ease-out forwards' },
+        { left:'88%', top:'2%',  color:'#1E90FF', size:10, anim:'wf-conf-2 2.6s 0.25s ease-out forwards' },
         { left:'18%', top:'12%', color:'#4ade80', size:7,  anim:'wf-conf-3 1.9s 0.4s ease-out forwards' },
         { left:'42%', top:'10%', color:'#FFB800', size:9,  anim:'wf-conf-4 2.2s 0.35s ease-out forwards' },
-        { left:'68%', top:'11%', color:'#FF6600', size:11, anim:'wf-conf-5 2.0s 0.1s ease-out forwards' },
+        { left:'68%', top:'11%', color:'#1E90FF', size:11, anim:'wf-conf-5 2.0s 0.1s ease-out forwards' },
         { left:'82%', top:'9%',  color:'#22c55e', size:8,  anim:'wf-conf-1 2.5s 0.45s ease-out forwards' },
         { left:'5%',  top:'14%', color:'#FFB800', size:10, anim:'wf-conf-2 2.3s 0.2s ease-out forwards' },
         { left:'56%', top:'13%', color:'#FF4400', size:7,  anim:'wf-conf-3 2.1s 0.5s ease-out forwards' },
@@ -1389,7 +1389,7 @@ function Victory({ stage, si, sessionXP, correct, miss, onContinue, onReview }) 
         textShadow:'0 0 20px #22c55e88,0 0 40px #22c55e44', marginBottom:4 }}>VICTORY!</div>
       {perfect && (
         <div style={{
-          background:'linear-gradient(135deg,#FFB800,#FF6600)', color:'#111',
+          background:'linear-gradient(135deg,#FFB800,#1E90FF)', color:'#111',
           fontFamily:"'Orbitron',monospace", fontSize:'0.68rem', fontWeight:'900',
           letterSpacing:'0.08em', padding:'4px 14px', borderRadius:20,
           marginBottom:6, boxShadow:'0 0 18px #FFB80088',
@@ -1439,7 +1439,7 @@ function Victory({ stage, si, sessionXP, correct, miss, onContinue, onReview }) 
         </div>
       </div>
 
-      <WeldonSVG size={60}/>
+      <SmithSVG size={60}/>
       <button onClick={() => { playSound('click'); onContinue() }}
         style={{ ...styles.btnPrimary, background:'linear-gradient(135deg,#16a34a,#15803d)',
           marginTop:20, padding:'14px 36px', fontSize:'1rem', letterSpacing:'0.1em' }}>
@@ -1579,13 +1579,13 @@ function SymbolTab() {
   ]
   return (
     <div style={{ padding:16, fontFamily:'monospace', background:'#0d0d0d', minHeight:'100vh', paddingBottom:70 }}>
-      <div style={{ color:'#FF6600', fontWeight:'bold', marginBottom:12 }}>📐 JIS WELDING SYMBOLS</div>
+      <div style={{ color:'#1E90FF', fontWeight:'bold', marginBottom:12 }}>📐 JIS WELDING SYMBOLS</div>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginBottom:16 }}>
         {syms.map(s => (
           <div key={s.sym} style={{ background:'#141414', border:'1px solid #1e1e1e',
             borderRadius:8, padding:'10px', textAlign:'center' }}>
             <div style={{ fontSize:'1.6rem', marginBottom:4 }}>{s.sym}</div>
-            <div style={{ color:'#FF6600', fontSize:'0.68rem', fontWeight:'bold' }}>{s.name}</div>
+            <div style={{ color:'#1E90FF', fontSize:'0.68rem', fontWeight:'bold' }}>{s.name}</div>
             <div style={{ color:'#777', fontSize:'0.6rem' }}>{s.jp}</div>
             <div style={{ color:'#555', fontSize:'0.58rem', fontStyle:'italic' }}>{s.rom}</div>
             <div style={{ color:'#999', fontSize:'0.6rem', marginTop:4, lineHeight:1.3 }}>{s.note}</div>
@@ -1593,9 +1593,9 @@ function SymbolTab() {
         ))}
       </div>
       {rules.map(r => (
-        <div key={r.title} style={{ background:'#141414', border:'1px solid #FF660022',
+        <div key={r.title} style={{ background:'#141414', border:'1px solid #1E90FF22',
           borderRadius:8, padding:'12px 14px', marginBottom:8 }}>
-          <div style={{ color:'#FF6600', fontSize:'0.7rem', fontWeight:'bold', marginBottom:6 }}>{r.title}</div>
+          <div style={{ color:'#1E90FF', fontSize:'0.7rem', fontWeight:'bold', marginBottom:6 }}>{r.title}</div>
           <pre style={{ color:'#bbb', fontSize:'0.66rem', whiteSpace:'pre-wrap',
             lineHeight:1.55, fontFamily:'monospace', margin:0 }}>{r.body}</pre>
         </div>
@@ -1637,7 +1637,7 @@ function CalcTab() {
 
   return (
     <div style={{ padding:16, fontFamily:'monospace', background:'#0d0d0d', minHeight:'100vh', paddingBottom:70 }}>
-      <div style={{ color:'#FF6600', fontWeight:'bold', marginBottom:16 }}>🔢 WELDING CALCULATORS</div>
+      <div style={{ color:'#1E90FF', fontWeight:'bold', marginBottom:16 }}>🔢 WELDING CALCULATORS</div>
 
       {/* Heat Input */}
       <div style={styles.card}>
@@ -1726,7 +1726,7 @@ function CareerTab() {
              'Issued by JWES (日本溶接協会)',
              'Validity: 2 years — must renew'],
       note:'Your first step as a certified welder in Japan.' },
-    { level:'SKILLED', icon:'🔥', color:'#FF6600', title:'JIS Specialist Grade',
+    { level:'SKILLED', icon:'🔥', color:'#1E90FF', title:'JIS Specialist Grade',
       jp:'JIS溶接技能者 専門級', salary:'¥4–6M/yr',
       items:['All positions: flat → horizontal → vertical → overhead',
              'Pipe all-positions N-2P = most prestigious (pass rate ~30%)',
@@ -1762,7 +1762,7 @@ function CareerTab() {
   ]
   return (
     <div style={{ padding:16, fontFamily:'monospace', background:'#0d0d0d', minHeight:'100vh', paddingBottom:70 }}>
-      <div style={{ color:'#FF6600', fontWeight:'bold', marginBottom:4 }}>🗺️ CAREER ROADMAP</div>
+      <div style={{ color:'#1E90FF', fontWeight:'bold', marginBottom:4 }}>🗺️ CAREER ROADMAP</div>
       <div style={{ color:'#444', fontSize:'0.65rem', marginBottom:16 }}>
         Japanese Welding Career Path — Entry to Legend
       </div>
@@ -1810,7 +1810,7 @@ function ReviewScreen({ history, onBack }) {
       padding:'14px 12px', paddingBottom:70 }}>
 
       <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}>
-        <div style={{ color:'#FF6600', fontWeight:'bold', fontSize:'0.95rem' }}>
+        <div style={{ color:'#1E90FF', fontWeight:'bold', fontSize:'0.95rem' }}>
           📋 BATTLE REVIEW
         </div>
         <div style={{ marginLeft:'auto', fontSize:'0.68rem', color:'#555' }}>
@@ -1908,11 +1908,11 @@ function ReviewScreen({ history, onBack }) {
 
       <button onClick={onBack} style={{
         width:'100%', padding:'14px', marginTop:4,
-        background:'linear-gradient(135deg,#FF6600,#CC2200)',
+        background:'linear-gradient(135deg,#1E90FF,#CC2200)',
         color:'#fff', border:'none', borderRadius:8,
         fontWeight:'bold', cursor:'pointer', fontFamily:'monospace',
         fontSize:'0.9rem', letterSpacing:'0.05em',
-        boxShadow:'0 4px 16px #FF660044',
+        boxShadow:'0 4px 16px #1E90FF44',
       }}>
         ← BACK TO STAGES
       </button>
@@ -1970,7 +1970,7 @@ function HistoryTab() {
 
       {/* Header */}
       <div style={{ display:'flex', alignItems:'baseline', gap:8, marginBottom:16 }}>
-        <div style={{ color:'#FF6600', fontFamily:"'Orbitron',monospace",
+        <div style={{ color:'#1E90FF', fontFamily:"'Orbitron',monospace",
           fontWeight:'900', fontSize:'0.9rem', letterSpacing:'0.06em' }}>
           📜 BATTLE HISTORY
         </div>
@@ -1980,7 +1980,7 @@ function HistoryTab() {
       {/* Stats bar */}
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, marginBottom:20 }}>
         {[
-          { label:'BATTLES',   value: total,         color:'#FF6600', sub: null },
+          { label:'BATTLES',   value: total,         color:'#1E90FF', sub: null },
           { label:'WIN RATE',  value: `${winRate}%`, color: winCol,   sub: `${wins}W / ${total-wins}L` },
           { label:'TOTAL XP',  value: `+${totalXP}`, color:'#FFB800', sub: null },
         ].map(s => (
@@ -2008,7 +2008,7 @@ function HistoryTab() {
       {log.length === 0 ? (
         <div style={{ textAlign:'center', padding:'40px 0 32px' }}>
           <div style={{ marginBottom:16, opacity:0.35 }}>
-            <WeldonSVG size={80}/>
+            <SmithSVG size={80}/>
           </div>
           <div style={{ color:'#333', fontSize:'0.78rem', lineHeight:2 }}>
             No battles yet.<br/>
@@ -2020,7 +2020,7 @@ function HistoryTab() {
           const won       = r.result === 'victory'
           const stage     = QUIZ_STAGES.find(s => s.stageId === r.stageId)
           const icon      = r.stageIcon || (stage ? stage.icon : '⚔️')
-          const stageCol  = STAGE_COLORS[(r.stageId - 1)] || '#FF6600'
+          const stageCol  = STAGE_COLORS[(r.stageId - 1)] || '#1E90FF'
           const accuracy  = r.accuracy != null ? r.accuracy
                           : (r.correct + r.miss) > 0
                             ? Math.round(r.correct / (r.correct + r.miss) * 100) : 0
@@ -2140,12 +2140,12 @@ const styles = {
     padding:'20px 16px', fontFamily:F_BODY,
   },
   btnPrimary: {
-    background:'linear-gradient(135deg,#FF7722,#FF6600 40%,#CC2200)',
+    background:'linear-gradient(135deg,#FF7722,#1E90FF 40%,#CC2200)',
     color:'#e8e8e8', border:'none', borderRadius:8,
     padding:'12px 28px', fontWeight:'bold',
     cursor:'pointer', fontFamily:F_BODY,
     letterSpacing:'0.05em', fontSize:'0.9rem',
-    boxShadow:'0 4px 16px #FF660044',
+    boxShadow:'0 4px 16px #1E90FF44',
     minHeight:48, touchAction:'manipulation',
     WebkitTapHighlightColor:'transparent',
   },
@@ -2353,8 +2353,8 @@ export default function App() {
           <button key={t.id} onClick={()=>setTab(t.id)} style={{
             flex:1, padding:'10px 0 8px', border:'none', minHeight:56,
             background: tab===t.id ? '#141414' : 'transparent',
-            borderTop: `3px solid ${tab===t.id ? '#FF6600' : 'transparent'}`,
-            color: tab===t.id ? '#FF6600' : '#444',
+            borderTop: `3px solid ${tab===t.id ? '#1E90FF' : 'transparent'}`,
+            color: tab===t.id ? '#1E90FF' : '#444',
             cursor:'pointer', fontFamily:'monospace',
             display:'flex', flexDirection:'column', alignItems:'center', gap:2,
             transition:'all 0.15s',
