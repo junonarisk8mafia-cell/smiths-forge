@@ -1854,105 +1854,318 @@ function SymbolTab() {
   )
 }
 
-// ── CALC TAB ─────────────────────────────────────────────────
-function CalcTab() {
-  const [E,  setE]  = useState('28')
-  const [I,  setI]  = useState('180')
-  const [v,  setV]  = useState('30')
-  const [leg,setLeg]= useState('8')
-  const [C,  setC]  = useState('0.18')
-  const [Mn, setMn] = useState('1.40')
-  const [Cr, setCr] = useState('0.30')
-  const [Mo, setMo] = useState('0.10')
-  const [V2, setV2] = useState('0.02')
-  const [Ni, setNi] = useState('0.30')
-  const [Cu, setCu] = useState('0.20')
+// ── CALC TAB — JIS B 0401 / machining reference data ──────────
+const SIZE_BOUNDS = [3,6,10,18,30,50,80,120,180,250,315,400,500]
+const SIZE_LABELS = ['~3','3~6','6~10','10~18','18~30','30~50','50~80','80~120','120~180','180~250','250~315','315~400','400~500']
+const IT_TABLE = {
+  IT5:  [4,5,6,8,9,11,13,15,18,20,23,25,27],
+  IT6:  [6,8,9,11,13,16,19,22,25,29,32,36,40],
+  IT7:  [10,12,15,18,21,25,30,35,40,46,52,57,63],
+  IT8:  [14,18,22,27,33,39,46,54,63,72,81,89,97],
+  IT9:  [25,30,36,43,52,62,74,87,100,115,130,140,155],
+  IT10: [40,48,58,70,84,100,120,140,160,185,210,230,250],
+}
+// Fundamental deviation: 'es' letters fix the upper deviation, 'ei' letters fix the lower deviation
+const SHAFT_FUND = {
+  f:  { type:'es', vals:[-6,-10,-13,-16,-20,-25,-30,-36,-43,-50,-56,-62,-68] },
+  g:  { type:'es', vals:[-2,-4,-5,-6,-7,-9,-10,-12,-14,-15,-17,-18,-20] },
+  h:  { type:'es', vals:[0,0,0,0,0,0,0,0,0,0,0,0,0] },
+  k:  { type:'ei', vals:[0,1,1,1,2,2,2,3,3,4,4,4,5] },
+  m:  { type:'ei', vals:[2,4,6,7,8,9,11,13,15,17,20,21,23] },
+  n:  { type:'ei', vals:[4,8,10,12,15,17,20,23,27,31,34,37,40] },
+  p:  { type:'ei', vals:[6,12,15,18,22,26,32,37,43,50,56,62,68] },
+}
+const DENSITY = { SS400:7.85, SUS304:7.93, S45C:7.85, A5052:2.70, FC200:7.20, Cu:8.96 }
 
-  const heatInput = ((60 * (parseFloat(E)||0) * (parseFloat(I)||0)) / ((parseFloat(v)||1) * 1000)).toFixed(2)
-  const throat    = ((parseFloat(leg)||0) * 0.707).toFixed(2)
-  const ceq       = (
-    (parseFloat(C)||0) + (parseFloat(Mn)||0)/6 +
-    ((parseFloat(Cr)||0)+(parseFloat(Mo)||0)+(parseFloat(V2)||0))/5 +
-    ((parseFloat(Ni)||0)+(parseFloat(Cu)||0))/15
-  ).toFixed(3)
-  const preheat   = parseFloat(ceq) > 0.40
+function sizeIndex(d) {
+  for (let i=0;i<SIZE_BOUNDS.length;i++) if (d <= SIZE_BOUNDS[i]) return i
+  return SIZE_BOUNDS.length-1
+}
+
+function computeFit(d, holeClass, shaftClass) {
+  const idx = sizeIndex(d)
+  const itHole = IT_TABLE[holeClass.replace('H','IT')][idx]
+  const ES = itHole, EI = 0
+  const it6 = IT_TABLE.IT6[idx]
+  const letter = shaftClass.replace(/6$/,'')
+  let es, ei
+  if (letter === 'js') { es = it6/2; ei = -it6/2 }
+  else {
+    const fund = SHAFT_FUND[letter]
+    if (fund.type === 'es') { es = fund.vals[idx]; ei = es - it6 }
+    else { ei = fund.vals[idx]; es = ei + it6 }
+  }
+  const maxClearance = ES - ei
+  const minClearance = EI - es
+  const fitType = minClearance >= 0 ? 'clearance' : maxClearance <= 0 ? 'interference' : 'transition'
+  return { ES, EI, es, ei, maxClearance, minClearance, fitType }
+}
+
+function computeWeight(mat, shape, d, d2, w, h, l) {
+  let volMM3 = 0
+  if (shape === 'round') volMM3 = Math.PI/4 * d*d * l
+  else if (shape === 'pipe') volMM3 = Math.PI/4 * Math.max(0, d*d - d2*d2) * l
+  else volMM3 = w*h*l // square bar or plate
+  return (volMM3/1000) * (DENSITY[mat]||0) / 1000
+}
+
+function CalcTab() {
+  const [csD, setCsD] = useState('50')
+  const [csN, setCsN] = useState('800')
+  const [csVcTarget, setCsVcTarget] = useState('120')
+
+  const [frN, setFrN]   = useState('800')
+  const [frZ, setFrZ]   = useState('4')
+  const [frFz, setFrFz] = useState('0.10')
+
+  const [fitD, setFitD] = useState('30')
+  const [holeGrade, setHoleGrade]   = useState('H7')
+  const [shaftGrade, setShaftGrade] = useState('g6')
+
+  const [wMat, setWMat]     = useState('SS400')
+  const [wShape, setWShape] = useState('round')
+  const [wD, setWD]   = useState('20')
+  const [wD2, setWD2] = useState('16')
+  const [wW, setWW]   = useState('50')
+  const [wH, setWH]   = useState('50')
+  const [wL, setWL]   = useState('1000')
+
+  const [tolD, setTolD]         = useState('30')
+  const [tolGrade, setTolGrade] = useState('IT7')
+
+  const vc       = (Math.PI * (parseFloat(csD)||0) * (parseFloat(csN)||0) / 1000).toFixed(1)
+  const rpmFromVc= (((parseFloat(csVcTarget)||0) * 1000) / (Math.PI * (parseFloat(csD)||1))).toFixed(0)
+  const vf       = ((parseFloat(frN)||0) * (parseFloat(frZ)||0) * (parseFloat(frFz)||0)).toFixed(1)
+  const fit      = computeFit(parseFloat(fitD)||0, holeGrade, shaftGrade)
+  const weight   = computeWeight(wMat, wShape, parseFloat(wD)||0, parseFloat(wD2)||0,
+                      parseFloat(wW)||0, parseFloat(wH)||0, parseFloat(wL)||0)
+  const tolIdx   = sizeIndex(parseFloat(tolD)||0)
+  const tolValue = IT_TABLE[tolGrade][tolIdx]
 
   const inp = {
     background:'#222', border:'1px solid #444', borderRadius:6,
     color:'#eee', padding:'6px 8px', width:72,
     fontFamily:'monospace', fontSize:'0.83rem',
   }
+  const sel = {
+    background:'#222', border:'1px solid #444', borderRadius:6,
+    color:'#eee', padding:'6px 8px',
+    fontFamily:'monospace', fontSize:'0.76rem',
+  }
   const row = { display:'flex', alignItems:'center', gap:8, marginBottom:8 }
   const lab = { color:'#777', fontSize:'0.7rem', flex:1 }
+  const out = { background:'#222', borderRadius:8, padding:'10px', textAlign:'center', marginTop:4 }
+  const outVal = { color:'#22c55e', fontSize:'1.4rem', fontWeight:'bold' }
+  const outLab = { color:'#555', fontSize:'0.62rem' }
+  const tip = { color:'#444', fontSize:'0.62rem', marginTop:6, lineHeight:1.4 }
+
+  const fitColor = { clearance:'#22c55e', transition:'#FFB800', interference:'#ef4444' }[fit.fitType]
+  const fitLabel = { clearance:'CLEARANCE すきまばめ', transition:'TRANSITION 中間ばめ', interference:'INTERFERENCE しまりばめ' }[fit.fitType]
 
   return (
     <div style={{ padding:16, fontFamily:'monospace', background:'#0d0d0d', minHeight:'100vh', paddingBottom:70 }}>
-      <div style={{ color:'#1E90FF', fontWeight:'bold', marginBottom:16 }}>🔢 WELDING CALCULATORS</div>
+      <div style={{ color:'#1E90FF', fontWeight:'bold', marginBottom:16 }}>⚙️ MACHINING CALCULATORS</div>
 
-      {/* Heat Input */}
+      {/* 1. Cutting Speed */}
       <div style={styles.card}>
-        <div style={styles.cardTitle}>⚡ Heat Input  Q = 60 × E × I / v</div>
-        {[['Voltage E (V)', E, setE], ['Current I (A)', I, setI], ['Travel speed v (cm/min)', v, setV]]
-          .map(([l,val,set]) => (
-          <div key={l} style={row}>
-            <span style={lab}>{l}</span>
-            <input style={inp} value={val} onChange={e => set(e.target.value)}/>
-          </div>
-        ))}
-        <div style={{ background:'#222', borderRadius:8, padding:'10px', textAlign:'center', marginTop:4 }}>
-          <div style={{ color:'#22c55e', fontSize:'1.4rem', fontWeight:'bold' }}>{heatInput} kJ/cm</div>
-          <div style={{ color:'#555', fontSize:'0.62rem' }}>Heat Input (入熱 / Nyunetsu)</div>
-        </div>
-        <div style={{ color:'#444', fontSize:'0.62rem', marginTop:6, lineHeight:1.4 }}>
-          Controls HAZ microstructure, cooling rate, and distortion. Must be within WPS limits.
-        </div>
-      </div>
-
-      {/* Fillet Throat */}
-      <div style={styles.card}>
-        <div style={styles.cardTitle}>📐 Fillet Weld Throat  =  Leg × 0.707</div>
+        <div style={styles.cardTitle}>🌀 切削速度  Vc = π × D × n / 1000</div>
         <div style={row}>
-          <span style={lab}>Leg length 脚長 (mm)</span>
-          <input style={inp} value={leg} onChange={e => setLeg(e.target.value)}/>
+          <span style={lab}>Diameter D (mm)</span>
+          <input style={inp} value={csD} onChange={e => setCsD(e.target.value)}/>
         </div>
-        <div style={{ background:'#222', borderRadius:8, padding:'10px', textAlign:'center', marginTop:4 }}>
-          <div style={{ color:'#22c55e', fontSize:'1.4rem', fontWeight:'bold' }}>{throat} mm</div>
-          <div style={{ color:'#555', fontSize:'0.62rem' }}>Throat thickness (のど厚 / Nodo-atsu)</div>
+        <div style={row}>
+          <span style={lab}>Spindle speed n (RPM)</span>
+          <input style={inp} value={csN} onChange={e => setCsN(e.target.value)}/>
         </div>
-        <div style={{ color:'#444', fontSize:'0.62rem', marginTop:6 }}>
-          Throat = design dimension used in all structural strength calculations.
+        <div style={out}>
+          <div style={outVal}>{vc} m/min</div>
+          <div style={outLab}>Cutting speed (切削速度 / Sessoku-sokudo)</div>
+        </div>
+        <div style={{ ...row, marginTop:10, marginBottom:4 }}>
+          <span style={lab}>↩ Reverse: target Vc (m/min)</span>
+          <input style={inp} value={csVcTarget} onChange={e => setCsVcTarget(e.target.value)}/>
+        </div>
+        <div style={out}>
+          <div style={outVal}>{rpmFromVc} RPM</div>
+          <div style={outLab}>Recommended spindle speed for D = {csD}mm</div>
+        </div>
+        <div style={tip}>
+          Tip: SS400 general turning Vc 100–150 m/min. SUS304 Vc 60–80 m/min (work-hardens fast).
         </div>
       </div>
 
-      {/* Carbon Equivalent */}
+      {/* 2. Feed Rate */}
       <div style={styles.card}>
-        <div style={styles.cardTitle}>⚗️ Carbon Equivalent  (IIW formula)</div>
-        <div style={{ color:'#444', fontSize:'0.6rem', marginBottom:8 }}>
-          Ceq = C + Mn/6 + (Cr+Mo+V)/5 + (Ni+Cu)/15
+        <div style={styles.cardTitle}>➡️ 送り速度  Vf = n × z × fz</div>
+        <div style={row}>
+          <span style={lab}>Spindle speed n (RPM)</span>
+          <input style={inp} value={frN} onChange={e => setFrN(e.target.value)}/>
         </div>
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:6, marginBottom:8 }}>
-          {[['C',C,setC],['Mn',Mn,setMn],['Cr',Cr,setCr],['Mo',Mo,setMo],
-            ['V',V2,setV2],['Ni',Ni,setNi],['Cu',Cu,setCu]].map(([n,val,set])=>(
-            <div key={n} style={{ display:'flex', alignItems:'center', gap:6 }}>
-              <span style={{ color:'#777', fontSize:'0.7rem', width:22 }}>{n}</span>
-              <input style={{ ...inp, width:60 }} value={val} onChange={e=>set(e.target.value)}/>
+        <div style={row}>
+          <span style={lab}>Flutes / teeth z</span>
+          <input style={inp} value={frZ} onChange={e => setFrZ(e.target.value)}/>
+        </div>
+        <div style={row}>
+          <span style={lab}>Feed per tooth fz (mm)</span>
+          <input style={inp} value={frFz} onChange={e => setFrFz(e.target.value)}/>
+        </div>
+        <div style={out}>
+          <div style={outVal}>{vf} mm/min</div>
+          <div style={outLab}>Table feed rate (送り速度 / Okuri-sokudo)</div>
+        </div>
+        <div style={tip}>
+          Tip: Roughing fz ≈ 0.1–0.2mm/tooth. Finishing fz ≈ 0.02–0.05mm/tooth.
+        </div>
+      </div>
+
+      {/* 3. Fit Calculator */}
+      <div style={styles.card}>
+        <div style={styles.cardTitle}>⌾ はめあい計算  Hole/Shaft Fit (JIS B 0401)</div>
+        <div style={row}>
+          <span style={lab}>Nominal diameter (mm)</span>
+          <input style={inp} value={fitD} onChange={e => setFitD(e.target.value)}/>
+        </div>
+        <div style={row}>
+          <span style={lab}>Hole tolerance</span>
+          <select style={sel} value={holeGrade} onChange={e => setHoleGrade(e.target.value)}>
+            {['H6','H7','H8'].map(g => <option key={g} value={g}>{g}</option>)}
+          </select>
+        </div>
+        <div style={row}>
+          <span style={lab}>Shaft tolerance</span>
+          <select style={sel} value={shaftGrade} onChange={e => setShaftGrade(e.target.value)}>
+            {['f6','g6','h6','js6','k6','m6','n6','p6'].map(g => <option key={g} value={g}>{g}</option>)}
+          </select>
+        </div>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginTop:4 }}>
+          <div style={out}>
+            <div style={{ ...outVal, fontSize:'1rem', color:'#1E90FF' }}>
+              {fit.EI >= 0 ? '+' : ''}{fit.EI} / {fit.ES >= 0 ? '+' : ''}{fit.ES} μm
             </div>
-          ))}
-        </div>
-        <div style={{ background:'#222', borderRadius:8, padding:'10px', textAlign:'center' }}>
-          <div style={{ color: preheat ? '#f59e0b':'#22c55e', fontSize:'1.4rem', fontWeight:'bold' }}>
-            {ceq}
+            <div style={outLab}>Hole {holeGrade} (EI/ES)</div>
           </div>
-          <div style={{ color:'#555', fontSize:'0.62rem' }}>Ceq (IIW)</div>
+          <div style={out}>
+            <div style={{ ...outVal, fontSize:'1rem', color:'#FFB800' }}>
+              {fit.ei >= 0 ? '+' : ''}{fit.ei} / {fit.es >= 0 ? '+' : ''}{fit.es} μm
+            </div>
+            <div style={outLab}>Shaft {shaftGrade} (ei/es)</div>
+          </div>
         </div>
         <div style={{
-          background: preheat ? '#2a1800':'#0a200a',
-          border:`1px solid ${preheat ? '#f59e0b':'#22c55e'}`,
-          borderRadius:6, padding:'8px 10px', marginTop:8, textAlign:'center',
+          background:`${fitColor}18`, border:`1px solid ${fitColor}66`,
+          borderRadius:8, padding:'10px', marginTop:8, textAlign:'center',
         }}>
-          <span style={{ color: preheat ? '#f59e0b':'#22c55e', fontSize:'0.7rem', fontWeight:'bold' }}>
-            {preheat ? '⚠️  PREHEAT LIKELY REQUIRED  (Ceq > 0.40)' : '✓  Low cold-crack risk  (Ceq ≤ 0.40)'}
-          </span>
+          <div style={{ color:fitColor, fontSize:'0.78rem', fontWeight:'bold', marginBottom:4 }}>{fitLabel}</div>
+          <div style={{ color:fitColor, fontSize:'1.1rem', fontWeight:'bold' }}>
+            {fit.fitType === 'interference'
+              ? `Interference ${(-fit.maxClearance).toFixed(0)}–${(-fit.minClearance).toFixed(0)} μm`
+              : fit.fitType === 'clearance'
+              ? `Clearance ${fit.minClearance.toFixed(0)}–${fit.maxClearance.toFixed(0)} μm`
+              : `Clearance ${fit.minClearance.toFixed(0)} to ${fit.maxClearance.toFixed(0)} μm`}
+          </div>
+        </div>
+        <div style={tip}>
+          Common fits — <span style={{ color:'#22c55e' }}>H7/g6</span> clearance (sliding) ·{' '}
+          <span style={{ color:'#FFB800' }}>H7/k6</span> transition ·{' '}
+          <span style={{ color:'#ef4444' }}>H7/p6</span> interference (press fit)
+        </div>
+      </div>
+
+      {/* 4. Weight Calculator */}
+      <div style={styles.card}>
+        <div style={styles.cardTitle}>⚖️ 重量計算  Material Weight</div>
+        <div style={row}>
+          <span style={lab}>Material</span>
+          <select style={sel} value={wMat} onChange={e => setWMat(e.target.value)}>
+            {Object.keys(DENSITY).map(m => <option key={m} value={m}>{m}</option>)}
+          </select>
+        </div>
+        <div style={row}>
+          <span style={lab}>Shape</span>
+          <select style={sel} value={wShape} onChange={e => setWShape(e.target.value)}>
+            <option value="round">丸棒 Round bar</option>
+            <option value="square">角棒 Square/rect bar</option>
+            <option value="plate">板 Plate</option>
+            <option value="pipe">パイプ Pipe</option>
+          </select>
+        </div>
+        {wShape === 'round' && (
+          <div style={row}>
+            <span style={lab}>Diameter D (mm)</span>
+            <input style={inp} value={wD} onChange={e => setWD(e.target.value)}/>
+          </div>
+        )}
+        {wShape === 'pipe' && (<>
+          <div style={row}>
+            <span style={lab}>Outer diameter (mm)</span>
+            <input style={inp} value={wD} onChange={e => setWD(e.target.value)}/>
+          </div>
+          <div style={row}>
+            <span style={lab}>Inner diameter (mm)</span>
+            <input style={inp} value={wD2} onChange={e => setWD2(e.target.value)}/>
+          </div>
+        </>)}
+        {(wShape === 'square' || wShape === 'plate') && (<>
+          <div style={row}>
+            <span style={lab}>Width (mm)</span>
+            <input style={inp} value={wW} onChange={e => setWW(e.target.value)}/>
+          </div>
+          <div style={row}>
+            <span style={lab}>{wShape === 'plate' ? 'Thickness (mm)' : 'Height (mm)'}</span>
+            <input style={inp} value={wH} onChange={e => setWH(e.target.value)}/>
+          </div>
+        </>)}
+        <div style={row}>
+          <span style={lab}>Length (mm)</span>
+          <input style={inp} value={wL} onChange={e => setWL(e.target.value)}/>
+        </div>
+        <div style={out}>
+          <div style={outVal}>{weight.toFixed(3)} kg</div>
+          <div style={outLab}>{wMat} · density {DENSITY[wMat]} g/cm³</div>
+        </div>
+      </div>
+
+      {/* 5. Tolerance Calculator */}
+      <div style={styles.card}>
+        <div style={styles.cardTitle}>📏 公差計算  IT Grade (JIS B 0401)</div>
+        <div style={row}>
+          <span style={lab}>Nominal size (mm)</span>
+          <input style={inp} value={tolD} onChange={e => setTolD(e.target.value)}/>
+        </div>
+        <div style={row}>
+          <span style={lab}>IT grade</span>
+          <select style={sel} value={tolGrade} onChange={e => setTolGrade(e.target.value)}>
+            {Object.keys(IT_TABLE).map(g => <option key={g} value={g}>{g}</option>)}
+          </select>
+        </div>
+        <div style={out}>
+          <div style={outVal}>±{(tolValue/2).toFixed(1)} μm</div>
+          <div style={outLab}>Tolerance zone width: {tolValue} μm ({tolGrade})</div>
+        </div>
+        <div style={tip}>
+          Tip: IT5–IT6 = precision fits. IT7 = general machining. IT8–IT10 = loose / non-critical fits.
+        </div>
+        <div style={{ overflowX:'auto', marginTop:10 }}>
+          <table style={{ width:'100%', fontSize:'0.56rem', color:'#999', borderCollapse:'collapse' }}>
+            <thead>
+              <tr style={{ color:'#1E90FF' }}>
+                <th style={{ textAlign:'left', padding:'3px 4px' }}>mm</th>
+                {Object.keys(IT_TABLE).map(g => (
+                  <th key={g} style={{ padding:'3px 4px' }}>{g}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {SIZE_LABELS.map((lbl,i) => (
+                <tr key={lbl} style={{ background: i===tolIdx ? '#1E90FF22' : 'transparent' }}>
+                  <td style={{ padding:'3px 4px', color:'#777' }}>{lbl}</td>
+                  {Object.keys(IT_TABLE).map(g => (
+                    <td key={g} style={{ padding:'3px 4px', textAlign:'center' }}>{IT_TABLE[g][i]}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
