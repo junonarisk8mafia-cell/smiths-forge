@@ -33,8 +33,8 @@ export const QUIZ_STAGES = [
         opts: [
           "Slower production speed",
           "Crushing or amputation injury from the press slide",
-          "Higher electricity bill",
-          "Voiding the machine's paint warranty"
+          "Increased die wear requiring more frequent sharpening",
+          "A higher reject rate from misaligned dies"
         ],
         a: 1, xp: 25,
         exp: "Press machines move with enormous force and speed, and most press-related accidents in Japanese factories involve hands caught between dies. The safety guard and light curtain interlocks exist specifically to stop the slide if a hand enters the danger zone. 🇯🇵 TIP: Never silence or bypass an interlock alarm even if it slows you down — supervisors treat tampering with safety devices as a serious violation, not just a minor shortcut."
@@ -43,10 +43,10 @@ export const QUIZ_STAGES = [
         id: 3, cat: "Grinding Machine Safety",
         q: "What does 'Kensakuban Tokubetsu Kyouiku (研削盤特別教育)' specifically train workers to handle safely?",
         opts: [
-          "Forklift driving in the yard",
-          "Filling out shipping invoices",
+          "Operating overhead cranes rated under 5 tons",
+          "Setting up press brake tooling for bending jobs",
           "Operating grinding machines and handling grinding wheels",
-          "Cleaning oil from the floor"
+          "Inspecting incoming raw material certificates"
         ],
         a: 2, xp: 20,
         exp: "Kensakuban Tokubetsu Kyouiku (研削盤特別教育) is required special training for using grinding machines (研削盤), focusing on wheel inspection, mounting, balancing, and guard use. A grinding wheel that bursts at high RPM can cause severe injury. 🇯🇵 TIP: Always perform the 'ring test' (tapping the wheel to check for cracks) before mounting — this small habit is taken very seriously in Japanese workshops."
@@ -55,9 +55,9 @@ export const QUIZ_STAGES = [
         id: 4, cat: "Grinding Machine Safety",
         q: "After replacing a grinding wheel, your trainer tells you to run the machine empty for one minute before use. Why?",
         opts: [
-          "To warm up the motor for better color of sparks",
-          "It is just a traditional ritual with no real purpose",
-          "To save electricity later in the shift",
+          "To pre-heat the bearings so the spindle reaches rated RPM faster",
+          "To burn off residual coolant left from the previous wheel change",
+          "To let the new wheel's bonding agent cure under load before cutting",
           "To check for vibration or wheel failure at speed before any work is done"
         ],
         a: 3, xp: 20,
@@ -89,15 +89,15 @@ export const QUIZ_STAGES = [
       },
       {
         id: 7, cat: "Low-Voltage Electrical Handling",
-        q: "What is 'Teiatsu Denki Toriatsukai (低圧電気取扱)' training designed to prevent?",
+        q: "Teiatsu Denki Toriatsukai (低圧電気取扱) training covers several real procedures for handling low-voltage equipment safely. Which of the following is NOT actually part of this training?",
         opts: [
-          "Damage to finished parts during shipping",
-          "Excessive noise from electric motors",
-          "Electric shock and arc injuries when handling low-voltage electrical equipment",
-          "Late delivery of electrical parts"
+          "Lockout/tagout procedures before opening a control panel",
+          "Recognizing arc flash and electric shock hazards on live equipment",
+          "Calculating insurance premiums for damaged electrical equipment",
+          "Safe use of insulated tools near live low-voltage circuits"
         ],
-        a: 2, xp: 20,
-        exp: "Teiatsu Denki Toriatsukai (低圧電気取扱) training is required for workers who handle low-voltage (under 600V) electrical equipment such as control panels and wiring on machines. It covers lockout procedures, insulated tools, and shock hazards. 🇯🇵 TIP: Always confirm a machine is fully de-energized and tagged out before opening an electrical panel — Japanese safety audits check tagging procedures very closely."
+        a: 2, xp: 25,
+        exp: "Teiatsu Denki Toriatsukai (低圧電気取扱) training is required for workers who handle low-voltage (under 600V) electrical equipment such as control panels and wiring on machines. It covers lockout/tagout, insulated tool use, and shock/arc-flash hazard recognition — but insurance and cost calculations are an administrative matter, not part of this safety curriculum. 🇯🇵 TIP: Always confirm a machine is fully de-energized and tagged out before opening an electrical panel — Japanese safety audits check tagging procedures very closely."
       },
       {
         id: 8, cat: "Low-Voltage Electrical Handling",
@@ -151,9 +151,9 @@ export const QUIZ_STAGES = [
         id: 12, cat: "Full Harness",
         q: "Before climbing a mezzanine platform to retrieve material, what should you check on your full harness first?",
         opts: [
-          "The color matches your uniform",
-          "It smells clean",
-          "It was issued less than a week ago",
+          "Whether it matches the size printed on your work order",
+          "Whether the manufacture date sticker is within five years, regardless of wear",
+          "Whether it has been stored in its original packaging",
           "All buckles, D-rings, and the lanyard hook are secure and undamaged"
         ],
         a: 3, xp: 20,
@@ -197,24 +197,24 @@ export const QUIZ_STAGES = [
       },
       {
         id: 16, cat: "Oxygen Deficiency Hazard",
-        q: "What does 'Sanketsu Kiken Sagyou (酸欠危険作業)' refer to?",
+        q: "Sanketsu Kiken Sagyou (酸欠危険作業), oxygen deficiency hazard work, has several real defining features. Which statement below is NOT correct about it?",
         opts: [
-          "Work involving excessive sunlight exposure",
-          "Tasks requiring extra physical strength",
-          "Jobs that require working with acids only",
-          "Work in confined spaces where oxygen levels may be dangerously low"
+          "It often occurs in tanks, pits, or sealed containers where oxygen has been displaced or consumed",
+          "Workers can lose consciousness within seconds once oxygen concentration drops critically low",
+          "It legally requires atmosphere testing and a designated outside watcher before entry",
+          "It is defined by how far below ground level the space is, not by oxygen concentration"
         ],
         a: 3, xp: 25,
-        exp: "Sanketsu Kiken Sagyou (酸欠危険作業) refers to hazardous work in confined or poorly ventilated spaces such as tanks, pits, or sealed containers, where oxygen concentration can drop to unsafe levels without warning. Workers can lose consciousness within seconds in severe cases. 🇯🇵 TIP: Always use an oxygen meter and have a designated watcher outside before entering any confined space — this buddy system is strictly enforced in Japanese safety regulations."
+        exp: "Sanketsu Kiken Sagyou (酸欠危険作業) is defined by measured oxygen concentration (below roughly 18%), not by depth or location — a sealed elevated tank can be just as deadly as an underground pit. It refers to hazardous work in confined or poorly ventilated spaces such as tanks, pits, or sealed containers, where oxygen concentration can drop to unsafe levels without warning, and workers can lose consciousness within seconds in severe cases. 🇯🇵 TIP: Always use an oxygen meter and have a designated watcher outside before entering any confined space — this buddy system is strictly enforced in Japanese safety regulations."
       },
       {
         id: 17, cat: "Oxygen Deficiency Hazard",
         q: "Before entering a sealed tank for cleaning, what must be measured and confirmed?",
         opts: [
           "Oxygen concentration and presence of toxic gases",
-          "Room temperature only",
-          "The tank's paint color code",
-          "The weight of the tank"
+          "Ambient noise level inside the tank",
+          "The tank's internal pressure rating only",
+          "The humidity level only"
         ],
         a: 0, xp: 20,
         exp: "Confined spaces like sealed tanks can have low oxygen or hidden toxic gas buildup, so atmosphere testing before and during entry is mandatory, not optional. Ventilation must also be confirmed before anyone goes inside. 🇯🇵 TIP: If the gas meter alarm sounds even briefly, treat it seriously and evacuate immediately — Japanese plants run regular drills specifically for this scenario."
@@ -233,15 +233,15 @@ export const QUIZ_STAGES = [
       },
       {
         id: 19, cat: "KY Activity (Hazard Prediction)",
-        q: "Before starting work each morning, your team gathers for 'KY Katsudou (KY活動)'. What is this activity?",
+        q: "KY Katsudou (KY活動), hazard prediction activity, has several real characteristics. Which statement below is NOT correct about it?",
         opts: [
-          "A stretching exercise routine only",
-          "A daily attendance check",
-          "A hazard prediction activity where the team discusses possible dangers for that day's task",
-          "A competition for fastest worker"
+          "It is held briefly before work starts, identifying hazards specific to that day's tasks",
+          "It ends with the team agreeing on concrete countermeasures, not just listing risks",
+          "It is primarily a paperwork exercise filled out after the shift ends",
+          "Even new or junior workers are expected to speak up during the discussion"
         ],
-        a: 2, xp: 20,
-        exp: "KY Katsudou (KY活動), Kiken Yochi or hazard prediction activity, is a short team discussion held before work where everyone identifies potential dangers in the day's tasks and agrees on countermeasures. It is a core part of Japanese workplace safety culture, not just paperwork. 🇯🇵 TIP: Speak up during KY meetings even as a newcomer — pointing out a hazard you noticed is viewed as valuable input, not as questioning your seniors."
+        a: 2, xp: 25,
+        exp: "KY Katsudou (KY活動), Kiken Yochi or hazard prediction activity, happens BEFORE work starts, not as after-the-fact paperwork. It is a short team discussion where everyone identifies potential dangers in the day's tasks and agrees on countermeasures before touching the equipment. It is a core part of Japanese workplace safety culture, not just paperwork. 🇯🇵 TIP: Speak up during KY meetings even as a newcomer — pointing out a hazard you noticed is viewed as valuable input, not as questioning your seniors."
       },
       {
         id: 20, cat: "KY Activity (Hazard Prediction)",
@@ -266,24 +266,24 @@ export const QUIZ_STAGES = [
     questions: [
       {
         id: 101, cat: "Calipers (Nogisu)",
-        q: "Your supervisor hands you 'Nogisu (ノギス)' and asks you to check a part's outer diameter. What is this tool used for?",
+        q: "Nogisu (ノギス), calipers, can measure several different dimensions on a single tool. Which of the following is NOT something a standard caliper measures?",
         opts: [
-          "Measuring length, diameter, and depth with a sliding scale",
-          "Measuring temperature of metal",
-          "Cutting sheet metal edges",
-          "Polishing rough surfaces"
+          "The angle of a beveled edge, in degrees",
+          "Outer diameter of a round part",
+          "Inner diameter of a bore or hole",
+          "Depth of a step or blind hole using the depth rod"
         ],
-        a: 0, xp: 15,
-        exp: "Nogisu (ノギス), calipers, use a sliding vernier or digital scale to measure outer dimensions, inner dimensions, and depth on a single tool. They are one of the most common measuring tools on a shop floor. 🇯🇵 TIP: Always zero-check your Nogisu (ノギス) at the start of a shift — Japanese quality culture treats an uncalibrated tool as a personal responsibility, not just an equipment issue."
+        a: 0, xp: 20,
+        exp: "Nogisu (ノギス), calipers, use a sliding vernier or digital scale to measure outer dimensions, inner dimensions, and depth on a single tool — but they cannot read an angle in degrees; that requires a protractor or angle gauge. They are one of the most common measuring tools on a shop floor. 🇯🇵 TIP: Always zero-check your Nogisu (ノギス) at the start of a shift — Japanese quality culture treats an uncalibrated tool as a personal responsibility, not just an equipment issue."
       },
       {
         id: 102, cat: "Calipers (Nogisu)",
         q: "While using digital Nogisu (ノギス) to measure a shaft, the reading seems inconsistent each time. What should you check first?",
         opts: [
-          "The factory lighting",
+          "Ambient temperature changes affecting thermal expansion of the part",
           "Whether the jaws are clean and the part is measured perpendicular to the jaws",
-          "The color of the part",
-          "The brand name on the tool"
+          "The caliper's serial number sequence",
+          "Whether the digital display's battery shows a full charge"
         ],
         a: 1, xp: 20,
         exp: "Inconsistent caliper readings are usually caused by dirt or chips on the measuring jaws, or by holding the part at an angle instead of square to the jaws. Both issues introduce measurement error that has nothing to do with the part itself. 🇯🇵 TIP: Wipe both the tool jaws and the part surface with a clean cloth before measuring — this small habit is taught on day one in most Japanese machine shops."
@@ -306,7 +306,7 @@ export const QUIZ_STAGES = [
         opts: [
           "Use it immediately without checking anything",
           "Apply oil to the spindle threads",
-          "Shake it to check for looseness",
+          "Adjust the ratchet stop tension before checking zero",
           "Close the spindle on the anvil with no part and confirm it reads zero"
         ],
         a: 3, xp: 20,
@@ -319,7 +319,7 @@ export const QUIZ_STAGES = [
           "Runout or flatness deviation as the part rotates",
           "Surface color",
           "Total weight",
-          "Magnetic properties"
+          "Surface hardness of the coating"
         ],
         a: 0, xp: 20,
         exp: "Daiyaru-geeji (ダイヤルゲージ), a dial gauge (dial indicator), measures small deviations in movement, commonly used to check runout, flatness, or alignment as a part rotates on a lathe or fixture. The needle shows tiny deviations that the eye cannot detect directly. 🇯🇵 TIP: Mount the dial gauge stand firmly before reading — Japanese trainers often say a wobbling stand 'lies' to you, since it changes the reading itself."
@@ -331,7 +331,7 @@ export const QUIZ_STAGES = [
           "The shaft is perfectly round",
           "The shaft has a bend or runout problem at that point",
           "The gauge battery is low",
-          "The shaft is too cold"
+          "The shaft was machined from a different material lot"
         ],
         a: 1, xp: 25,
         exp: "A larger-than-expected needle swing during rotation usually indicates the shaft is not perfectly round or straight at that point, called runout. This kind of deviation can cause vibration, poor fit, or premature wear in assembly. 🇯🇵 TIP: When reporting a runout problem, bring the actual reading number, not just 'it looks off' — Japanese supervisors expect data-based reporting (数値で報告)."
@@ -353,7 +353,7 @@ export const QUIZ_STAGES = [
         q: "Your trainer tells you to never wear gloves while operating a Senban (旋盤). Why is this rule important?",
         opts: [
           "Gloves make hands too cold to feel vibration",
-          "Gloves are simply against the dress code",
+          "Gloves reduce the grip strength needed for tool changes",
           "Gloves slow down production speed",
           "Gloves can get caught in the rotating chuck or tool, pulling the hand in"
         ],
@@ -410,21 +410,21 @@ export const QUIZ_STAGES = [
       },
       {
         id: 113, cat: "Drill Press (Booruban)",
-        q: "A 'Booruban (ボール盤)' is mainly used for what operation?",
+        q: "A Booruban (ボール盤), drill press, is capable of several real operations. Which of the following is NOT something it is normally used for?",
         opts: [
-          "Drilling precise holes into a workpiece",
-          "Bending metal sheets into shapes",
-          "Polishing the surface of a part",
-          "Cutting threads on the outside of a bolt"
+          "Turning a cylindrical workpiece down to a smaller outer diameter",
+          "Drilling precise vertical holes into a clamped workpiece",
+          "Counterboring or spot-facing a hole for a bolt head",
+          "Light tapping using a tapping attachment in the spindle"
         ],
-        a: 0, xp: 15,
-        exp: "Booruban (ボール盤), a drill press, holds a rotating drill bit in a fixed vertical position to bore accurate holes into a workpiece clamped on the table. It offers more control and accuracy than a handheld drill. 🇯🇵 TIP: Always clamp small parts rather than holding them by hand on a Booruban (ボール盤) — a spinning drill can grab and spin a loose part violently, a common cause of hand injuries."
+        a: 0, xp: 20,
+        exp: "Booruban (ボール盤), a drill press, holds a rotating drill bit in a fixed vertical position to bore accurate holes, counterbore, spot-face, or even tap with the right attachment — but turning down an outer diameter is lathe work, where the WORKPIECE rotates against a fixed tool, the opposite setup. 🇯🇵 TIP: Always clamp small parts rather than holding them by hand on a Booruban (ボール盤) — a spinning drill can grab and spin a loose part violently, a common cause of hand injuries."
       },
       {
         id: 114, cat: "Drill Press (Booruban)",
         q: "Before drilling a hole with a Booruban (ボール盤), why should you mark the center point with a center punch first?",
         opts: [
-          "It is just a decoration on the part",
+          "It increases the hardness of the surrounding material",
           "It prevents the drill bit from wandering off position when starting the hole",
           "It cools the metal before drilling",
           "It is required only for plastic parts"
@@ -461,8 +461,8 @@ export const QUIZ_STAGES = [
         q: "What is the purpose of a 'Riima (リーマ)' after a hole has already been drilled?",
         opts: [
           "To enlarge and finish the hole to a precise, smooth diameter",
-          "To weld the hole closed",
-          "To paint the inside of the hole",
+          "To reduce the hole back toward the original drill diameter",
+          "To apply a corrosion-resistant coating inside the hole",
           "To measure hole roundness only"
         ],
         a: 0, xp: 20,
@@ -475,22 +475,22 @@ export const QUIZ_STAGES = [
           "The reamer was too small for the original drilled hole",
           "Excessive force or speed caused the reamer to wander, removing too much material",
           "The part was too cold",
-          "The operator wore gloves"
+          "The reamer was run without sufficient cutting oil, increasing friction-driven wear"
         ],
         a: 1, xp: 25,
         exp: "Reaming requires steady, controlled feed and the correct speed; excessive force or incorrect RPM can cause the reamer to wander or chatter, removing more material than intended and producing an oversized, rough hole. Reamers are precision finishing tools, not rough cutting tools. 🇯🇵 TIP: Always check the recommended speed and feed chart posted near Japanese machine stations — these reference sheets exist specifically to prevent this kind of mistake."
       },
       {
         id: 119, cat: "Torque Wrench (Toruku-renchi)",
-        q: "Why would a supervisor specifically hand you a 'Toruku-renchi (トルクレンチ)' instead of a regular wrench for tightening bolts on a fixture?",
+        q: "A Toruku-renchi (トルクレンチ), torque wrench, gives several real advantages over a regular wrench for tightening fixture bolts. Which of the following is NOT a real reason to use one?",
         opts: [
-          "It looks more professional",
-          "It is lighter to carry around",
-          "It allows tightening bolts to a precise, specified torque value to avoid over- or under-tightening",
-          "It works faster than a regular wrench"
+          "It tightens bolts to a precise, specified torque value",
+          "It helps prevent over-tightening that strips threads",
+          "It automatically compensates for an incorrectly sized bolt",
+          "It helps prevent under-tightening that lets joints loosen during operation"
         ],
-        a: 2, xp: 20,
-        exp: "Toruku-renchi (トルクレンチ), a torque wrench, lets you tighten a bolt to an exact specified torque value, which is critical for safety-critical or precision fixtures where over-tightening can strip threads and under-tightening can let parts loosen during operation. Regular wrenches give no such control. 🇯🇵 TIP: Always return a torque wrench to its lowest setting after use and store it in its case — Japanese tool rooms inspect torque wrenches carefully since incorrect storage can throw off calibration."
+        a: 2, xp: 25,
+        exp: "Toruku-renchi (トルクレンチ), a torque wrench, lets you tighten a bolt to an exact specified torque value, preventing both over-tightening (stripped threads) and under-tightening (loosening in service) — but it has no way to detect or compensate for a wrong-sized bolt being used in the first place. Regular wrenches give no torque control at all. 🇯🇵 TIP: Always return a torque wrench to its lowest setting after use and store it in its case — Japanese tool rooms inspect torque wrenches carefully since incorrect storage can throw off calibration."
       },
       {
         id: 120, cat: "Torque Wrench (Toruku-renchi)",
@@ -544,7 +544,7 @@ export const QUIZ_STAGES = [
           "Polish the surface to a mirror finish",
           "Drill a hole at that location",
           "Cut a small angled or rounded edge to remove sharpness",
-          "Paint the edge a different color"
+          "Apply a localized heat-treatment hardening to that edge only"
         ],
         a: 2, xp: 15,
         exp: "Mentori (面取り), chamfering, means cutting a small angled or rounded edge on a sharp corner, which improves safety for handling, helps parts fit together, and prevents edge chipping. It is one of the most common finishing notes on technical drawings. 🇯🇵 TIP: When a drawing just says 'C1' or 'C0.5' next to an edge, this is shorthand for a 1mm or 0.5mm chamfer — learning these drawing abbreviations quickly will save you many questions to your supervisor."
@@ -555,7 +555,7 @@ export const QUIZ_STAGES = [
         opts: [
           "It makes the shaft heavier",
           "It changes the shaft's hardness",
-          "It is purely decorative",
+          "It reduces the shaft's rotational mass for balancing",
           "It prevents the sharp edge from damaging the bearing or operator's hands during assembly"
         ],
         a: 3, xp: 20,
@@ -563,15 +563,15 @@ export const QUIZ_STAGES = [
       },
       {
         id: 205, cat: "Bending (Mage)",
-        q: "What does 'Mage (曲げ)' refer to in sheet metal processing?",
+        q: "Mage (曲げ), bending, has several real characteristics in sheet metal work. Which of the following is NOT true about it?",
         opts: [
-          "Forming a sheet metal part by bending it along a line",
-          "Cutting a sheet into separate pieces",
-          "Polishing a flat surface",
-          "Welding two sheets together"
+          "It always returns exactly to its original flat angle once removed from the die",
+          "It is performed using a press brake along a straight bend line",
+          "The bend direction and angle are specified on the drawing",
+          "The material undergoes plastic deformation at the bend line"
         ],
-        a: 0, xp: 15,
-        exp: "Mage (曲げ), bending, is the process of deforming sheet metal along a straight line using a press brake to create angles, flanges, or box shapes. The bend line and angle are usually specified precisely on the drawing. 🇯🇵 TIP: Always check the bend direction arrow on the drawing carefully — a part bent the wrong direction (上下逆, upside down) is a common and costly mistake for new operators."
+        a: 0, xp: 20,
+        exp: "Mage (曲げ), bending, is the process of deforming sheet metal along a straight line using a press brake to create angles, flanges, or box shapes — the deformation is plastic (permanent), not elastic, so it does NOT spring back to its original flat shape; it only springs back PARTIALLY toward the die angle (springback), never all the way flat. The bend line and angle are specified precisely on the drawing. 🇯🇵 TIP: Always check the bend direction arrow on the drawing carefully — a part bent the wrong direction (上下逆, upside down) is a common and costly mistake for new operators."
       },
       {
         id: 206, cat: "Bending (Mage)",
@@ -580,7 +580,7 @@ export const QUIZ_STAGES = [
           "Thermal expansion from punching heat",
           "Supuringu-bakku (スプリングバック), springback, where the metal partially returns toward its original shape",
           "The metal melting slightly during bending",
-          "Incorrect coloring of the sheet metal"
+          "Strain hardening increasing the material's yield strength during the bend"
         ],
         a: 1, xp: 25,
         exp: "When sheet metal is bent, the material has some elastic recovery after the press releases it, called Supuringu-bakku (スプリングバック), springback, causing the final angle to be slightly more open than the die angle. Experienced press operators compensate by over-bending slightly. 🇯🇵 TIP: Keep a record of how much over-bend your specific machine and material need — many Japanese operators keep handwritten notebooks of these compensation values for different jobs."
@@ -603,7 +603,7 @@ export const QUIZ_STAGES = [
         opts: [
           "No risk, it is purely a quality issue",
           "It only affects part color",
-          "It causes the machine to run faster than normal",
+          "It only requires extra cleaning time at the end of the shift",
           "The stuck scrap can be ejected unexpectedly or require risky manual removal near the die area"
         ],
         a: 3, xp: 25,
@@ -638,7 +638,7 @@ export const QUIZ_STAGES = [
         q: "Why do press shops often program a bend angle slightly tighter than the final required angle?",
         opts: [
           "To use less material",
-          "To make the part look more bent for inspection",
+          "To reduce the cycle time of the press stroke",
           "To compensate for Supuringu-bakku (スプリングバック), springback, so the final part settles at the correct angle",
           "It has no real purpose, just tradition"
         ],
@@ -659,15 +659,15 @@ export const QUIZ_STAGES = [
       },
       {
         id: 213, cat: "Die/Mold (Kanagata)",
-        q: "What does 'Kanagata (金型)' refer to in press shop terminology?",
+        q: "Kanagata (金型), die/mold tooling, has several real characteristics in a press shop. Which of the following is NOT true about it?",
         opts: [
-          "The tooling, die or mold, used to cut or form the sheet metal",
-          "The finished sheet metal product",
-          "The raw material coil",
-          "The packaging box for parts"
+          "It is consumed and replaced after every production batch, like a cutting fluid",
+          "It is mounted in the press and shapes or cuts the material as the press cycles",
+          "A single die set can be extremely expensive and is treated as a critical company asset",
+          "It should be inspected for cleanliness and damage before installation"
         ],
-        a: 0, xp: 15,
-        exp: "Kanagata (金型), die or mold, refers to the precision tooling mounted in the press that shapes, cuts, or forms the sheet metal as the press cycles. A single die set can be extremely expensive and is treated as a critical company asset. 🇯🇵 TIP: Always handle Kanagata (金型) according to the storage and lifting procedure posted nearby — dropping or scratching die tooling can cost far more than a damaged part."
+        a: 0, xp: 20,
+        exp: "Kanagata (金型), die or mold, refers to precision tooling that is reused for thousands or millions of cycles, often for years, NOT consumed per batch like a cutting fluid or coolant. It is mounted in the press and shapes, cuts, or forms the sheet metal as the press cycles, and a single die set can be extremely expensive and is treated as a critical company asset. 🇯🇵 TIP: Always handle Kanagata (金型) according to the storage and lifting procedure posted nearby — dropping or scratching die tooling can cost far more than a damaged part."
       },
       {
         id: 214, cat: "Die/Mold (Kanagata)",
@@ -676,7 +676,7 @@ export const QUIZ_STAGES = [
           "The color of the die set",
           "That the die is clean, undamaged, and matches the correct part number for the job",
           "The brand of the press machine",
-          "The weather outside"
+          "The die's most recent maintenance log entry date only"
         ],
         a: 1, xp: 20,
         exp: "Confirming the correct die matches the part number prevents producing wrong or defective parts, and checking for cleanliness or damage prevents installing a faulty tool that could damage the press or create scrap. This check is a standard step before every die change. 🇯🇵 TIP: Many Japanese shops use a die-change checklist (金型交換チェックリスト) that must be signed off — always follow it fully even under time pressure to finish a changeover quickly."
@@ -698,8 +698,8 @@ export const QUIZ_STAGES = [
         q: "A die designed for 0.5mm steel is mistakenly used on 1.0mm steel without adjustment. What problem does this likely cause related to Kuriaransu (クリアランス)?",
         opts: [
           "No effect at all, clearance does not matter for thickness",
-          "The press will run faster automatically",
-          "Only the part color will change",
+          "The punch will automatically resize itself to compensate",
+          "Only the surface roughness value will be affected",
           "Incorrect clearance for the thicker material, leading to excessive burr or part damage"
         ],
         a: 3, xp: 25,
@@ -707,15 +707,15 @@ export const QUIZ_STAGES = [
       },
       {
         id: 217, cat: "Shearing (Sendan)",
-        q: "What does 'Sendan (せん断)' describe in metal cutting?",
+        q: "Sendan (せん断), shearing, has several real characteristics in metal cutting. Which of the following is NOT true about it?",
         opts: [
-          "Cutting metal by applying opposing forces that shear it apart, like scissors",
-          "Melting metal with heat",
-          "Polishing a rough surface smooth",
-          "Bending metal into a curve"
+          "It works by melting a thin layer of metal along the cut line",
+          "It uses two opposing forces or blades that cut through metal, like scissors",
+          "Most punching, blanking, and trimming operations rely on this shearing action",
+          "Fingers must stay clear of the shear line even on hand-operated shears"
         ],
         a: 0, xp: 20,
-        exp: "Sendan (せん断), shearing, is a cutting process where two opposing forces, like the punch and die or shear blades, cut through the metal similar to how scissors cut paper. Most punching, blanking, and trimming operations rely on this shearing action. 🇯🇵 TIP: Keep fingers well clear of any Sendan (せん断) shear line, even on hand-operated shears — these blades close with enough force to cause amputation injuries instantly."
+        exp: "Sendan (せん断), shearing, is a purely mechanical cutting process — two opposing forces, like the punch and die or shear blades, cut through the metal similar to how scissors cut paper. No melting is involved at all, which is what separates shearing from thermal cutting processes like laser or plasma. Most punching, blanking, and trimming operations rely on this shearing action. 🇯🇵 TIP: Keep fingers well clear of any Sendan (せん断) shear line, even on hand-operated shears — these blades close with enough force to cause amputation injuries instantly."
       },
       {
         id: 218, cat: "Shearing (Sendan)",
@@ -746,8 +746,8 @@ export const QUIZ_STAGES = [
         q: "During die maintenance, you notice the Sutorippa (ストリッパー) plate is bent slightly. What is the risk if it is not repaired?",
         opts: [
           "No risk, stripper plates are not important",
-          "The press will run more quietly",
-          "The die will become lighter",
+          "The press cycle time will automatically decrease",
+          "The press will need to run at a higher tonnage setting",
           "Parts may not release properly, causing jams, double-feeds, or damage during the press cycle"
         ],
         a: 3, xp: 25,
@@ -764,15 +764,15 @@ export const QUIZ_STAGES = [
     questions: [
       {
         id: 301, cat: "Turning (Senshoku)",
-        q: "What is 'Senshoku (旋削)' in machining terminology?",
+        q: "Senshoku (旋削), turning, has several real characteristics in machining. Which of the following is NOT true about it?",
         opts: [
-          "The process of turning a workpiece on a lathe to remove material",
-          "Spraying paint onto a finished part",
-          "Measuring a part with calipers",
-          "Welding two metal rods together"
+          "The cutting tool rotates while the workpiece stays stationary",
+          "The workpiece rotates while a stationary tool removes material",
+          "It can create cylindrical, conical, and threaded features",
+          "It is typically performed on a Senban (旋盤), lathe"
         ],
-        a: 0, xp: 15,
-        exp: "Senshoku (旋削), turning, is the machining process performed on a lathe where the rotating workpiece is shaped by a stationary cutting tool. It is used to create cylindrical, conical, and threaded features. 🇯🇵 TIP: When learning Senshoku (旋削) terms, note that many machining words pair a kanji term with a katakana loanword for the same concept — both are commonly used interchangeably on the shop floor."
+        a: 0, xp: 20,
+        exp: "Senshoku (旋削), turning, is the machining process performed on a lathe where the ROTATING WORKPIECE is shaped by a stationary cutting tool — the exact opposite setup from milling, where the tool rotates and the workpiece typically stays still. It is used to create cylindrical, conical, and threaded features. 🇯🇵 TIP: When learning Senshoku (旋削) terms, note that many machining words pair a kanji term with a katakana loanword for the same concept — both are commonly used interchangeably on the shop floor."
       },
       {
         id: 302, cat: "Turning (Senshoku)",
@@ -802,9 +802,9 @@ export const QUIZ_STAGES = [
         id: 304, cat: "Milling (Furaisukezuri)",
         q: "While performing Furaisu Kezuri (フライス削り), you hear chattering vibration and see a wavy finish. What is the likely cause?",
         opts: [
-          "The coolant is too clean",
+          "The coolant concentration ratio is slightly too low",
           "The part is too small to mill",
-          "The cutting tool color changed",
+          "The spindle is running in the wrong rotation direction",
           "Insufficient rigidity in setup, excessive cutting depth, or wrong speed causing tool chatter"
         ],
         a: 3, xp: 25,
@@ -812,27 +812,27 @@ export const QUIZ_STAGES = [
       },
       {
         id: 305, cat: "Cutting Speed (Sessoku-sokudo)",
-        q: "What does 'Sessoku Sokudo (切削速度)' refer to in machining?",
+        q: "A lathe is turning a 40mm diameter shaft at a spindle speed of 1000 RPM. Using Vc = π × D × n / 1000, what is the cutting speed (Sessoku Sokudo, 切削速度)?",
         opts: [
-          "The relative speed between the cutting tool edge and the workpiece surface",
-          "The speed at which the operator walks around the machine",
-          "The RPM of the coolant pump",
-          "The feed rate of the table only"
+          "≈126 m/min",
+          "≈40 m/min (forgetting to multiply by π)",
+          "≈63 m/min (using the radius instead of the diameter)",
+          "≈251 m/min (mistakenly doubling the diameter)"
         ],
-        a: 0, xp: 20,
-        exp: "Sessoku Sokudo (切削速度), cutting speed, refers to the surface speed at which the cutting edge passes over the workpiece material, usually expressed in meters per minute, and is a key factor in tool life and finish quality. It is calculated from spindle RPM and workpiece or tool diameter. 🇯🇵 TIP: Keep a copy of the recommended Sessoku Sokudo (切削速度) chart for common materials at your station — referring to it instead of guessing is standard practice among experienced Japanese machinists."
+        a: 0, xp: 25,
+        exp: "Vc = π × D × n / 1000 = π × 40 × 1000 / 1000 ≈ 126 m/min. Sessoku Sokudo (切削速度), cutting speed, is the surface speed at which the cutting edge passes over the workpiece, and it is a key factor in tool life and finish quality. The wrong answers come from real beginner mistakes: dropping π entirely, using the 20mm radius instead of the 40mm diameter, or accidentally doubling the diameter value. 🇯🇵 TIP: Keep a copy of the recommended Sessoku Sokudo (切削速度) chart for common materials at your station — referring to it instead of guessing is standard practice among experienced Japanese machinists."
       },
       {
         id: 306, cat: "Cutting Speed (Sessoku-sokudo)",
-        q: "Running Sessoku Sokudo (切削速度) too high for the material being cut typically results in what problem?",
+        q: "You want a cutting speed of 100 m/min while turning a 25mm diameter bar. Using n = Vc × 1000 / (π × D), what spindle speed should you set?",
         opts: [
-          "Longer tool life and better finish",
-          "Excessive heat buildup, faster tool wear, and possible tool failure",
-          "Slower material removal rate only",
-          "No change to the process"
+          "≈4000 RPM (forgetting to include π in the calculation)",
+          "≈1273 RPM",
+          "≈2547 RPM (using the radius instead of the diameter)",
+          "≈1.3 RPM (forgetting to convert meters to millimeters)"
         ],
         a: 1, xp: 25,
-        exp: "Cutting speed that is too high for the material generates excessive heat at the cutting edge, accelerating tool wear and potentially causing the tool to fail or the workpiece to discolor or warp. Matching speed to the material's recommended range balances productivity and tool life. 🇯🇵 TIP: When in doubt about the right speed for an unfamiliar material, ask a senior operator (先輩, senpai) rather than guessing — asking questions is viewed as responsible, not as a weakness."
+        exp: "n = Vc × 1000 / (π × D) = 100 × 1000 / (π × 25) ≈ 1273 RPM. Running the spindle far above the correct value (such as the 4000 RPM or 2547 RPM distractors here) generates excessive heat at the cutting edge for the intended Vc, accelerating tool wear and risking tool failure or part discoloration — this is exactly why getting the formula right matters, not just running 'fast.' 🇯🇵 TIP: When in doubt about the right speed for an unfamiliar material, ask a senior operator (先輩, senpai) rather than guessing — asking questions is viewed as responsible, not as a weakness."
       },
       {
         id: 307, cat: "Feed Rate (Okuri-ryo)",
@@ -860,15 +860,15 @@ export const QUIZ_STAGES = [
       },
       {
         id: 309, cat: "Depth of Cut (Kirikomi)",
-        q: "What does 'Kirikomi (切り込み)' refer to in a machining operation?",
+        q: "Kirikomi (切り込み), depth of cut, has several real characteristics in machining. Which of the following is NOT true about it?",
         opts: [
-          "The depth the cutting tool penetrates into the material on each pass",
-          "The angle of the cutting tool only",
-          "The color of the chips produced",
-          "The brand of the cutting tool"
+          "It is determined by the brand of the cutting tool being used",
+          "It directly affects cutting force and tool load on each pass",
+          "Roughing passes typically use a larger depth of cut than finishing passes",
+          "It must be balanced with speed and feed for safe, efficient machining"
         ],
         a: 0, xp: 20,
-        exp: "Kirikomi (切り込み), depth of cut, is how deep the tool bites into the material during each pass, directly affecting cutting force, tool load, and how many passes are needed to reach final dimension. It must be balanced with speed and feed for efficient, safe machining. 🇯🇵 TIP: For roughing passes, Japanese training often emphasizes a larger Kirikomi (切り込み) with conservative speed, then a light finishing pass — learning this pass strategy early will make your parts more consistent."
+        exp: "Kirikomi (切り込み), depth of cut, is how deep the tool bites into the material during each pass — it is set by the operator/process plan, not by tool brand. It directly affects cutting force, tool load, and how many passes are needed to reach final dimension, and must be balanced with speed and feed. 🇯🇵 TIP: For roughing passes, Japanese training often emphasizes a larger Kirikomi (切り込み) with conservative speed, then a light finishing pass — learning this pass strategy early will make your parts more consistent."
       },
       {
         id: 310, cat: "Depth of Cut (Kirikomi)",
@@ -959,9 +959,9 @@ export const QUIZ_STAGES = [
         q: "What is the primary purpose of 'Kuuranto (クーラント)' during machining?",
         opts: [
           "To cool the cutting zone and lubricate, reducing heat and friction during cutting",
-          "To color-code finished parts",
+          "To pre-treat the workpiece surface for better paint adhesion",
           "To clean the floor around the machine",
-          "To paint the workpiece surface"
+          "To balance the rotating spindle"
         ],
         a: 0, xp: 15,
         exp: "Kuuranto (クーラント), coolant, is sprayed or flooded onto the cutting zone to reduce heat buildup, lubricate the tool-workpiece interface, and flush away chips, extending tool life and improving surface finish. Running dry when coolant is specified can quickly damage both tool and part. 🇯🇵 TIP: Report a clogged or weak coolant nozzle right away rather than working around it — Japanese maintenance teams treat coolant delivery problems as a priority since they affect both quality and tool cost."
@@ -1088,7 +1088,7 @@ export const QUIZ_STAGES = [
         q: "What does 'Kika Kousa (幾何公差)' refer to on an engineering drawing?",
         opts: [
           "The total number of holes in a part",
-          "The color-coding system for materials",
+          "A note specifying which supplier machined the part",
           "The geometric tolerancing symbols that control form, orientation, location, and runout, beyond simple linear dimensions",
           "A simplified version of basic dimensioning with no special meaning"
         ],
@@ -1109,15 +1109,15 @@ export const QUIZ_STAGES = [
       },
       {
         id: 409, cat: "Material Codes",
-        q: "On a Japanese drawing, the material is specified as 'SS400'. What kind of material does this code represent?",
+        q: "On a Japanese drawing, the material is specified as 'SS400'. Which of the following correctly identifies this code, without confusing it with a similar-looking grade?",
         opts: [
-          "A general structural carbon steel commonly used for non-critical structural parts",
-          "A type of stainless steel for corrosion resistance",
-          "An aluminum alloy used for lightweight parts",
-          "A type of plastic resin"
+          "General structural rolled steel (JIS G3101), not the higher-strength SS490",
+          "SM490 — a higher-strength weldable structural steel grade, not SS400",
+          "SN400 — a steel grade specifically certified for building/architectural structures",
+          "SUS400 — a martensitic stainless steel series"
         ],
-        a: 0, xp: 20,
-        exp: "SS400 is a JIS (Japan Industrial Standards) code for general structural rolled steel with a minimum tensile strength around 400 N/mm², commonly used for frames, brackets, and general structural fabrication where high corrosion resistance is not required. It is one of the most common materials seen on Japanese fabrication drawings. 🇯🇵 TIP: Always double check material codes like SS400 against the actual stock tag on the material rack — mixing up similar-looking steel grades is a common and costly shop floor error."
+        a: 0, xp: 25,
+        exp: "SS400 is a JIS code for general structural rolled steel with a minimum tensile strength around 400 N/mm². It is easy to confuse with SM490 (a higher-strength weldable structural steel), SN400 (a related but separately certified grade for building structures with tighter weldability/ductility requirements), or SUS400-series (martensitic stainless, an entirely different family). SS400 itself is commonly used for frames, brackets, and general fabrication where high corrosion resistance is not required. 🇯🇵 TIP: Always double check material codes like SS400 against the actual stock tag on the material rack — mixing up similar-looking steel grades is a common and costly shop floor error."
       },
       {
         id: 410, cat: "Material Codes",
@@ -1126,34 +1126,34 @@ export const QUIZ_STAGES = [
           "It is always cheaper than SS400",
           "SUS304 is a stainless steel offering much better corrosion resistance than plain carbon steel",
           "SUS304 is lighter than aluminum",
-          "SUS304 cannot be machined at all"
+          "It is the same alloy as SUS316, just an older lot designation"
         ],
         a: 1, xp: 20,
-        exp: "SUS304 is an austenitic stainless steel known for strong corrosion resistance, making it preferred for parts exposed to moisture, chemicals, or food contact, unlike plain carbon steel such as SS400 which rusts without protective coating. The trade-off is usually higher cost and different machining behavior. 🇯🇵 TIP: SUS304 tends to work-harden and gall more than mild steel, so ask about the recommended cutting speed and coolant for stainless before machining it for the first time."
+        exp: "SUS304 is an austenitic stainless steel known for strong corrosion resistance, making it preferred for parts exposed to moisture, chemicals, or food contact, unlike plain carbon steel such as SS400 which rusts without protective coating. It is NOT the same as SUS316 — SUS316 adds molybdenum for extra resistance to chlorides and marine/chemical environments, a genuinely different (and more expensive) grade, not just a different lot of SUS304. The trade-off for SUS304 is usually higher cost and different machining behavior. 🇯🇵 TIP: SUS304 tends to work-harden and gall more than mild steel, so ask about the recommended cutting speed and coolant for stainless before machining it for the first time."
       },
       {
         id: 411, cat: "Material Codes",
         q: "A drawing specifies 'A5052' for a sheet metal bracket. What general category of material is this?",
         opts: [
           "A high-carbon tool steel",
-          "A type of rubber gasket material",
+          "The same alloy as A5083, just a regional naming variant",
           "An aluminum alloy known for good corrosion resistance and formability",
           "A ceramic coating material"
         ],
         a: 2, xp: 20,
-        exp: "A5052 is a JIS code for an aluminum-magnesium alloy valued for good corrosion resistance, weldability, and formability, frequently used in sheet metal enclosures and brackets where light weight matters. It behaves quite differently from steel under bending and cutting. 🇯🇵 TIP: Aluminum alloys like A5052 can react badly if mixed with certain coolants or contaminated with steel chips — keep aluminum and steel scrap and tooling separated where your shop requires it."
+        exp: "A5052 is a JIS code for an aluminum-magnesium alloy valued for good corrosion resistance, weldability, and formability, frequently used in sheet metal enclosures and brackets where light weight matters. It is NOT the same as A5083 — A5083 carries a higher magnesium content for greater strength and is the grade typically chosen for marine and structural welding, a genuinely different alloy, not a regional rename of A5052. It behaves quite differently from steel under bending and cutting. 🇯🇵 TIP: Aluminum alloys like A5052 can react badly if mixed with certain coolants or contaminated with steel chips — keep aluminum and steel scrap and tooling separated where your shop requires it."
       },
       {
         id: 412, cat: "Third Angle Projection (Daisankakuhou)",
-        q: "What is 'Daisankakuhou (第三角法)' used for on Japanese engineering drawings?",
+        q: "Daisankakuhou (第三角法), third angle projection, has several real characteristics on Japanese engineering drawings. Which of the following is NOT true about it?",
         opts: [
-          "A method for calculating material cost",
-          "A type of heat treatment process",
-          "A symbol indicating the part is rejected",
-          "A standard projection system used to arrange multiple views, such as front, top, and side, on a drawing"
+          "It is the standard convention used in Japan, much of Asia, and North America",
+          "The top view is placed above the front view under this system",
+          "A small truncated-cone symbol in the title block identifies which projection system is used",
+          "It is the only projection system recognized internationally, with no alternative anywhere"
         ],
         a: 3, xp: 25,
-        exp: "Daisankakuhou (第三角法), third angle projection, is the standard drawing convention used in Japan and much of Asia and North America to arrange orthographic views logically around a front view. Misreading the projection system can cause a worker to misinterpret which side of a part a feature belongs on. 🇯🇵 TIP: If you trained in a country using first angle projection, double check the projection symbol box on Japanese drawings before reading dimensions, since view placement differs from what you may be used to."
+        exp: "Daisankakuhou (第三角法), third angle projection, is the standard drawing convention used in Japan and much of Asia and North America, with the top view placed above the front view and a small truncated-cone symbol in the title block identifying it — but it is NOT the only system in use. First angle projection (第一角法) remains the standard in much of Europe, so misreading the projection system can cause a worker to misinterpret which side of a part a feature belongs on. 🇯🇵 TIP: If you trained in a country using first angle projection, double check the projection symbol box on Japanese drawings before reading dimensions, since view placement differs from what you may be used to."
       },
       {
         id: 413, cat: "Third Angle Projection (Daisankakuhou)",
@@ -1197,7 +1197,7 @@ export const QUIZ_STAGES = [
         opts: [
           "The dimension has no tolerance at all and any size is acceptable",
           "The part can be made to any convenient size",
-          "It is a drafting mistake that should be ignored",
+          "The dimension automatically defaults to IT12, the loosest standard tolerance grade",
           "A general or standard tolerance specified elsewhere on the drawing, such as in the title block, applies automatically"
         ],
         a: 3, xp: 20,
@@ -1217,27 +1217,27 @@ export const QUIZ_STAGES = [
       },
       {
         id: 418, cat: "IT Grade",
-        q: "What does an 'IT Toukyuu (IT等級)' grade, such as IT7, describe in the ISO/JIS tolerance system?",
+        q: "For the same nominal size, which of these IT Toukyuu (IT等級) grades represents the TIGHTEST (smallest) tolerance band?",
         opts: [
-          "The material's hardness level",
-          "A standardized tolerance grade indicating how tight the dimensional tolerance band is for a given size",
-          "The color code for inspection stamps",
-          "The number of inspections required per batch"
+          "IT7",
+          "IT5",
+          "IT9",
+          "IT11"
         ],
         a: 1, xp: 25,
-        exp: "IT Toukyuu (IT等級), IT grade, is part of a standardized international tolerance system where a lower IT number, like IT6, means a tighter tolerance band, and a higher number, like IT12, means a looser one, for a given nominal size. This system lets engineers specify precision levels in a consistent, comparable way across many dimensions. 🇯🇵 TIP: If a customer requests a tighter IT grade than your shop normally holds, raise it with your supervisor early rather than after parts fail inspection, since process or tooling changes may be needed."
+        exp: "IT Toukyuu (IT等級), IT grade, is part of a standardized international tolerance system where a LOWER IT number means a TIGHTER tolerance band for a given nominal size — IT5 is tighter than IT7, which is tighter than IT9, which is tighter than IT11. This system lets engineers specify precision levels in a consistent, comparable way across many dimensions. 🇯🇵 TIP: If a customer requests a tighter IT grade than your shop normally holds, raise it with your supervisor early rather than after parts fail inspection, since process or tooling changes may be needed."
       },
       {
         id: 419, cat: "Basic Hole/Shaft System",
-        q: "In the 'Kijun Ana / Kijun Jiku (基準穴・基準軸)' system used for fits, what does 'Kijun Ana (基準穴)', basic hole system, mean?",
+        q: "The 'Kijun Ana (基準穴)', basic hole system, has several real characteristics. Which of the following is NOT true about it?",
         opts: [
-          "The hole size is always adjusted to match a fixed shaft size",
-          "Holes are never toleranced in this system",
-          "The hole is held to a fixed standard tolerance, and the shaft size is varied to achieve the desired fit",
-          "Only shafts are manufactured, holes are assumed pre-existing"
+          "Holes are manufactured to a fixed standard tolerance class",
+          "Shaft tolerance is varied to achieve the desired type of fit",
+          "Shafts must always be manufactured oversized, regardless of the desired fit",
+          "This approach is common because holes are generally harder to resize than shafts in production"
         ],
         a: 2, xp: 25,
-        exp: "In the Kijun Ana (基準穴), basic hole system, the hole's tolerance is fixed as a standard reference, and the shaft is manufactured to different tolerance classes to achieve the desired type of fit, loose, transition, or tight. This approach is common because holes are often harder to adjust in size than shafts during production. 🇯🇵 TIP: When you see fit codes like H7/g6 on a drawing, recognize the H as referring to the basic hole system, a notation worth memorizing early since it appears constantly on Japanese mechanical drawings."
+        exp: "In the Kijun Ana (基準穴), basic hole system, the hole's tolerance is fixed as a standard reference, and the SHAFT is manufactured to different tolerance classes to achieve the desired type of fit — clearance, transition, OR interference, not always oversized. Whether the shaft ends up undersized (clearance) or oversized (interference) depends entirely on which fit is specified. This approach is common because holes are often harder to adjust in size than shafts during production. 🇯🇵 TIP: When you see fit codes like H7/g6 on a drawing, recognize the H as referring to the basic hole system, a notation worth memorizing early since it appears constantly on Japanese mechanical drawings."
       },
       {
         id: 420, cat: "Basic Hole/Shaft System",
@@ -1279,7 +1279,7 @@ export const QUIZ_STAGES = [
           "Nothing, the reading is fine as is",
           "Whether the display unit is set to mm instead of inch, and convert or switch units accordingly",
           "The battery level only",
-          "The color of the display"
+          "Whether the caliper's resolution setting is set to 0.01mm"
         ],
         a: 1, xp: 20,
         exp: "Digital calipers can often switch between millimeters and inches with a button, and 25.47mm actually converts to almost exactly 1.00 inch, suggesting the display is simply in mm while the expected reference was in inches. Always confirm which unit you are reading before judging a measurement as wrong. 🇯🇵 TIP: When working with drawings that mix unit systems, double-check the unit symbol in the drawing's title block, since unit mix-ups are a common source of confusion for workers new to Japanese metric-standard shops."
@@ -1358,27 +1358,27 @@ export const QUIZ_STAGES = [
       },
       {
         id: 509, cat: "7 QC Tools",
-        q: "The 'QC Nanatsu Dougu (QC7つ道具)' refers to what set of tools used in quality control?",
+        q: "QC Nanatsu Dougu (QC7つ道具), the 7 QC tools, include several real analytical tools. Which of the following is NOT actually one of them?",
         opts: [
-          "Seven basic analytical tools, such as Pareto charts and control charts, used to analyze and improve quality data",
-          "Seven physical hand tools like wrenches and pliers",
-          "Seven types of safety equipment",
-          "Seven inspection certificates required for export"
+          "Failure Mode and Effects Analysis (FMEA) worksheet",
+          "Pareto chart",
+          "Control chart",
+          "Cause-and-effect (fishbone) diagram"
         ],
-        a: 0, xp: 25,
-        exp: "QC Nanatsu Dougu (QC7つ道具), the 7 QC tools, are basic statistical and analytical tools, including Pareto charts, cause-and-effect (fishbone) diagrams, histograms, and control charts, used to analyze quality data and identify root causes of problems. These tools are taught widely in Japanese quality training programs as the foundation of practical problem solving. 🇯🇵 TIP: Even if your role is mostly hands-on production, learning to read a basic Pareto chart will help you understand quality meetings at a Japanese factory much better."
+        a: 0, xp: 30,
+        exp: "QC Nanatsu Dougu (QC7つ道具), the 7 QC tools, are: Pareto chart, cause-and-effect (fishbone) diagram, histogram, control chart, scatter diagram, check sheet, and stratification. FMEA is a real and valuable quality method, but it belongs to a different toolset entirely (often grouped with the '7 new QC tools' or reliability engineering methods), not the classic QC7 tools. These seven basic statistical tools are taught widely in Japanese quality training programs as the foundation of practical problem solving. 🇯🇵 TIP: Even if your role is mostly hands-on production, learning to read a basic Pareto chart will help you understand quality meetings at a Japanese factory much better."
       },
       {
         id: 510, cat: "7 QC Tools",
         q: "Which of the QC Nanatsu Dougu (QC7つ道具) is most useful for visually identifying the most frequent causes of defects in a batch of data?",
         opts: [
-          "A checklist with no data",
+          "A histogram, which shows the distribution shape of a data set",
           "A Pareto chart, which ranks causes by frequency to highlight the most significant ones",
-          "A blank notebook",
-          "A measuring tape"
+          "A fishbone (cause-and-effect) diagram, which maps potential causes of a problem",
+          "A scatter diagram, which shows correlation between two variables"
         ],
-        a: 1, xp: 20,
-        exp: "A Pareto chart, one of the QC Nanatsu Dougu (QC7つ道具), visually ranks defect causes from most to least frequent, helping teams focus improvement efforts on the few causes responsible for the majority of problems, following the 80/20 principle. This focused approach is more effective than trying to fix every minor issue at once. 🇯🇵 TIP: In Japanese quality meetings, you will often hear the phrase 'juuten kanri (重点管理)', meaning focusing on the most important few items first, which is exactly the philosophy behind Pareto analysis."
+        a: 1, xp: 25,
+        exp: "A Pareto chart, one of the QC Nanatsu Dougu (QC7つ道具), visually ranks defect causes from most to least frequent, helping teams focus improvement efforts on the few causes responsible for the majority of problems, following the 80/20 principle. The other three options are also real QC7 tools, but each answers a different question: a histogram shows how data is distributed, a fishbone diagram maps possible causes without ranking them, and a scatter diagram shows whether two variables move together — none of them rank causes by frequency the way a Pareto chart does. 🇯🇵 TIP: In Japanese quality meetings, you will often hear the phrase 'juuten kanri (重点管理)', meaning focusing on the most important few items first, which is exactly the philosophy behind Pareto analysis."
       },
       {
         id: 511, cat: "4M Change Point",
@@ -1410,7 +1410,7 @@ export const QUIZ_STAGES = [
         opts: [
           "To physically or mechanically prevent operator mistakes from happening or from going unnoticed",
           "To increase production speed regardless of errors",
-          "To decorate the workstation",
+          "To reduce the number of workers needed per shift",
           "To replace the need for any inspection at all"
         ],
         a: 0, xp: 20,
@@ -1432,10 +1432,10 @@ export const QUIZ_STAGES = [
         id: 515, cat: "Traceability",
         q: "Why does a Japanese metal fabrication shop often require 'Toresabiriti (トレーサビリティ)', traceability, records for each batch of parts?",
         opts: [
-          "To track employee lunch breaks",
+          "To determine optimal machine maintenance schedules only",
           "To calculate shipping costs only",
           "To be able to trace a part back through its production history, material lot, and process steps if a problem is found later",
-          "To decide vacation schedules"
+          "To set production line staffing levels"
         ],
         a: 2, xp: 20,
         exp: "Toresabiriti (トレーサビリティ), traceability, allows a company to trace any part back to its specific material lot, machine, operator, and date, which becomes critical if a defect is discovered after shipment, allowing the affected scope to be identified precisely. Without good traceability records, a single defect could force recalling far more parts than necessary. 🇯🇵 TIP: Always fill in batch numbers, dates, and your operator stamp accurately on production records, even when it feels like routine paperwork — this data is exactly what gets used during a traceability investigation."
@@ -1445,7 +1445,7 @@ export const QUIZ_STAGES = [
         q: "A customer reports a defect found in the field and asks which production lot it came from. What allows the factory to answer this quickly?",
         opts: [
           "Guessing based on when the complaint arrived",
-          "Calling every former employee for memory recall",
+          "Cross-referencing the customer's purchase order date only",
           "There is no way to know after shipment",
           "Toresabiriti (トレーサビリティ) records that link the part's serial or lot number to its specific production history"
         ],
@@ -1454,15 +1454,15 @@ export const QUIZ_STAGES = [
       },
       {
         id: 517, cat: "Self-Inspection (Jishu-kensa)",
-        q: "What does 'Jishu Kensa (自主検査)' mean for a machine operator?",
+        q: "Jishu Kensa (自主検査), self-inspection, has several real characteristics for a machine operator. Which of the following is NOT true about it?",
         opts: [
-          "The operator personally checking their own work for defects and dimensional accuracy during production",
-          "Inspection performed only by a separate quality department, never the operator",
-          "A inspection that happens only once per month",
-          "An inspection skipped entirely if trust is high"
+          "It is performed only by a separate quality department, never by the operator themselves",
+          "The operator personally checks their own work for defects and dimensional accuracy during production",
+          "It is expected even in shops that also have dedicated quality inspectors",
+          "It helps catch problems early, often before a large quantity of defective parts accumulates"
         ],
-        a: 0, xp: 20,
-        exp: "Jishu Kensa (自主検査), self-inspection, means the operator regularly checks their own output for defects and correct dimensions during production, rather than relying solely on a separate inspector found later. This catches problems early, often before a large quantity of bad parts accumulates. 🇯🇵 TIP: Even in shops with dedicated inspectors, performing honest Jishu Kensa (自主検査) on your own work is expected and shows professionalism, not a lack of trust in the inspection department."
+        a: 0, xp: 25,
+        exp: "Jishu Kensa (自主検査), self-inspection, means the OPERATOR regularly checks their own output for defects and correct dimensions during production, rather than relying solely on a separate inspector found later — the opposite of the first statement here. This catches problems early, often before a large quantity of bad parts accumulates. 🇯🇵 TIP: Even in shops with dedicated inspectors, performing honest Jishu Kensa (自主検査) on your own work is expected and shows professionalism, not a lack of trust in the inspection department."
       },
       {
         id: 518, cat: "Self-Inspection (Jishu-kensa)",
