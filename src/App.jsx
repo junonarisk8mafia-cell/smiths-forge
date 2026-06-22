@@ -1505,53 +1505,351 @@ function Defeat({ si, correct, miss, onRetry, onQuit, onReview }) {
   )
 }
 
-// ── SYMBOL TAB ───────────────────────────────────────────────
-function SymbolTab() {
-  const syms = [
-    { sym:'▽', name:'Back Weld',    jp:'裏波溶接',  rom:'Uranami-yosetsu',   note:'Complete root penetration from back' },
-    { sym:'△', name:'Fillet Weld',  jp:'すみ肉溶接', rom:'Suminiku-yosetsu',  note:'Triangular cross-section corner weld' },
-    { sym:'V',  name:'V-Groove',    jp:'V形開先',   rom:'V-gata kaisaki',    note:'V-shaped groove, typically 60°' },
-    { sym:'X',  name:'X-Groove',    jp:'X形開先',   rom:'X-gata kaisaki',    note:'Double-V groove, weld both sides' },
-    { sym:'○',  name:'All-Around',  jp:'全周溶接',  rom:'Zenshu-yosetsu',    note:'Weld entire joint perimeter' },
-    { sym:'⚑',  name:'Field Weld',  jp:'現場溶接',  rom:'Genba-yosetsu',     note:'Welded on site, not in factory' },
-  ]
-  const rules = [
-    {
-      title:'⚠️ CRITICAL: JIS vs AWS Arrow Side',
-      body:'JIS / ISO:  symbol BELOW line = ARROW SIDE (矢側)\nAWS (USA): symbol BELOW line = ARROW SIDE too\n\n→ In Japan ALL drawings use JIS standard.\n  Verify the standard at the START of every project.',
-    },
-    {
-      title:'📏 Fillet Weld Dimensions',
-      body:'脚長 Kyakucho (Leg length) — measured on drawing\nのど厚 Nodo-atsu (Throat) = Leg × 0.707\n\nThroat = design dimension for strength calcs.',
-    },
-    {
-      title:'🔢 Number Placement Rules',
-      body:'Number LEFT of symbol  → leg size (脚長)\nNumber RIGHT of symbol → weld length (溶接長さ)\n(N) in parentheses     → pitch (ピッチ)',
-    },
-  ]
+// ── SYMBOL TAB — metal fabrication drawing symbols ────────────
+
+// 1. Surface roughness (Ra) — JIS checkmark symbol
+function RoughnessSVG({ ra, noRemoval }) {
   return (
-    <div style={{ padding:16, fontFamily:'monospace', background:'#0d0d0d', minHeight:'100vh', paddingBottom:70 }}>
-      <div style={{ color:'#1E90FF', fontWeight:'bold', marginBottom:12 }}>📐 JIS WELDING SYMBOLS</div>
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginBottom:16 }}>
-        {syms.map(s => (
-          <div key={s.sym} style={{ background:'#141414', border:'1px solid #1e1e1e',
-            borderRadius:8, padding:'10px', textAlign:'center' }}>
-            <div style={{ fontSize:'1.6rem', marginBottom:4 }}>{s.sym}</div>
-            <div style={{ color:'#1E90FF', fontSize:'0.68rem', fontWeight:'bold' }}>{s.name}</div>
-            <div style={{ color:'#777', fontSize:'0.6rem' }}>{s.jp}</div>
-            <div style={{ color:'#555', fontSize:'0.58rem', fontStyle:'italic' }}>{s.rom}</div>
-            <div style={{ color:'#999', fontSize:'0.6rem', marginTop:4, lineHeight:1.3 }}>{s.note}</div>
-          </div>
-        ))}
+    <svg viewBox="0 0 64 64" width="60" height="60">
+      <path d="M10 36 L22 48 L46 14" fill="none" stroke="#1E90FF" strokeWidth="4"
+        strokeLinecap="round" strokeLinejoin="round"/>
+      <line x1="46" y1="14" x2="58" y2="14" stroke="#1E90FF" strokeWidth="4" strokeLinecap="round"/>
+      {noRemoval
+        ? <circle cx="19" cy="31" r="7" fill="none" stroke="#FFB800" strokeWidth="3"/>
+        : <text x="52" y="9" textAnchor="end" fontSize="12" fontFamily="monospace"
+            fontWeight="bold" fill="#FFB800">{ra}</text>}
+    </svg>
+  )
+}
+
+// 2. GD&T feature control frame symbols
+function GDTSVG({ type }) {
+  const c = '#1E90FF'
+  let inner
+  if (type === 'round') inner = <circle cx="32" cy="32" r="14" fill="none" stroke={c} strokeWidth="4"/>
+  else if (type === 'parallel') inner = (<>
+    <line x1="14" y1="24" x2="50" y2="24" stroke={c} strokeWidth="4"/>
+    <line x1="14" y1="40" x2="50" y2="40" stroke={c} strokeWidth="4"/>
+  </>)
+  else if (type === 'perp') inner = (<>
+    <line x1="20" y1="16" x2="20" y2="48" stroke={c} strokeWidth="4"/>
+    <line x1="20" y1="48" x2="48" y2="48" stroke={c} strokeWidth="4"/>
+  </>)
+  else if (type === 'angle') inner = (<>
+    <line x1="16" y1="48" x2="48" y2="48" stroke={c} strokeWidth="4"/>
+    <line x1="16" y1="48" x2="44" y2="16" stroke={c} strokeWidth="4"/>
+  </>)
+  else if (type === 'concentric') inner = (<>
+    <circle cx="32" cy="32" r="16" fill="none" stroke={c} strokeWidth="3.5"/>
+    <circle cx="32" cy="32" r="7" fill="none" stroke={c} strokeWidth="3.5"/>
+  </>)
+  else inner = (<> {/* position */}
+    <circle cx="32" cy="32" r="14" fill="none" stroke={c} strokeWidth="4"/>
+    <line x1="32" y1="14" x2="32" y2="50" stroke={c} strokeWidth="3"/>
+    <line x1="14" y1="32" x2="50" y2="32" stroke={c} strokeWidth="3"/>
+  </>)
+  return (
+    <svg viewBox="0 0 64 64" width="60" height="60">
+      <rect x="4" y="10" width="56" height="44" rx="2" fill="none" stroke="#444" strokeWidth="2"/>
+      {inner}
+    </svg>
+  )
+}
+
+// 3. Shaft-in-hole fit diagrams
+function FitSVG({ type }) {
+  const cx = 32, cy = 36, holeR = 20
+  const cfg = {
+    clearance:    { shaftR: 11, color: '#22c55e', tick: 9 },
+    interference: { shaftR: 19, color: '#ef4444', tick: 1 },
+    transition:   { shaftR: 16, color: '#FFB800', tick: 4 },
+  }[type]
+  return (
+    <svg viewBox="0 0 64 64" width="60" height="60">
+      <circle cx={cx} cy={cy} r={holeR} fill="none" stroke="#1E90FF" strokeWidth="3"/>
+      <circle cx={cx} cy={cy} r={cfg.shaftR} fill="none" stroke="#FFB800" strokeWidth="3"/>
+      <line x1={cx} y1={cy-holeR} x2={cx} y2={cy-holeR+cfg.tick}
+        stroke={cfg.color} strokeWidth="4" strokeLinecap="round"/>
+      <line x1={cx-4} y1={cy-holeR} x2={cx+4} y2={cy-holeR} stroke={cfg.color} strokeWidth="2"/>
+    </svg>
+  )
+}
+
+// IT tolerance grade — zone-width band on a dimension line
+function ITGradeSVG() {
+  return (
+    <svg viewBox="0 0 64 64" width="60" height="60">
+      <line x1="20" y1="8" x2="20" y2="56" stroke="#555" strokeWidth="2"/>
+      <rect x="14" y="24" width="12" height="16" fill="#1E90FF33" stroke="#1E90FF" strokeWidth="2"/>
+      <line x1="9" y1="24" x2="31" y2="24" stroke="#FFB800" strokeWidth="2"/>
+      <line x1="9" y1="40" x2="31" y2="40" stroke="#FFB800" strokeWidth="2"/>
+      <text x="44" y="36" fontSize="16" fontWeight="bold" fill="#FFB800" fontFamily="monospace">±</text>
+    </svg>
+  )
+}
+
+// 4. Material section-cut hatching patterns
+function MaterialSVG({ pattern }) {
+  const lines = []
+  const stroke = '#1E90FF'
+  if (pattern === 'castiron') {
+    for (let i=-60;i<70;i+=10) {
+      lines.push(<line key={'a'+i} x1={i} y1="0" x2={i+64} y2="64" stroke={stroke} strokeWidth="1.5"/>)
+      lines.push(<line key={'b'+i} x1={i} y1="64" x2={i+64} y2="0" stroke={stroke} strokeWidth="1.5"/>)
+    }
+  } else {
+    const spacing = pattern === 'aluminum' ? 12 : pattern === 'carbon' ? 6 : 9
+    for (let i=-60;i<70;i+=spacing) {
+      lines.push(<line key={i} x1={i} y1="0" x2={i+64} y2="64" stroke={stroke}
+        strokeWidth={pattern === 'stainless' ? 1.2 : 1.5}/>)
+    }
+  }
+  return (
+    <svg viewBox="0 0 64 64" width="60" height="60">
+      <defs><clipPath id={`clip-${pattern}`}><rect x="6" y="6" width="52" height="52" rx="4"/></clipPath></defs>
+      <g clipPath={`url(#clip-${pattern})`}>
+        <rect x="6" y="6" width="52" height="52" fill="#1a1a1a"/>
+        {lines}
+      </g>
+      {pattern === 'stainless' && [16,32,48].map(x => <circle key={x} cx={x} cy="14" r="1.4" fill="#FFB800"/>)}
+      <rect x="6" y="6" width="52" height="52" rx="4" fill="none" stroke="#555" strokeWidth="2"/>
+    </svg>
+  )
+}
+
+// 5. Projection arrangement + section view symbols
+function ProjectionSVG({ type }) {
+  if (type === 'third' || type === 'first') {
+    const top = type === 'third'
+    return (
+      <svg viewBox="0 0 64 64" width="60" height="60">
+        <rect x="18" y="26" width="28" height="20" fill="none" stroke="#1E90FF" strokeWidth="3"/>
+        <rect x="18" y={top ? 4 : 48} width="28" height="12" fill="none" stroke="#FFB800" strokeWidth="3"/>
+        <line x1="32" y1={top ? 16 : 46} x2="32" y2={top ? 26 : 48} stroke="#777" strokeWidth="2" strokeDasharray="2,2"/>
+      </svg>
+    )
+  }
+  if (type === 'hatch') {
+    const lines = Array.from({length:14}).map((_,i) => {
+      const o = -44 + i*8
+      return <line key={i} x1={o} y1="0" x2={o+64} y2="64" stroke="#1E90FF" strokeWidth="1.6"/>
+    })
+    return (
+      <svg viewBox="0 0 64 64" width="60" height="60">
+        <defs><clipPath id="clip-hatch"><rect x="10" y="10" width="44" height="44"/></clipPath></defs>
+        <g clipPath="url(#clip-hatch)">
+          <rect x="10" y="10" width="44" height="44" fill="#1a1a1a"/>
+          {lines}
+        </g>
+        <rect x="10" y="10" width="44" height="44" fill="none" stroke="#555" strokeWidth="2"/>
+      </svg>
+    )
+  }
+  // cutline
+  return (
+    <svg viewBox="0 0 64 64" width="60" height="60">
+      <line x1="8" y1="32" x2="56" y2="32" stroke="#FFB800" strokeWidth="2.5" strokeDasharray="10,3,2,3"/>
+      <polygon points="14,32 20,28 20,36" fill="#FFB800"/>
+      <polygon points="50,32 44,28 44,36" fill="#FFB800"/>
+      <text x="9" y="22" fontSize="11" fontWeight="bold" fill="#1E90FF" fontFamily="monospace">A</text>
+      <text x="47" y="22" fontSize="11" fontWeight="bold" fill="#1E90FF" fontFamily="monospace">A</text>
+    </svg>
+  )
+}
+
+// 6. Surface treatment layer cross-section
+function SurfaceLayerSVG({ type }) {
+  const layerColor = { plating:'#c7d2e0', anodize:'#7dd3fc', paint:'#ef4444', heat:'#999' }[type]
+  const layerH = type === 'heat' ? 8 : 4
+  const base = Array.from({length:10}).map((_,i) => {
+    const o = -30 + i*8
+    return <line key={i} x1={o} y1="20" x2={o+64} y2="54" stroke="#555" strokeWidth="1.4"/>
+  })
+  return (
+    <svg viewBox="0 0 64 64" width="60" height="60">
+      <defs><clipPath id={`clip-base-${type}`}><rect x="8" y="20" width="48" height="34"/></clipPath></defs>
+      <g clipPath={`url(#clip-base-${type})`}>
+        <rect x="8" y="20" width="48" height="34" fill="#1a1a1a"/>
+        {base}
+      </g>
+      <rect x="8" y="20" width="48" height="34" fill="none" stroke="#555" strokeWidth="2"/>
+      <rect x="8" y={20-layerH} width="48" height={layerH} fill={layerColor} opacity={type === 'heat' ? 0.85 : 0.9}/>
+      <rect x="8" y={20-layerH} width="48" height={layerH} fill="none" stroke="#FFB800" strokeWidth="1.5"/>
+      <line x1="50" y1={20-layerH/2} x2="60" y2="8" stroke="#FFB800" strokeWidth="1.5"/>
+      <circle cx="50" cy={20-layerH/2} r="1.8" fill="#FFB800"/>
+    </svg>
+  )
+}
+
+const SYMBOL_CATS = [
+  {
+    id:'rough', icon:'〜', jp:'表面粗さ記号', en:'Surface Roughness',
+    desc:'Written next to a surface line — tells the machinist HOW SMOOTH that face must be.',
+    where:'図面の面の横に直接記載',
+    items:[
+      { name:'Ra 6.3', jp:'一般機械加工面', rom:'Ippan kikai-kakou-men',
+        note:'General machining — visible tool marks OK, most structural surfaces',
+        svg:<RoughnessSVG ra="6.3"/> },
+      { name:'Ra 1.6', jp:'仕上げ面', rom:'Shiage-men',
+        note:'Fine finish — smooth to touch, common mating/sliding surfaces',
+        svg:<RoughnessSVG ra="1.6"/> },
+      { name:'Ra 0.8', jp:'精密仕上げ面', rom:'Seimitsu shiage-men',
+        note:'Precision finish — near mirror, bearing seats & seal faces',
+        svg:<RoughnessSVG ra="0.8"/> },
+      { name:'除去加工禁止', jp:'除去加工禁止', rom:'Jokyo-kakou-kinshi',
+        note:'As cast/forged — NO cutting, grinding, or machining allowed',
+        svg:<RoughnessSVG noRemoval/> },
+    ],
+  },
+  {
+    id:'gdt', icon:'⊕', jp:'幾何公差', en:'Geometric Tolerances (GD&T)',
+    desc:'Boxed symbols (feature control frame) controlling SHAPE and POSITION, not just size.',
+    where:'寸法線から伸びる枠（フィーチャーコントロールフレーム）内',
+    items:[
+      { name:'Roundness',         jp:'真円度', rom:'Shin-endo',
+        note:'Cross-section must be a true circle — no oval/lobing',
+        svg:<GDTSVG type="round"/> },
+      { name:'Parallelism',       jp:'平行度', rom:'Heikou-do',
+        note:'Surface/axis must stay parallel to the datum',
+        svg:<GDTSVG type="parallel"/> },
+      { name:'Perpendicularity',  jp:'直角度', rom:'Chokkaku-do',
+        note:'Surface/axis must stay exactly 90° to the datum',
+        svg:<GDTSVG type="perp"/> },
+      { name:'Angularity',        jp:'傾斜度', rom:'Keisha-do',
+        note:'Surface/axis must hold a specified angle to the datum',
+        svg:<GDTSVG type="angle"/> },
+      { name:'Concentricity',     jp:'同軸度', rom:'Dojiku-do',
+        note:'Two circular features must share the same center axis',
+        svg:<GDTSVG type="concentric"/> },
+      { name:'Position',         jp:'位置度', rom:'Ichi-do',
+        note:'A hole/feature must fall within a tolerance zone, not just a point',
+        svg:<GDTSVG type="position"/> },
+    ],
+  },
+  {
+    id:'fits', icon:'⌾', jp:'寸法公差・はめあい', en:'Dimensional Tolerance & Fits',
+    desc:'φ20H7/h6-style codes describe how tightly a shaft sits inside a hole.',
+    where:'穴・軸の寸法の後ろに記載 (例: φ20H7)',
+    items:[
+      { name:'H7/h6 — Clearance',    jp:'すきまばめ', rom:'Sukima-bame',
+        note:'Shaft slides freely in the hole — rotating pins, removable parts',
+        svg:<FitSVG type="clearance"/> },
+      { name:'H7/p6 — Interference', jp:'しまりばめ', rom:'Shimari-bame',
+        note:'Shaft is press-fit into the hole — permanent, no movement',
+        svg:<FitSVG type="interference"/> },
+      { name:'H7/k6 — Transition',   jp:'中間ばめ',   rom:'Chukan-bame',
+        note:'Almost zero gap — light tap-fit, located by hand/mallet',
+        svg:<FitSVG type="transition"/> },
+      { name:'IT Grade (IT5–IT7)',   jp:'IT等級',     rom:'IT-toukyuu',
+        note:'Lower number = tighter tolerance zone. IT5 tightest, IT7 standard',
+        svg:<ITGradeSVG/> },
+    ],
+  },
+  {
+    id:'material', icon:'▦', jp:'材料記号', en:'Material Codes',
+    desc:'Letter+number codes on the parts list specify exact metal grade — hatching alone is NOT proof of material.',
+    where:'材料表または部品リストに記載',
+    items:[
+      { name:'SS400',  jp:'一般構造用圧延鋼材', rom:'SS-yonhyaku',
+        note:'General structural steel — frames, brackets, weldments',
+        svg:<MaterialSVG pattern="steel"/> },
+      { name:'SUS304', jp:'ステンレス鋼',       rom:'Sutenresu-kou',
+        note:'Stainless — corrosion resistant, food/medical equipment',
+        svg:<MaterialSVG pattern="stainless"/> },
+      { name:'S45C',   jp:'機械構造用炭素鋼',   rom:'Tansoukou',
+        note:'Carbon steel — shafts, gears; can be heat-treated for hardness',
+        svg:<MaterialSVG pattern="carbon"/> },
+      { name:'A5052',  jp:'アルミニウム合金',   rom:'Arumi-goukin',
+        note:'Aluminum alloy — lightweight panels, corrosion resistant',
+        svg:<MaterialSVG pattern="aluminum"/> },
+      { name:'FC200',  jp:'ねずみ鋳鉄',         rom:'Nezumi-chuutetsu',
+        note:'Gray cast iron — machine bases/housings, damps vibration',
+        svg:<MaterialSVG pattern="castiron"/> },
+    ],
+  },
+  {
+    id:'proj', icon:'▢', jp:'断面図・投影法', en:'Section Views & Projection',
+    desc:'Defines HOW the 2D views relate to the real 3D object.',
+    where:'図面の表題欄／断面図内',
+    items:[
+      { name:'Third Angle (JIS)', jp:'第三角法', rom:'Dai-san-kaku-hou',
+        note:'JIS standard — top view drawn ABOVE front view. Used everywhere in Japan',
+        svg:<ProjectionSVG type="third"/> },
+      { name:'First Angle (ISO/EU)', jp:'第一角法', rom:'Dai-ikkaku-hou',
+        note:'Europe convention — top view drawn BELOW front view. Rare in Japan',
+        svg:<ProjectionSVG type="first"/> },
+      { name:'Section Hatching',  jp:'ハッチング', rom:'Hatchingu',
+        note:'Diagonal lines = solid material cut by the section plane',
+        svg:<ProjectionSVG type="hatch"/> },
+      { name:'Cutting Plane Line', jp:'切断線', rom:'Setsudan-sen',
+        note:'Shows WHERE the cut is made + which way you are looking (arrows)',
+        svg:<ProjectionSVG type="cutline"/> },
+    ],
+  },
+  {
+    id:'surface', icon:'▤', jp:'表面処理記号', en:'Surface Treatment',
+    desc:'A thin layer added AFTER machining — for protection, looks, or hardness.',
+    where:'指示記号＋処理名を図面の注記欄に記載',
+    items:[
+      { name:'Plating (めっき)',  jp:'めっき',     rom:'Mekki',
+        note:'Thin metal layer (Ni/Cr/Zn) for corrosion resistance or appearance',
+        svg:<SurfaceLayerSVG type="plating"/> },
+      { name:'Anodizing',         jp:'アルマイト', rom:'Arumaito',
+        note:'Hard oxide layer on aluminum — corrosion resistant, can be colored',
+        svg:<SurfaceLayerSVG type="anodize"/> },
+      { name:'Paint Coating',     jp:'塗装',       rom:'Tosou',
+        note:'Paint/coating layer — appearance plus basic corrosion protection',
+        svg:<SurfaceLayerSVG type="paint"/> },
+      { name:'Heat Treatment',    jp:'熱処理',     rom:'Netsushori',
+        note:'Hardened surface layer — spec\'d by HRC or HV hardness number',
+        svg:<SurfaceLayerSVG type="heat"/> },
+    ],
+  },
+]
+
+function SymbolTab() {
+  return (
+    <div style={{ padding:16, fontFamily:F_BODY, background:'#0d0d0d', minHeight:'100vh', paddingBottom:70 }}>
+      <div style={{ color:'#FFB800', fontFamily:F_TITLE, fontWeight:'bold', marginBottom:4,
+        fontSize:'0.78rem', letterSpacing:'0.04em' }}>📐 METAL FABRICATION DRAWING SYMBOLS</div>
+      <div style={{ color:'#555', fontSize:'0.62rem', marginBottom:16 }}>
+        JIS-based symbols used on factory floors across Japan
       </div>
-      {rules.map(r => (
-        <div key={r.title} style={{ background:'#141414', border:'1px solid #1E90FF22',
-          borderRadius:8, padding:'12px 14px', marginBottom:8 }}>
-          <div style={{ color:'#1E90FF', fontSize:'0.7rem', fontWeight:'bold', marginBottom:6 }}>{r.title}</div>
-          <pre style={{ color:'#bbb', fontSize:'0.66rem', whiteSpace:'pre-wrap',
-            lineHeight:1.55, fontFamily:'monospace', margin:0 }}>{r.body}</pre>
+
+      {SYMBOL_CATS.map((cat, ci) => (
+        <div key={cat.id} style={{ marginBottom:20 }}>
+          <div style={{ display:'flex', alignItems:'baseline', gap:8, marginBottom:4 }}>
+            <span style={{ color:'#FFB800', fontSize:'0.66rem', fontFamily:F_TITLE }}>{ci+1}</span>
+            <span style={{ color:'#1E90FF', fontWeight:'bold', fontSize:'0.74rem' }}>{cat.jp}</span>
+            <span style={{ color:'#777', fontSize:'0.64rem' }}>{cat.en}</span>
+          </div>
+          <div style={{ color:'#666', fontSize:'0.6rem', lineHeight:1.4, marginBottom:10 }}>{cat.desc}</div>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+            {cat.items.map(it => (
+              <div key={it.name} style={{ background:'#141414', border:'1px solid #1e1e1e',
+                borderRadius:8, padding:'10px', textAlign:'center' }}>
+                <div style={{ display:'flex', justifyContent:'center', marginBottom:4 }}>{it.svg}</div>
+                <div style={{ color:'#1E90FF', fontSize:'0.68rem', fontWeight:'bold' }}>{it.name}</div>
+                <div style={{ color:'#777', fontSize:'0.6rem' }}>{it.jp}</div>
+                <div style={{ color:'#555', fontSize:'0.58rem', fontStyle:'italic' }}>{it.rom}</div>
+                <div style={{ color:'#999', fontSize:'0.6rem', marginTop:4, lineHeight:1.3 }}>{it.note}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ color:'#444', fontSize:'0.56rem', marginTop:6 }}>📍 {cat.where}</div>
         </div>
       ))}
+
+      <div style={{ background:'#1a1206', border:'1px solid #FFB80055',
+        borderRadius:8, padding:'12px 14px', marginTop:8 }}>
+        <div style={{ color:'#FFB800', fontSize:'0.7rem', fontWeight:'bold', marginBottom:6 }}>
+          ⚠️ CRITICAL: 第三角法 vs 第一角法
+        </div>
+        <div style={{ color:'#ccc', fontSize:'0.66rem', lineHeight:1.55 }}>
+          Japan uses THIRD ANGLE (第三角法) — always check the drawing standard before reading.
+          ISO drawings may use FIRST ANGLE (第一角法). Mixing them up flips your views upside down.
+        </div>
+      </div>
     </div>
   )
 }
