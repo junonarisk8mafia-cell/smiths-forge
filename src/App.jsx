@@ -16,12 +16,12 @@ const P_DMG  = 20    // damage to player per wrong answer
 
 // ── MONSTER DATA ────────────────────────────────────────────
 const MONSTERS = [
-  { name:'PERMIT PHANTOM',    emoji:'👻', color:'#9CA3AF', flavor:'Denies every permit without the proper stamps!' },
-  { name:'CALIPER CRUSHER',   emoji:'📏', color:'#3B7DC4', flavor:'Measures your every mistake down to the micron!' },
-  { name:'PRESS PHANTOM',     emoji:'🏭', color:'#71717A', flavor:'Crushes sheet metal — and excuses — flat!' },
-  { name:'LATHE LORD',        emoji:'🌀', color:'#A8A8B0', flavor:'Turns raw stock into razor-sharp judgment!' },
-  { name:'DRAWING DEMON',     emoji:'📐', color:'#1E3A8A', flavor:'Rejects anything outside the tolerance zone!' },
-  { name:'INSPECTION DRAGON', emoji:'🐉', color:'#D4AF37', flavor:'The final inspection — pass or be scrapped!' },
+  { name:'PERMIT PHANTOM',    emoji:'👻', color:'#E85D04', flavor:'Denies every permit without the proper stamps!' },
+  { name:'CALIPER CRUSHER',   emoji:'📏', color:'#00CED1', flavor:'Measures your every mistake down to the micron!' },
+  { name:'PRESS PHANTOM',     emoji:'🏭', color:'#4169E1', flavor:'Crushes sheet metal — and excuses — flat!' },
+  { name:'LATHE LORD',        emoji:'🌀', color:'#6A5ACD', flavor:'Turns raw stock into razor-sharp judgment!' },
+  { name:'DRAWING DEMON',     emoji:'📐', color:'#483D8B', flavor:'Rejects anything outside the tolerance zone!' },
+  { name:'INSPECTION DRAGON', emoji:'🐉', color:'#2F4F4F', flavor:'The final inspection — pass or be scrapped!' },
 ]
 
 // ── CSS ANIMATIONS ──────────────────────────────────────────
@@ -42,6 +42,7 @@ const MONSTERS = [
     /* ── new visuals ── */
     @keyframes wf-pulse-glow { 0%,100%{text-shadow:0 0 18px #1E90FF77,0 0 36px #1E90FF33} 50%{text-shadow:0 0 28px #1E90FFCC,0 0 56px #1E90FF88,0 0 80px #1E90FF44} }
     @keyframes wf-bob        { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    @keyframes wf-spin-slow  { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
     @keyframes wf-mon-entry  { 0%{transform:translateY(-28px);opacity:0} 100%{transform:translateY(0);opacity:1} }
     @keyframes wf-stripe     { 0%{background-position:0 0} 100%{background-position:20px 0} }
     @keyframes wf-bounce-in  { 0%{transform:scale(1)} 40%{transform:scale(1.04)} 70%{transform:scale(0.98)} 100%{transform:scale(1)} }
@@ -102,7 +103,12 @@ const MONSTERS = [
     }
     * { box-sizing:border-box; }
     html, body {
-      background:#0d0d0d; margin:0;
+      background-color:#0d0d0d;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size:40px 40px;
+      margin:0;
       overscroll-behavior:none;
       -webkit-overflow-scrolling:touch;
     }
@@ -165,20 +171,20 @@ function shuffle(arr) {
 
 // ── SMITH SVG CHARACTER ────────────────────────────────────
 function SmithSVG({ size = 80 }) {
-  const aspect = 165 / 100
+  const aspect = 130 / 100
   const h = Math.round(size * aspect)
   return (
-    <svg width={size} height={h} viewBox="0 -45 100 165"
+    <svg width={size} height={h} viewBox="0 0 100 130"
       style={{
-        filter:'drop-shadow(0 0 14px #FF440099) drop-shadow(0 0 4px #8B691466)',
+        filter:'drop-shadow(0 0 14px #1E90FF99) drop-shadow(0 0 4px #8B691466)',
         animation:'wf-bob 3s ease-in-out infinite',
       }}>
       <defs>
-        {/* Visor glow gradient */}
+        {/* Visor glow gradient — steel-blue forge fire */}
         <radialGradient id="wf-visor-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%"   stopColor="#FFCC00" stopOpacity="0.9"/>
-          <stop offset="60%"  stopColor="#FF4400" stopOpacity="0.6"/>
-          <stop offset="100%" stopColor="#CC2200" stopOpacity="0"/>
+          <stop offset="0%"   stopColor="#9FE0FF" stopOpacity="0.9"/>
+          <stop offset="60%"  stopColor="#1E90FF" stopOpacity="0.6"/>
+          <stop offset="100%" stopColor="#0a3a66" stopOpacity="0"/>
         </radialGradient>
         {/* Anvil chest plate gradient */}
         <linearGradient id="wf-chest-grad" x1="0" y1="0" x2="0" y2="1">
@@ -190,7 +196,7 @@ function SmithSVG({ size = 80 }) {
           <stop offset="0%"   stopColor="#5a3a1a"/>
           <stop offset="100%" stopColor="#2e1d0c"/>
         </linearGradient>
-        {/* Spark gradient at hammer tip */}
+        {/* Molten spark/drip gradient at hammer tip */}
         <radialGradient id="wf-arc-grad" cx="50%" cy="80%" r="60%">
           <stop offset="0%"   stopColor="#ffffff"/>
           <stop offset="30%"  stopColor="#FFCC00"/>
@@ -204,6 +210,9 @@ function SmithSVG({ size = 80 }) {
           <stop offset="100%" stopColor="#5a4310"/>
         </linearGradient>
       </defs>
+
+      {/* Heroic-scale figure: original art authored on a taller canvas, fit into viewBox 0 0 100 130 */}
+      <g transform="translate(10.6,35.45) scale(0.7878)">
 
       {/* ── LEGS ── */}
       {/* Left leg */}
@@ -231,12 +240,12 @@ function SmithSVG({ size = 80 }) {
       <path d="M40 54 L38 62 L62 62 L60 54 Q60 50 50 50 Q40 50 40 54Z" fill="url(#wf-chest-grad)" stroke="#5a4310" strokeWidth="0.8"/>
       <path d="M38 62 L36 68 L64 68 L62 62Z" fill="url(#wf-chest-grad)" stroke="#5a4310" strokeWidth="0.8"/>
       <rect x="44" y="68" width="12" height="10" rx="1.5" fill="#3d2e08" stroke="#5a4310" strokeWidth="0.6"/>
-      {/* "SF" engraved text on anvil plate */}
+      {/* "SF" glowing crest on anvil plate */}
       <text x="50" y="60" textAnchor="middle" fontFamily="monospace" fontWeight="900"
-        fontSize="7" fill="#FF4400" opacity="0.9" letterSpacing="0.5"
+        fontSize="7" fill="#1E90FF" opacity="0.9" letterSpacing="0.5"
         style={{ filter:'url(#wf-visor-glow)' }}>SF</text>
       <text x="50" y="60" textAnchor="middle" fontFamily="monospace" fontWeight="900"
-        fontSize="7" fill="#FF440033" letterSpacing="0.5" stroke="#FF440022" strokeWidth="2.5">SF</text>
+        fontSize="7" fill="#1E90FF33" letterSpacing="0.5" stroke="#1E90FF22" strokeWidth="2.5">SF</text>
       {/* Bulky shoulder pads */}
       <path d="M26 58 L16 50 L12 60 L18 70 L28 68Z" fill="#4a3a1a" stroke="#6b4423" strokeWidth="0.7"/>
       <path d="M74 58 L84 50 L88 60 L82 70 L72 68Z" fill="#4a3a1a" stroke="#6b4423" strokeWidth="0.7"/>
@@ -249,6 +258,10 @@ function SmithSVG({ size = 80 }) {
       {/* Thick glove */}
       <path d="M7 84 L18 94 L24 90 L13 80Z" fill="#4a3a1a" stroke="#6b4423" strokeWidth="0.7"/>
       <line x1="10" y1="86" x2="16" y2="92" stroke="#6b4423" strokeWidth="0.8" opacity="0.5"/>
+      {/* Metal studs on left glove */}
+      <circle cx="13" cy="86" r="1.1" fill="#2e1d0c"/>
+      <circle cx="17" cy="90" r="1.1" fill="#2e1d0c"/>
+      <circle cx="11" cy="90" r="1.1" fill="#2e1d0c"/>
 
       {/* ── RIGHT ARM (raising forge hammer) ── */}
       {/* Upper arm — bulging */}
@@ -258,17 +271,31 @@ function SmithSVG({ size = 80 }) {
       {/* Thick gauntlet glove */}
       <path d="M87 12 L83 4 L89 0 L95 4 L96 16Z" fill="#4a3a1a" stroke="#6b4423" strokeWidth="0.7"/>
       <line x1="88" y1="10" x2="92" y2="2" stroke="#6b4423" strokeWidth="0.8" opacity="0.5"/>
+      {/* Metal studs on gauntlet */}
+      <circle cx="88" cy="6" r="1.1" fill="#2e1d0c"/>
+      <circle cx="92" cy="3" r="1.1" fill="#2e1d0c"/>
+      <circle cx="91" cy="9" r="1.1" fill="#2e1d0c"/>
       {/* Hammer handle */}
       <rect x="80" y="-10" width="6" height="22" rx="2" fill="#4a2f1a" stroke="#2e1d0c" strokeWidth="0.5"
         transform="rotate(-18 83 1)"/>
       <line x1="78" y1="8" x2="83" y2="-8" stroke="#2e1d0c" strokeWidth="1" opacity="0.6" transform="rotate(-18 83 1)"/>
-      {/* Heavy forge hammer head */}
-      <rect x="68" y="-22" width="28" height="14" rx="2" fill="url(#wf-armor-hi)" stroke="#3d2e08" strokeWidth="1"
-        transform="rotate(-18 82 -15)"/>
-      <rect x="70" y="-19" width="24" height="4" rx="1" fill="#d4ab2a" opacity="0.6" transform="rotate(-18 82 -17)"/>
+      {/* Heavy forge hammer head — raised high as a weapon */}
+      <rect x="64" y="-26" width="36" height="18" rx="2.5" fill="url(#wf-armor-hi)" stroke="#3d2e08" strokeWidth="1"
+        transform="rotate(-18 82 -17)"/>
+      <rect x="67" y="-22" width="30" height="5" rx="1" fill="#d4ab2a" opacity="0.6" transform="rotate(-18 82 -20)"/>
 
-      {/* ── SPARKS flying from hammer tip ── */}
-      <ellipse cx="78" cy="-26" rx="9" ry="9" fill="#FF440022"/>
+      {/* ── MOLTEN METAL drips falling from hammer head ── */}
+      <g transform="rotate(-18 82 -17)">
+        <path d="M72 -8 Q71 -2 73 4 Q74 7 72 9 Q70 7 71 3 Q69 -2 72 -8Z" fill="#FF6600" opacity="0.92"/>
+        <ellipse cx="72" cy="10" rx="1.6" ry="2.2" fill="#FFB800" opacity="0.85"/>
+        <path d="M88 -8 Q89 -1 87 5 Q86 9 88 11 Q90 9 89 4 Q91 -2 88 -8Z" fill="#FF4400" opacity="0.88"/>
+        <ellipse cx="88" cy="12" rx="1.3" ry="1.8" fill="#FFCC00" opacity="0.8"/>
+        <path d="M80 -6 Q81 0 79 5 Q78 8 80 9" stroke="#FF6600" strokeWidth="1.4" fill="none" opacity="0.8" strokeLinecap="round"/>
+        <ellipse cx="80" cy="10" rx="1" ry="1.4" fill="#FFB800" opacity="0.75"/>
+      </g>
+
+      {/* ── SPARKS AND EMBERS floating around hammer ── */}
+      <ellipse cx="78" cy="-26" rx="11" ry="11" fill="#FF440022"/>
       <path d="M76 -22 Q74 -28 78 -32 Q80 -35 79 -31 Q83 -36 80 -28 Q84 -32 82 -26 Q80 -22 78 -22Z"
         fill="url(#wf-arc-grad)" opacity="0.95"/>
       <ellipse cx="78" cy="-29" rx="2.2" ry="3" fill="#ffffff" opacity="0.9"/>
@@ -283,6 +310,9 @@ function SmithSVG({ size = 80 }) {
       <circle cx="66" cy="-26" r="0.9" fill="#FF4400"  opacity="0.75"/>
       <circle cx="82" cy="-38" r="0.7" fill="#FFCC00"  opacity="0.7"/>
       <circle cx="74" cy="-37" r="1.0" fill="#ffffff"  opacity="0.65"/>
+      <circle cx="60" cy="-30" r="0.8" fill="#FF8800"  opacity="0.7"/>
+      <circle cx="96" cy="-12" r="0.9" fill="#FFCC00"  opacity="0.7"/>
+      <circle cx="56" cy="-18" r="0.7" fill="#FF6600"  opacity="0.65"/>
 
       {/* ── NECK ── */}
       <rect x="38" y="36" width="24" height="12" rx="2" fill="#3a2a1a" stroke="#5a3a1a" strokeWidth="0.6"/>
@@ -303,18 +333,19 @@ function SmithSVG({ size = 80 }) {
       <rect x="34" y="26" width="32" height="3" rx="1.5" fill="#6b4423" opacity="0.7"/>
 
       {/* ── VISOR (down position, glowing) — worn over eyes ── */}
-      <path d="M32 28 L34 24 L66 24 L68 28 L64 33 L36 33Z" fill="#0d0d18" stroke="#FF440055" strokeWidth="0.8"/>
+      <path d="M32 28 L34 24 L66 24 L68 28 L64 33 L36 33Z" fill="#0d0d18" stroke="#1E90FF55" strokeWidth="0.8"/>
       <path d="M33 28 L35 25 L65 25 L67 28 L63 32 L37 32Z" fill="url(#wf-visor-glow)" opacity="0.4"/>
-      {/* Glowing forge-red eyes behind visor */}
-      <ellipse cx="42" cy="28" rx="5" ry="3.2" fill="#FF4400" opacity="0.8"/>
-      <ellipse cx="58" cy="28" rx="5" ry="3.2" fill="#FF4400" opacity="0.8"/>
-      <ellipse cx="42" cy="28" rx="2.6" ry="1.8" fill="#FFCC00" opacity="0.9"/>
-      <ellipse cx="58" cy="28" rx="2.6" ry="1.8" fill="#FFCC00" opacity="0.9"/>
+      {/* Glowing forge-fire eyes (steel blue) behind visor */}
+      <ellipse cx="42" cy="28" rx="5" ry="3.2" fill="#1E90FF" opacity="0.8"/>
+      <ellipse cx="58" cy="28" rx="5" ry="3.2" fill="#1E90FF" opacity="0.8"/>
+      <ellipse cx="42" cy="28" rx="2.6" ry="1.8" fill="#9FE0FF" opacity="0.9"/>
+      <ellipse cx="58" cy="28" rx="2.6" ry="1.8" fill="#9FE0FF" opacity="0.9"/>
       <ellipse cx="42" cy="28" rx="1.1" ry="0.8" fill="#ffffff"  opacity="0.8"/>
       <ellipse cx="58" cy="28" rx="1.1" ry="0.8" fill="#ffffff"  opacity="0.8"/>
 
       {/* ── GROUND SHADOW ── */}
-      <ellipse cx="50" cy="116" rx="22" ry="3" fill="#FF440011"/>
+      <ellipse cx="50" cy="116" rx="22" ry="3" fill="#1E90FF11"/>
+      </g>
     </svg>
   )
 }
@@ -607,26 +638,57 @@ function MonsterPermitPhantom() {
       <defs>
         <radialGradient id="k1-eye" cx="50%" cy="50%" r="50%">
           <stop offset="0%" stopColor="#fff"/>
-          <stop offset="60%" stopColor="#9CA3AF"/>
-          <stop offset="100%" stopColor="#374151" stopOpacity="0"/>
+          <stop offset="40%" stopColor="#FF3B1F"/>
+          <stop offset="100%" stopColor="#7C1D0A" stopOpacity="0"/>
         </radialGradient>
         <radialGradient id="k1-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#9CA3AF" stopOpacity="0.35"/>
-          <stop offset="100%" stopColor="#9CA3AF" stopOpacity="0"/>
+          <stop offset="0%" stopColor="#E85D04" stopOpacity="0.4"/>
+          <stop offset="100%" stopColor="#E85D04" stopOpacity="0"/>
         </radialGradient>
         <linearGradient id="k1-robe" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#E5E7EB"/>
           <stop offset="100%" stopColor="#9CA3AF"/>
         </linearGradient>
+        <linearGradient id="k1-cape" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#FBBF24"/>
+          <stop offset="100%" stopColor="#B45309"/>
+        </linearGradient>
       </defs>
       <ellipse cx="60" cy="60" rx="52" ry="52" fill="url(#k1-glow)"/>
-      {/* Floating red prohibition signs */}
-      {[{x:14,y:30,r:9},{x:106,y:26,r:7},{x:10,y:78,r:7},{x:108,y:84,r:8},{x:60,y:8,r:6}].map((s,i) => (
-        <g key={i} opacity="0.85">
+
+      {/* Prohibition signs orbiting like planets — faint orbit rings + signs at varied radii */}
+      <ellipse cx="60" cy="56" rx="58" ry="20" fill="none" stroke="#E85D0433" strokeWidth="1" strokeDasharray="2,4"/>
+      <ellipse cx="60" cy="56" rx="40" ry="50" fill="none" stroke="#E85D0422" strokeWidth="1" strokeDasharray="2,4"/>
+      {[{x:6,y:46,r:8},{x:114,y:38,r:6},{x:8,y:92,r:6.5},{x:112,y:96,r:7.5},{x:60,y:4,r:5.5},{x:30,y:8,r:4.5}].map((s,i) => (
+        <g key={i} opacity="0.9">
           <circle cx={s.x} cy={s.y} r={s.r} fill="none" stroke="#DC2626" strokeWidth="2.4"/>
           <line x1={s.x-s.r*0.7} y1={s.y+s.r*0.7} x2={s.x+s.r*0.7} y2={s.y-s.r*0.7} stroke="#DC2626" strokeWidth="2.4"/>
         </g>
       ))}
+
+      {/* Giant clipboard floating behind, with flying NG stamps */}
+      <g transform="rotate(-10 96 64)" opacity="0.95">
+        <rect x="76" y="34" width="40" height="56" rx="2.5" fill="#7C5230"/>
+        <rect x="80" y="40" width="32" height="46" rx="1.5" fill="#f0e8cc"/>
+        <rect x="92" y="30" width="8" height="8" rx="1.5" fill="#9CA3AF"/>
+        {[48,56,64,72,80].map(y => <line key={y} x1="84" y1={y} x2="108" y2={y} stroke="#999" strokeWidth="1" opacity="0.6"/>)}
+      </g>
+      {[{x:100,y:50,rot:-18},{x:118,y:78,rot:12},{x:78,y:100,rot:-8},{x:62,y:96,rot:20}].map((n,i) => (
+        <g key={i} transform={`translate(${n.x},${n.y}) rotate(${n.rot})`}>
+          <circle r="9" fill="#7F1D1D" stroke="#DC2626" strokeWidth="1.4"/>
+          <circle r="7" fill="#DC2626"/>
+          <text y="3" fontSize="6.5" fontWeight="900" fill="#fff" fontFamily="monospace" textAnchor="middle">NG</text>
+          <line x1="-13" y1="6" x2="-9" y2="3" stroke="#DC2626" strokeWidth="1" opacity="0.6"/>
+          <line x1="13" y1="6" x2="9" y2="3" stroke="#DC2626" strokeWidth="1" opacity="0.6"/>
+        </g>
+      ))}
+
+      {/* Tattered hi-vis vest worn as a ghost cape — jagged hem */}
+      <path d="M34 46 L86 46 L94 56 Q88 70 92 86 L84 92 L88 108 L78 102 L72 110 L64 100 L56 110 L48 100 L40 108 L32 96 L36 86 Q28 70 26 56Z"
+        fill="url(#k1-cape)" opacity="0.55"/>
+      <path d="M40 50 L80 50 L86 58 Q82 70 85 84" stroke="#92400E" strokeWidth="1" fill="none" opacity="0.5"/>
+      <path d="M40 50 L80 50 L86 58 Q82 70 85 84" stroke="#FCD34D" strokeWidth="0.6" fill="none" opacity="0.4" transform="translate(-2,2)"/>
+
       {/* Ghostly wavy robe — translucent */}
       <path d="M28 100 Q22 70 26 44 Q32 14 60 10 Q88 14 94 44 Q98 70 92 100 Q84 90 76 98 Q68 90 60 98 Q52 90 44 98 Q36 90 28 100Z"
         fill="url(#k1-robe)" opacity="0.55"/>
@@ -636,41 +698,41 @@ function MonsterPermitPhantom() {
       <path d="M44 40 Q42 64 40 88" stroke="#fff" strokeWidth="1" opacity="0.4"/>
       <path d="M60 36 Q60 64 60 92" stroke="#fff" strokeWidth="1" opacity="0.4"/>
       <path d="M76 40 Q78 64 80 88" stroke="#fff" strokeWidth="1" opacity="0.4"/>
-      {/* Hi-vis vest sash */}
+      {/* Hi-vis sash over robe */}
       <path d="M40 48 L48 92 L56 90 L50 46Z" fill="#F59E0B" opacity="0.85"/>
       <path d="M80 48 L72 92 L64 90 L70 46Z" fill="#F59E0B" opacity="0.85"/>
       <rect x="44" y="58" width="6" height="4" fill="#1f2937" opacity="0.7"/>
       <rect x="70" y="58" width="6" height="4" fill="#1f2937" opacity="0.7"/>
-      {/* Left arm — holding clipboard */}
-      <path d="M36 58 Q18 64 12 76" stroke="#9CA3AF" strokeWidth="8" fill="none" strokeLinecap="round" opacity="0.85"/>
-      <rect x="0" y="74" width="18" height="24" rx="1.5" fill="#7C5230" transform="rotate(-8 9 86)"/>
-      <rect x="2" y="76" width="14" height="19" rx="1" fill="#f0e8cc" transform="rotate(-8 9 86)"/>
-      {[80,84,88,92].map(y => <line key={y} x1="4" y1={y} x2="14" y2={y} stroke="#999" strokeWidth="0.8" opacity="0.6" transform="rotate(-8 9 86)"/>)}
-      <line x1="4" y1="89" x2="9" y2="93" stroke="#DC2626" strokeWidth="1.4" transform="rotate(-8 9 86)"/>
-      <line x1="9" y1="89" x2="4" y2="93" stroke="#DC2626" strokeWidth="1.4" transform="rotate(-8 9 86)"/>
-      {/* Right arm — raised, pointing/forbidding */}
+      {/* Left arm — pointing toward clipboard */}
+      <path d="M36 58 Q50 70 64 78" stroke="#9CA3AF" strokeWidth="8" fill="none" strokeLinecap="round" opacity="0.85"/>
+      <path d="M64 78 L70 74 M64 78 L68 84 M64 78 L60 84" stroke="#E5E7EB" strokeWidth="1.6" strokeLinecap="round" opacity="0.8"/>
+      {/* Right arm — raised, forbidding */}
       <path d="M84 58 Q102 50 108 36" stroke="#9CA3AF" strokeWidth="8" fill="none" strokeLinecap="round" opacity="0.85"/>
       <path d="M108 36 L104 30 M108 36 L112 30 M108 36 L106 42" stroke="#E5E7EB" strokeWidth="2" strokeLinecap="round" opacity="0.8"/>
       {/* Neck */}
       <rect x="48" y="38" width="24" height="10" rx="3" fill="#9CA3AF" opacity="0.8"/>
       {/* Head — ghostly pale */}
       <path d="M30 32 Q32 10 60 8 Q88 10 90 32 L86 46 L34 46Z" fill="url(#k1-robe)"/>
-      {/* Hard hat */}
-      <path d="M28 28 Q60 6 92 28 L90 34 Q60 16 30 34Z" fill="#FBBF24" stroke="#92400E" strokeWidth="0.8"/>
-      <ellipse cx="60" cy="14" rx="18" ry="7" fill="#FCD34D" stroke="#92400E" strokeWidth="0.8"/>
-      <line x1="44" y1="13" x2="76" y2="13" stroke="#92400E" strokeWidth="0.6" opacity="0.5"/>
-      {/* Hollow ghost eyes */}
+      {/* Hard hat — tilted menacingly */}
+      <g transform="rotate(-13 60 16)">
+        <path d="M28 28 Q60 6 92 28 L90 34 Q60 16 30 34Z" fill="#FBBF24" stroke="#92400E" strokeWidth="0.8"/>
+        <ellipse cx="60" cy="14" rx="18" ry="7" fill="#FCD34D" stroke="#92400E" strokeWidth="0.8"/>
+        <line x1="44" y1="13" x2="76" y2="13" stroke="#92400E" strokeWidth="0.6" opacity="0.5"/>
+      </g>
+      {/* Glowing red eyes */}
       <ellipse cx="46" cy="32" rx="7" ry="8" fill="#1f2937" opacity="0.9"/>
       <ellipse cx="74" cy="32" rx="7" ry="8" fill="#1f2937" opacity="0.9"/>
-      <ellipse cx="46" cy="33" rx="3.6" ry="4.5" fill="url(#k1-eye)"/>
-      <ellipse cx="74" cy="33" rx="3.6" ry="4.5" fill="url(#k1-eye)"/>
+      <ellipse cx="46" cy="33" rx="4.2" ry="5" fill="url(#k1-eye)"/>
+      <ellipse cx="74" cy="33" rx="4.2" ry="5" fill="url(#k1-eye)"/>
+      <ellipse cx="46" cy="33" rx="1.3" ry="1.6" fill="#fff" opacity="0.85"/>
+      <ellipse cx="74" cy="33" rx="1.3" ry="1.6" fill="#fff" opacity="0.85"/>
       {/* Disapproving frown */}
       <path d="M44 42 Q60 38 76 42" stroke="#374151" strokeWidth="2.5" fill="none" strokeLinecap="round" opacity="0.8"/>
       {/* Wispy ghost tail trails */}
       <path d="M44 98 Q40 108 44 116" stroke="#E5E7EB" strokeWidth="5" fill="none" strokeLinecap="round" opacity="0.5"/>
       <path d="M60 98 Q60 110 60 118" stroke="#E5E7EB" strokeWidth="5" fill="none" strokeLinecap="round" opacity="0.5"/>
       <path d="M76 98 Q80 108 76 116" stroke="#E5E7EB" strokeWidth="5" fill="none" strokeLinecap="round" opacity="0.5"/>
-      <ellipse cx="60" cy="116" rx="26" ry="3.5" fill="#9CA3AF20"/>
+      <ellipse cx="60" cy="116" rx="26" ry="3.5" fill="#E85D0420"/>
     </svg>
   )
 }
@@ -687,129 +749,147 @@ function MonsterCaliperCrusher() {
     <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <radialGradient id="k2-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#3B7DC4" stopOpacity="0.4"/>
-          <stop offset="100%" stopColor="#3B7DC4" stopOpacity="0"/>
+          <stop offset="0%" stopColor="#00CED1" stopOpacity="0.4"/>
+          <stop offset="100%" stopColor="#00CED1" stopOpacity="0"/>
         </radialGradient>
         <linearGradient id="k2-metal" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#5A9CD4"/>
-          <stop offset="100%" stopColor="#1A3A5C"/>
+          <stop offset="0%" stopColor="#7FFFD4"/>
+          <stop offset="100%" stopColor="#036666"/>
         </linearGradient>
       </defs>
       <ellipse cx="60" cy="60" rx="52" ry="52" fill="url(#k2-glow)"/>
       {/* Micrometer-barrel legs */}
-      <rect x="40" y="88" width="14" height="26" rx="2" fill="#1A3A5C"/>
-      <rect x="66" y="88" width="14" height="26" rx="2" fill="#1A3A5C"/>
-      {[92,97,102,107].map(y => <line key={y}     x1="40" y1={y} x2="54" y2={y} stroke="#5A9CD4" strokeWidth="0.7" opacity="0.7"/>)}
-      {[92,97,102,107].map(y => <line key={y+'r'} x1="66" y1={y} x2="80" y2={y} stroke="#5A9CD4" strokeWidth="0.7" opacity="0.7"/>)}
-      <rect x="38" y="106" width="18" height="8" rx="2" fill="#5A9CD4"/>
-      <rect x="64" y="106" width="18" height="8" rx="2" fill="#5A9CD4"/>
-      <rect x="36" y="112" width="22" height="4" rx="1" fill="#0D2240"/>
-      <rect x="62" y="112" width="22" height="4" rx="1" fill="#0D2240"/>
-      {/* Torso — stacked dial gauge plates */}
-      <rect x="32" y="56" width="56" height="36" rx="4" fill="#1A3A5C"/>
-      <rect x="36" y="60" width="48" height="28" rx="3" fill="url(#k2-metal)"/>
-      <circle cx="60" cy="74" r="13" fill="#0D2240"/>
-      <circle cx="60" cy="74" r="11" fill="#15304f" stroke="#5A9CD4" strokeWidth="1"/>
-      {dialTicks(60, 74, 11, 12, '#88CCFF')}
-      <line x1="60" y1="74" x2="66" y2="67" stroke="#FF4444" strokeWidth="1.6" strokeLinecap="round"/>
-      <circle cx="60" cy="74" r="1.6" fill="#88CCFF"/>
-      {/* Hi-vis warning chevron on chest */}
-      <path d="M44 92 L60 84 L76 92" stroke="#FBBF24" strokeWidth="2.5" fill="none" opacity="0.8"/>
+      <rect x="40" y="88" width="14" height="26" rx="2" fill="#036666"/>
+      <rect x="66" y="88" width="14" height="26" rx="2" fill="#036666"/>
+      {[92,97,102,107].map(y => <line key={y}     x1="40" y1={y} x2="54" y2={y} stroke="#7FFFD4" strokeWidth="0.7" opacity="0.7"/>)}
+      {[92,97,102,107].map(y => <line key={y+'r'} x1="66" y1={y} x2="80" y2={y} stroke="#7FFFD4" strokeWidth="0.7" opacity="0.7"/>)}
+      <rect x="38" y="106" width="18" height="8" rx="2" fill="#00CED1"/>
+      <rect x="64" y="106" width="18" height="8" rx="2" fill="#00CED1"/>
+      <rect x="36" y="112" width="22" height="4" rx="1" fill="#022626"/>
+      <rect x="62" y="112" width="22" height="4" rx="1" fill="#022626"/>
+      {/* Torso — micrometer barrel with graduation markings */}
+      <rect x="28" y="56" width="64" height="32" rx="14" fill="#022626" stroke="#00CED1" strokeWidth="1"/>
+      <rect x="32" y="60" width="56" height="24" rx="11" fill="url(#k2-metal)"/>
+      {/* Graduation lines around the barrel */}
+      {[34,40,46,52,58,64,70,76,82].map((x,i) => (
+        <line key={x} x1={x} y1="60" x2={x} y2={i%3===0 ? 67 : 64} stroke="#022626" strokeWidth="0.8" opacity="0.7"/>
+      ))}
+      {/* Rotating thimble sleeve — helical lines */}
+      <rect x="62" y="58" width="26" height="28" rx="8" fill="#0a3d3d" opacity="0.85"/>
+      {[64,70,76,82].map(x => <line key={x} x1={x} y1="60" x2={x+4} y2="84" stroke="#7FFFD4" strokeWidth="0.8" opacity="0.6"/>)}
+      {/* Digital LCD readout showing ERROR */}
+      <rect x="38" y="68" width="22" height="9" rx="1.5" fill="#021414" stroke="#00CED1" strokeWidth="0.8"/>
+      <text x="49" y="75" textAnchor="middle" fontSize="6" fontWeight="900" fill="#FF4444"
+        fontFamily="monospace" letterSpacing="0.5">ERROR</text>
       {/* Shoulders */}
-      <circle cx="30" cy="60" r="9" fill="#0D2240"/>
-      <circle cx="90" cy="60" r="9" fill="#0D2240"/>
-      <circle cx="30" cy="60" r="6.5" fill="#5A9CD4"/>
-      <circle cx="90" cy="60" r="6.5" fill="#5A9CD4"/>
-      {/* Vernier-caliper arms — sliding jaws */}
-      <rect x="2" y="58" width="30" height="6" rx="1" fill="#1A3A5C"/>
-      <rect x="4" y="59.2" width="26" height="3.6" rx="0.8" fill="#88CCFF" opacity="0.7"/>
-      {[6,10,14,18,22,26].map(x => <line key={x} x1={x} y1="58" x2={x} y2="61" stroke="#0D2240" strokeWidth="0.6"/>)}
-      <path d="M2 58 L2 50 L7 50 L7 58Z" fill="#5A9CD4"/>
-      <path d="M2 64 L2 72 L7 72 L7 64Z" fill="#5A9CD4"/>
-      <rect x="88" y="58" width="30" height="6" rx="1" fill="#1A3A5C"/>
-      <rect x="90" y="59.2" width="26" height="3.6" rx="0.8" fill="#88CCFF" opacity="0.7"/>
-      {[92,96,100,104,108,112].map(x => <line key={x} x1={x} y1="58" x2={x} y2="61" stroke="#0D2240" strokeWidth="0.6"/>)}
-      <path d="M118 58 L118 50 L113 50 L113 58Z" fill="#5A9CD4"/>
-      <path d="M118 64 L118 72 L113 72 L113 64Z" fill="#5A9CD4"/>
-      {/* Head — large dial gauge face */}
-      <circle cx="60" cy="28" r="23" fill="#1A3A5C"/>
-      <circle cx="60" cy="28" r="20" fill="#15304f" stroke="#5A9CD4" strokeWidth="1.2"/>
-      {dialTicks(60, 28, 19, 24, '#88CCFF')}
-      {/* Dial gauge eyes */}
-      <circle cx="50" cy="28" r="6.5" fill="#0A1E35" stroke="#5A9CD4" strokeWidth="1"/>
-      <circle cx="70" cy="28" r="6.5" fill="#0A1E35" stroke="#5A9CD4" strokeWidth="1"/>
-      {dialTicks(50, 28, 6, 8, '#88CCFF')}
-      {dialTicks(70, 28, 6, 8, '#88CCFF')}
+      <circle cx="28" cy="60" r="9" fill="#022626"/>
+      <circle cx="92" cy="60" r="9" fill="#022626"/>
+      <circle cx="28" cy="60" r="6.5" fill="#00CED1"/>
+      <circle cx="92" cy="60" r="6.5" fill="#00CED1"/>
+      {/* Vernier-caliper arms — sliding jaws, massive reach */}
+      <rect x="0" y="58" width="30" height="6" rx="1" fill="#022626"/>
+      <rect x="2" y="59.2" width="24" height="3.6" rx="0.8" fill="#7FFFD4" opacity="0.7"/>
+      {[4,8,12,16,20,24].map(x => <line key={x} x1={x} y1="58" x2={x} y2="61" stroke="#022626" strokeWidth="0.6"/>)}
+      <path d="M0 58 L0 48 L7 48 L7 58Z" fill="#00CED1"/>
+      <path d="M0 64 L0 76 L7 76 L7 64Z" fill="#00CED1"/>
+      <rect x="90" y="58" width="30" height="6" rx="1" fill="#022626"/>
+      <rect x="92" y="59.2" width="24" height="3.6" rx="0.8" fill="#7FFFD4" opacity="0.7"/>
+      {[96,100,104,108,112,116].map(x => <line key={x} x1={x} y1="58" x2={x} y2="61" stroke="#022626" strokeWidth="0.6"/>)}
+      <path d="M120 58 L120 48 L113 48 L113 58Z" fill="#00CED1"/>
+      <path d="M120 64 L120 76 L113 76 L113 64Z" fill="#00CED1"/>
+      {/* Head — large spinning dial gauge face with needle eyes */}
+      <circle cx="60" cy="28" r="23" fill="#022626"/>
+      <circle cx="60" cy="28" r="20" fill="#053d3d" stroke="#00CED1" strokeWidth="1.2"/>
+      <g style={{ animation:'wf-spin-slow 6s linear infinite', transformOrigin:'60px 28px' }}>
+        {dialTicks(60, 28, 19, 24, '#7FFFD4')}
+      </g>
+      {/* Dial gauge eyes with needles */}
+      <circle cx="50" cy="28" r="6.5" fill="#021414" stroke="#00CED1" strokeWidth="1"/>
+      <circle cx="70" cy="28" r="6.5" fill="#021414" stroke="#00CED1" strokeWidth="1"/>
+      {dialTicks(50, 28, 6, 8, '#7FFFD4')}
+      {dialTicks(70, 28, 6, 8, '#7FFFD4')}
       <line x1="50" y1="28" x2="53" y2="24" stroke="#FF4444" strokeWidth="1.4" strokeLinecap="round"/>
       <line x1="70" y1="28" x2="73" y2="24" stroke="#FF4444" strokeWidth="1.4" strokeLinecap="round"/>
-      <circle cx="50" cy="28" r="1.1" fill="#88CCFF"/>
-      <circle cx="70" cy="28" r="1.1" fill="#88CCFF"/>
+      <circle cx="50" cy="28" r="1.1" fill="#7FFFD4"/>
+      <circle cx="70" cy="28" r="1.1" fill="#7FFFD4"/>
       {/* Grill mouth */}
-      <rect x="48" y="38" width="24" height="8" rx="2" fill="#0A1E35"/>
-      {[40.5,42.5,44.5].map(y => <rect key={y} x="49" y={y} width="22" height="1.2" rx="0.5" fill="#5A9CD4" opacity="0.7"/>)}
-      <ellipse cx="60" cy="116" rx="26" ry="3.5" fill="#3B7DC420"/>
+      <rect x="48" y="38" width="24" height="8" rx="2" fill="#021414"/>
+      {[40.5,42.5,44.5].map(y => <rect key={y} x="49" y={y} width="22" height="1.2" rx="0.5" fill="#00CED1" opacity="0.7"/>)}
+      <ellipse cx="60" cy="116" rx="26" ry="3.5" fill="#00CED120"/>
     </svg>
   )
 }
 
 function MonsterPressPhantom() {
+  const hazardStripe = (i) => i % 2 === 0 ? '#FBBF24' : '#1a1a1c'
   return (
     <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <radialGradient id="k3-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#DC2626" stopOpacity="0.35"/>
-          <stop offset="100%" stopColor="#DC2626" stopOpacity="0"/>
+          <stop offset="0%" stopColor="#4169E1" stopOpacity="0.4"/>
+          <stop offset="100%" stopColor="#4169E1" stopOpacity="0"/>
         </radialGradient>
         <linearGradient id="k3-metal" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#9CA0A6"/>
-          <stop offset="100%" stopColor="#3F4448"/>
+          <stop offset="0%" stopColor="#A8B8E8"/>
+          <stop offset="100%" stopColor="#1E2A5E"/>
         </linearGradient>
         <radialGradient id="k3-eye" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#FF6B4A"/>
+          <stop offset="0%" stopColor="#fff"/>
+          <stop offset="55%" stopColor="#FF4444"/>
           <stop offset="100%" stopColor="#7F1D1D" stopOpacity="0"/>
         </radialGradient>
       </defs>
       <ellipse cx="60" cy="62" rx="52" ry="52" fill="url(#k3-glow)"/>
       {/* Press bed / base */}
-      <rect x="22" y="98" width="76" height="14" rx="2" fill="#2A2D30" stroke="#71717A" strokeWidth="1"/>
-      {[30,46,62,78,90].map(x => <rect key={x} x={x} y="101" width="4" height="4" fill="#DC2626" opacity="0.7"/>)}
+      <rect x="22" y="98" width="76" height="14" rx="2" fill="#1E2A5E" stroke="#4169E1" strokeWidth="1"/>
+      {[30,46,62,78,90].map(x => <rect key={x} x={x} y="101" width="4" height="4" fill="#FF4444" opacity="0.7"/>)}
       {/* C-frame columns */}
-      <path d="M26 98 L30 30 Q32 14 50 12 L52 22 Q42 24 40 34 L38 98Z" fill="url(#k3-metal)" stroke="#26282A" strokeWidth="1"/>
-      <path d="M94 98 L90 30 Q88 14 70 12 L68 22 Q78 24 80 34 L82 98Z" fill="url(#k3-metal)" stroke="#26282A" strokeWidth="1"/>
-      {/* Warning stripes on frame edges */}
-      {[34,42,50,58].map(y => <rect key={y} x="33" y={y} width="6" height="3" fill="#FBBF24" opacity="0.85" transform={`skewY(-25)`}/>)}
-      {[34,42,50,58].map(y => <rect key={y+'r'} x="81" y={y} width="6" height="3" fill="#FBBF24" opacity="0.85" transform={`skewY(25)`}/>)}
+      <path d="M26 98 L30 30 Q32 14 50 12 L52 22 Q42 24 40 34 L38 98Z" fill="url(#k3-metal)" stroke="#10173a" strokeWidth="1"/>
+      <path d="M94 98 L90 30 Q88 14 70 12 L68 22 Q78 24 80 34 L82 98Z" fill="url(#k3-metal)" stroke="#10173a" strokeWidth="1"/>
+      {/* Yellow/black hazard stripe pattern on frame edges */}
+      {[32,38,44,50,56,62].map((y,i) => <rect key={y} x="32" y={y} width="7" height="3.4" fill={hazardStripe(i)} opacity="0.95" transform="skewY(-25)"/>)}
+      {[32,38,44,50,56,62].map((y,i) => <rect key={y+'r'} x="80" y={y} width="7" height="3.4" fill={hazardStripe(i)} opacity="0.95" transform="skewY(25)"/>)}
       {/* Top crossbeam */}
-      <rect x="28" y="8" width="64" height="14" rx="2" fill="url(#k3-metal)" stroke="#26282A" strokeWidth="1"/>
-      {/* Evil riveted face on crossbeam */}
-      <ellipse cx="44" cy="15" rx="6.5" ry="5" fill="#1a1a1c"/>
-      <ellipse cx="76" cy="15" rx="6.5" ry="5" fill="#1a1a1c"/>
-      <ellipse cx="44" cy="15" rx="4" ry="3" fill="url(#k3-eye)"/>
-      <ellipse cx="76" cy="15" rx="4" ry="3" fill="url(#k3-eye)"/>
-      <ellipse cx="44" cy="15" rx="1.6" ry="1.2" fill="#FFE066"/>
-      <ellipse cx="76" cy="15" rx="1.6" ry="1.2" fill="#FFE066"/>
-      <path d="M38 9 L48 11" stroke="#1a1a1c" strokeWidth="2" strokeLinecap="round"/>
-      <path d="M82 9 L72 11" stroke="#1a1a1c" strokeWidth="2" strokeLinecap="round"/>
-      <path d="M50 19 L60 22 L70 19 L68 23 L60 26 L52 23Z" fill="#1a1a1c"/>
+      <rect x="28" y="6" width="64" height="16" rx="2" fill="url(#k3-metal)" stroke="#10173a" strokeWidth="1"/>
+      {/* Evil face formed from pressure gauges and valves */}
+      {/* Pressure-gauge eyes — needles pinned at max in the red zone */}
+      <circle cx="44" cy="14" r="7.5" fill="#10173a" stroke="#A8B8E8" strokeWidth="1"/>
+      <circle cx="76" cy="14" r="7.5" fill="#10173a" stroke="#A8B8E8" strokeWidth="1"/>
+      <path d="M44 14 L44 7.5 A7.5 7.5 0 0 1 50.8 17.2 Z" fill="#FF444455"/>
+      <path d="M76 14 L76 7.5 A7.5 7.5 0 0 1 82.8 17.2 Z" fill="#FF444455"/>
+      <circle cx="44" cy="14" r="4.5" fill="url(#k3-eye)"/>
+      <circle cx="76" cy="14" r="4.5" fill="url(#k3-eye)"/>
+      <line x1="44" y1="14" x2="49" y2="9" stroke="#1a1a1c" strokeWidth="1.4" strokeLinecap="round"/>
+      <line x1="76" y1="14" x2="81" y2="9" stroke="#1a1a1c" strokeWidth="1.4" strokeLinecap="round"/>
+      <circle cx="44" cy="14" r="1.3" fill="#1a1a1c"/>
+      <circle cx="76" cy="14" r="1.3" fill="#1a1a1c"/>
+      {/* Valve-wheel brow */}
+      <path d="M38 8 L48 10" stroke="#1a1a1c" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M82 8 L72 10" stroke="#1a1a1c" strokeWidth="2" strokeLinecap="round"/>
+      {/* Valve mouth — wheel handle with spokes */}
+      <circle cx="60" cy="20" r="6" fill="none" stroke="#1a1a1c" strokeWidth="2.2"/>
+      {[0,60,120,180,240,300].map(d => <line key={d} x1="60" y1="20" x2={60+6*Math.cos(d*Math.PI/180)} y2={20+6*Math.sin(d*Math.PI/180)} stroke="#1a1a1c" strokeWidth="1.6"/>)}
       {/* Hydraulic ram cylinder descending */}
-      <rect x="52" y="22" width="16" height="38" rx="2" fill="#26282A" stroke="#71717A" strokeWidth="0.8"/>
+      <rect x="52" y="22" width="16" height="38" rx="2" fill="#10173a" stroke="#4169E1" strokeWidth="0.8"/>
       <rect x="54" y="24" width="12" height="34" rx="1.5" fill="url(#k3-metal)"/>
-      <line x1="60" y1="24" x2="60" y2="58" stroke="#DC2626" strokeWidth="1" opacity="0.6"/>
-      {/* Crushing fists */}
-      <circle cx="36" cy="76" r="15" fill="#3F4448" stroke="#26282A" strokeWidth="1.2"/>
-      <circle cx="84" cy="76" r="15" fill="#3F4448" stroke="#26282A" strokeWidth="1.2"/>
+      <line x1="60" y1="24" x2="60" y2="58" stroke="#FF4444" strokeWidth="1" opacity="0.6"/>
+      {/* Crushing ram fists, mid-strike coming down */}
+      <line x1="36" y1="50" x2="36" y2="62" stroke="#A8B8E8" strokeWidth="2" opacity="0.5" strokeDasharray="2,3"/>
+      <line x1="84" y1="50" x2="84" y2="62" stroke="#A8B8E8" strokeWidth="2" opacity="0.5" strokeDasharray="2,3"/>
+      <circle cx="36" cy="76" r="15" fill="#1E2A5E" stroke="#10173a" strokeWidth="1.2"/>
+      <circle cx="84" cy="76" r="15" fill="#1E2A5E" stroke="#10173a" strokeWidth="1.2"/>
       <circle cx="36" cy="76" r="11" fill="url(#k3-metal)"/>
       <circle cx="84" cy="76" r="11" fill="url(#k3-metal)"/>
-      {[[30,70],[42,70],[30,82],[42,82]].map(([x,y],i) => <circle key={i} cx={x} cy={y} r="2" fill="#26282A"/>)}
-      {[[78,70],[90,70],[78,82],[90,82]].map(([x,y],i) => <circle key={i+'r'} cx={x} cy={y} r="2" fill="#26282A"/>)}
-      <rect x="44" y="70" width="32" height="12" rx="2" fill="#26282A"/>
+      {[[30,70],[42,70],[30,82],[42,82]].map(([x,y],i) => <circle key={i} cx={x} cy={y} r="2" fill="#10173a"/>)}
+      {[[78,70],[90,70],[78,82],[90,82]].map(([x,y],i) => <circle key={i+'r'} cx={x} cy={y} r="2" fill="#10173a"/>)}
+      <rect x="44" y="70" width="32" height="12" rx="2" fill="#10173a"/>
       <rect x="46" y="72" width="28" height="8" rx="1.5" fill="url(#k3-metal)"/>
       {/* Sparks at crush point */}
-      {[{x:30,y:92,r:1.6,c:'#FBBF24'},{x:48,y:96,r:1.2,c:'#fff'},{x:70,y:96,r:1.4,c:'#FBBF24'},{x:90,y:92,r:1.6,c:'#fff'},{x:60,y:98,r:1.8,c:'#DC2626'}].map((s,i) => <circle key={i} cx={s.x} cy={s.y} r={s.r} fill={s.c} opacity="0.9"/>)}
+      {[{x:30,y:92,r:1.6,c:'#FBBF24'},{x:48,y:96,r:1.2,c:'#fff'},{x:70,y:96,r:1.4,c:'#FBBF24'},{x:90,y:92,r:1.6,c:'#fff'},{x:60,y:98,r:1.8,c:'#FF4444'}].map((s,i) => <circle key={i} cx={s.x} cy={s.y} r={s.r} fill={s.c} opacity="0.9"/>)}
       <line x1="30" y1="92" x2="24" y2="86" stroke="#FBBF24" strokeWidth="1.2" opacity="0.8"/>
       <line x1="90" y1="92" x2="96" y2="86" stroke="#FBBF24" strokeWidth="1.2" opacity="0.8"/>
       <line x1="60" y1="98" x2="60" y2="90" stroke="#fff" strokeWidth="1" opacity="0.7"/>
-      <ellipse cx="60" cy="116" rx="26" ry="3.5" fill="#DC262620"/>
+      <ellipse cx="60" cy="116" rx="26" ry="3.5" fill="#4169E120"/>
     </svg>
   )
 }
@@ -819,71 +899,81 @@ function MonsterLatheLord() {
     <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="k4-metal" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#D1D5DB"/>
-          <stop offset="100%" stopColor="#4B5563"/>
+          <stop offset="0%" stopColor="#C4C4D0"/>
+          <stop offset="100%" stopColor="#2E2E3A"/>
         </linearGradient>
         <radialGradient id="k4-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#A8A8B0" stopOpacity="0.35"/>
-          <stop offset="100%" stopColor="#A8A8B0" stopOpacity="0"/>
+          <stop offset="0%" stopColor="#6A5ACD" stopOpacity="0.4"/>
+          <stop offset="100%" stopColor="#6A5ACD" stopOpacity="0"/>
         </radialGradient>
         <radialGradient id="k4-eye" cx="50%" cy="50%" r="50%">
           <stop offset="0%" stopColor="#fff"/>
-          <stop offset="100%" stopColor="#9CA3AF" stopOpacity="0"/>
+          <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0"/>
         </radialGradient>
       </defs>
       <ellipse cx="60" cy="60" rx="52" ry="52" fill="url(#k4-glow)"/>
-      {/* Flying metal chips (curly ribbons) */}
-      {[{x:12,y:24,s:1,rot:20},{x:104,y:30,s:0.8,rot:-30},{x:8,y:70,s:0.7,rot:50},{x:108,y:80,s:0.9,rot:-10},{x:20,y:96,s:0.7,rot:80}].map((c,i) => (
+      {/* Flying metal chip ribbons */}
+      {[{x:12,y:24,s:1,rot:20},{x:104,y:30,s:0.8,rot:-30},{x:8,y:70,s:0.7,rot:50},{x:108,y:80,s:0.9,rot:-10},{x:20,y:96,s:0.7,rot:80},{x:96,y:14,s:0.8,rot:-50},{x:4,y:46,s:0.6,rot:65}].map((c,i) => (
         <path key={i} d="M0 0 Q6 -4 4 -10 Q2 -16 8 -18 Q14 -20 12 -26" fill="none"
-          stroke="#D1D5DB" strokeWidth="2.2" strokeLinecap="round" opacity="0.8"
+          stroke="#C4C4D0" strokeWidth="2.2" strokeLinecap="round" opacity="0.85"
           transform={`translate(${c.x},${c.y}) rotate(${c.rot}) scale(${c.s})`}/>
       ))}
-      {/* Tailstock legs */}
-      <rect x="40" y="90" width="14" height="24" rx="3" fill="#4B5563"/>
-      <rect x="66" y="90" width="14" height="24" rx="3" fill="#4B5563"/>
-      <rect x="38" y="106" width="18" height="8" rx="2" fill="#9CA3AF"/>
-      <rect x="64" y="106" width="18" height="8" rx="2" fill="#9CA3AF"/>
+      {/* Right leg — light caster support */}
+      <rect x="76" y="92" width="9" height="20" rx="3" fill="#2E2E3A"/>
+      <circle cx="80.5" cy="114" r="5" fill="#1F1F28" stroke="#6A5ACD" strokeWidth="0.8"/>
+      <circle cx="80.5" cy="114" r="2.2" fill="#8B5CF6" opacity="0.7"/>
+      {/* Left leg — one heavy tailstock with quill handwheel */}
+      <rect x="32" y="86" width="28" height="28" rx="4" fill="#2E2E3A" stroke="#1F1F28" strokeWidth="1"/>
+      <rect x="35" y="89" width="22" height="22" rx="3" fill="url(#k4-metal)"/>
+      <circle cx="46" cy="100" r="5" fill="#1F1F28"/>
+      <circle cx="46" cy="100" r="3" fill="#6A5ACD"/>
+      <circle cx="46" cy="116" r="7" fill="#1F1F28" stroke="#6A5ACD" strokeWidth="1"/>
+      {[0,45,90,135,180,225,270,315].map(d => <line key={d} x1="46" y1="116" x2={46+7*Math.cos(d*Math.PI/180)} y2={116+7*Math.sin(d*Math.PI/180)} stroke="#8B5CF6" strokeWidth="1" opacity="0.7"/>)}
       {/* Cylindrical workpiece body with spin lines */}
-      <rect x="30" y="54" width="60" height="38" rx="6" fill="url(#k4-metal)" stroke="#374151" strokeWidth="1"/>
-      {[60,68,76,84].map(y => <ellipse key={y} cx="60" cy={y} rx="30" ry="2" fill="none" stroke="#6B7280" strokeWidth="0.7" opacity="0.6"/>)}
+      <rect x="30" y="54" width="60" height="38" rx="6" fill="url(#k4-metal)" stroke="#1F1F28" strokeWidth="1"/>
+      {[60,68,76,84].map(y => <ellipse key={y} cx="60" cy={y} rx="30" ry="2" fill="none" stroke="#6A5ACD" strokeWidth="0.7" opacity="0.6"/>)}
       {/* Motion-blur speed lines suggesting spin */}
-      <path d="M24 58 Q20 72 24 88" stroke="#D1D5DB" strokeWidth="1.4" fill="none" opacity="0.6"/>
-      <path d="M96 58 Q100 72 96 88" stroke="#D1D5DB" strokeWidth="1.4" fill="none" opacity="0.6"/>
+      <path d="M24 58 Q20 72 24 88" stroke="#C4C4D0" strokeWidth="1.4" fill="none" opacity="0.6"/>
+      <path d="M96 58 Q100 72 96 88" stroke="#C4C4D0" strokeWidth="1.4" fill="none" opacity="0.6"/>
       {/* Shoulders */}
-      <circle cx="28" cy="58" r="9" fill="#374151"/>
-      <circle cx="92" cy="58" r="9" fill="#374151"/>
-      <circle cx="28" cy="58" r="6" fill="#9CA3AF"/>
-      <circle cx="92" cy="58" r="6" fill="#9CA3AF"/>
-      {/* Cutting-tool arms — tool post with carbide insert */}
-      <rect x="2" y="56" width="24" height="8" rx="1.5" fill="#374151"/>
-      <rect x="4" y="57.5" width="20" height="5" rx="1" fill="#9CA3AF"/>
-      <polygon points="0,55 8,52 8,68 0,65" fill="#E5E7EB" stroke="#374151" strokeWidth="0.8"/>
-      <polygon points="2,57 6,56 6,64 2,63" fill="#FBBF24" opacity="0.85"/>
-      <rect x="94" y="56" width="24" height="8" rx="1.5" fill="#374151"/>
-      <rect x="96" y="57.5" width="20" height="5" rx="1" fill="#9CA3AF"/>
-      <polygon points="120,55 112,52 112,68 120,65" fill="#E5E7EB" stroke="#374151" strokeWidth="0.8"/>
-      <polygon points="118,57 114,56 114,64 118,63" fill="#FBBF24" opacity="0.85"/>
-      {/* Head — 3-jaw spinning chuck */}
-      <circle cx="60" cy="28" r="23" fill="#4B5563" stroke="#1F2937" strokeWidth="1.2"/>
-      <circle cx="60" cy="28" r="20" fill="url(#k4-metal)"/>
-      {/* Three gripping jaws around chuck */}
-      {[0,120,240].map((deg,i) => (
-        <g key={i} transform={`rotate(${deg} 60 28)`}>
-          <rect x="56" y="6" width="8" height="13" rx="1.5" fill="#6B7280" stroke="#374151" strokeWidth="0.8"/>
-          <rect x="57" y="7.5" width="6" height="4" fill="#9CA3AF"/>
-        </g>
-      ))}
-      <circle cx="60" cy="28" r="13" fill="#9CA3AF" stroke="#4B5563" strokeWidth="1"/>
+      <circle cx="28" cy="58" r="9" fill="#1F1F28"/>
+      <circle cx="92" cy="58" r="9" fill="#1F1F28"/>
+      <circle cx="28" cy="58" r="6" fill="#8B5CF6" opacity="0.8"/>
+      <circle cx="92" cy="58" r="6" fill="#8B5CF6" opacity="0.8"/>
+      {/* Cutting-tool weapon arm (right, dominant) + smaller tool post (left) */}
+      <rect x="2" y="56" width="22" height="7" rx="1.5" fill="#1F1F28"/>
+      <rect x="4" y="57" width="18" height="4.4" rx="1" fill="#C4C4D0"/>
+      <polygon points="0,54 7,51 7,67 0,64" fill="#E5E7EB" stroke="#1F1F28" strokeWidth="0.8"/>
+      <polygon points="1.5,56 5.5,55 5.5,63 1.5,62" fill="#A78BFA" opacity="0.95"/>
+      <rect x="92" y="54" width="26" height="9" rx="1.5" fill="#1F1F28"/>
+      <rect x="94" y="55.8" width="22" height="5.4" rx="1" fill="#C4C4D0"/>
+      <polygon points="120,52 110,48 110,70 120,66" fill="#E5E7EB" stroke="#1F1F28" strokeWidth="1"/>
+      <polygon points="117,55 111,53 111,65 117,63" fill="#A78BFA" opacity="0.95"/>
+      <line x1="112" y1="48" x2="112" y2="70" stroke="#8B5CF6" strokeWidth="0.8" opacity="0.7"/>
+      {/* Head — 3-jaw spinning chuck with toothed jaws */}
+      <g style={{ animation:'wf-spin-slow 5s linear infinite', transformOrigin:'60px 28px' }}>
+        <circle cx="60" cy="28" r="23" fill="#2E2E3A" stroke="#1F1F28" strokeWidth="1.2"/>
+        <circle cx="60" cy="28" r="20" fill="url(#k4-metal)"/>
+        {/* Three gripping jaws with toothed tips */}
+        {[0,120,240].map((deg,i) => (
+          <g key={i} transform={`rotate(${deg} 60 28)`}>
+            <rect x="56" y="6" width="8" height="13" rx="1.5" fill="#4B4B5C" stroke="#1F1F28" strokeWidth="0.8"/>
+            <rect x="57" y="7.5" width="6" height="4" fill="#C4C4D0"/>
+            {[8,10.5,13].map(x => <polygon key={x} points={`${x},19 ${x+1.2},19 ${x+0.6},22`} fill="#A78BFA"/>)}
+          </g>
+        ))}
+      </g>
+      <circle cx="60" cy="28" r="13" fill="#C4C4D0" stroke="#2E2E3A" strokeWidth="1"/>
       {/* Dial-gauge style eyes embedded in chuck face */}
-      <circle cx="52" cy="27" r="4.5" fill="#1F2937"/>
-      <circle cx="68" cy="27" r="4.5" fill="#1F2937"/>
+      <circle cx="52" cy="27" r="4.5" fill="#1F1F28"/>
+      <circle cx="68" cy="27" r="4.5" fill="#1F1F28"/>
       <circle cx="52" cy="27" r="3" fill="url(#k4-eye)"/>
       <circle cx="68" cy="27" r="3" fill="url(#k4-eye)"/>
       <circle cx="52" cy="27" r="1.2" fill="#fff"/>
       <circle cx="68" cy="27" r="1.2" fill="#fff"/>
       {/* Center bore / mouth */}
-      <circle cx="60" cy="34" r="3.5" fill="#1F2937"/>
-      <ellipse cx="60" cy="116" rx="26" ry="3.5" fill="#A8A8B020"/>
+      <circle cx="60" cy="34" r="3.5" fill="#1F1F28"/>
+      <ellipse cx="60" cy="116" rx="26" ry="3.5" fill="#6A5ACD20"/>
     </svg>
   )
 }
@@ -893,60 +983,65 @@ function MonsterDrawingDemon() {
     <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <radialGradient id="k5-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.4"/>
-          <stop offset="100%" stopColor="#3B82F6" stopOpacity="0"/>
+          <stop offset="0%" stopColor="#483D8B" stopOpacity="0.45"/>
+          <stop offset="100%" stopColor="#483D8B" stopOpacity="0"/>
         </radialGradient>
         <linearGradient id="k5-paper" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#1E3A8A"/>
-          <stop offset="100%" stopColor="#0B1E4D"/>
+          <stop offset="0%" stopColor="#483D8B"/>
+          <stop offset="100%" stopColor="#1A1640"/>
         </linearGradient>
       </defs>
       <ellipse cx="60" cy="60" rx="54" ry="54" fill="url(#k5-glow)"/>
       {/* Floating GD&T tolerance glyphs */}
-      {[{x:14,y:26,t:'⌖'},{x:106,y:22,t:'⏥'},{x:10,y:88,t:'⊥'},{x:108,y:92,t:'∥'},{x:60,y:6,t:'⌭'}].map((g,i) => (
-        <text key={i} x={g.x} y={g.y} fontSize="11" fill="#60A5FA" opacity="0.85" fontFamily="monospace" textAnchor="middle">{g.t}</text>
+      {[{x:14,y:26,t:'⊙'},{x:106,y:22,t:'◎'},{x:10,y:88,t:'⊥'},{x:108,y:92,t:'='},{x:60,y:6,t:'⌭'}].map((g,i) => (
+        <text key={i} x={g.x} y={g.y} fontSize="11" fill="#9D97E0" opacity="0.85" fontFamily="monospace" textAnchor="middle">{g.t}</text>
       ))}
-      {/* GD&T feature-control-frame claw arms */}
-      <g transform="translate(0,0)">
-        <path d="M26 68 Q10 64 2 58" stroke="#1E3A8A" strokeWidth="8" fill="none" strokeLinecap="round"/>
-        <rect x="-12" y="50" width="26" height="11" rx="1.5" fill="#0B1E4D" stroke="#60A5FA" strokeWidth="1"/>
-        <line x1="-2" y1="50" x2="-2" y2="61" stroke="#60A5FA" strokeWidth="1"/>
-        <text x="-7" y="58" fontSize="6.5" fill="#93C5FD" fontFamily="monospace">⏥</text>
-        <text x="2" y="58" fontSize="6.5" fill="#93C5FD" fontFamily="monospace">.02</text>
+      {/* GD&T symbols as claw weapons — feature-control-frame fists */}
+      <g>
+        <path d="M26 68 Q10 64 2 58" stroke="#1A1640" strokeWidth="8" fill="none" strokeLinecap="round"/>
+        <rect x="-14" y="49" width="28" height="13" rx="1.5" fill="#1A1640" stroke="#9D97E0" strokeWidth="1.2"/>
+        <line x1="-3" y1="49" x2="-3" y2="62" stroke="#9D97E0" strokeWidth="1"/>
+        <text x="-9" y="60" fontSize="9" fill="#C7C2F0" fontFamily="monospace" fontWeight="900">⊙</text>
+        <text x="1" y="59" fontSize="6" fill="#C7C2F0" fontFamily="monospace">.05</text>
       </g>
       <g>
-        <path d="M94 68 Q110 64 118 58" stroke="#1E3A8A" strokeWidth="8" fill="none" strokeLinecap="round"/>
-        <rect x="106" y="50" width="26" height="11" rx="1.5" fill="#0B1E4D" stroke="#60A5FA" strokeWidth="1"/>
-        <line x1="116" y1="50" x2="116" y2="61" stroke="#60A5FA" strokeWidth="1"/>
-        <text x="108" y="58" fontSize="6.5" fill="#93C5FD" fontFamily="monospace">⊕</text>
-        <text x="120" y="58" fontSize="6" fill="#93C5FD" fontFamily="monospace">A</text>
+        <path d="M94 68 Q110 64 118 58" stroke="#1A1640" strokeWidth="8" fill="none" strokeLinecap="round"/>
+        <rect x="106" y="49" width="28" height="13" rx="1.5" fill="#1A1640" stroke="#9D97E0" strokeWidth="1.2"/>
+        <line x1="117" y1="49" x2="117" y2="62" stroke="#9D97E0" strokeWidth="1"/>
+        <text x="109" y="60" fontSize="9" fill="#C7C2F0" fontFamily="monospace" fontWeight="900">◎</text>
+        <text x="121" y="59" fontSize="6" fill="#C7C2F0" fontFamily="monospace">A</text>
       </g>
       {/* Blueprint-paper demon body */}
-      <path d="M22 82 Q16 58 22 38 Q30 12 60 8 Q90 12 98 38 Q104 58 98 82 Q94 102 78 110 Q60 116 42 110 Q26 102 22 82Z" fill="url(#k5-paper)" stroke="#3B82F6" strokeWidth="1"/>
+      <path d="M22 82 Q16 58 22 38 Q30 12 60 8 Q90 12 98 38 Q104 58 98 82 Q94 102 78 110 Q60 116 42 110 Q26 102 22 82Z" fill="url(#k5-paper)" stroke="#9D97E0" strokeWidth="1"/>
       {/* Dimension lines & arrows across body */}
-      <line x1="30" y1="44" x2="90" y2="44" stroke="#60A5FA" strokeWidth="0.8" opacity="0.7"/>
-      <path d="M30 44 L34 42 M30 44 L34 46 M90 44 L86 42 M90 44 L86 46" stroke="#60A5FA" strokeWidth="0.8" opacity="0.7"/>
-      <line x1="34" y1="62" x2="86" y2="62" stroke="#60A5FA" strokeWidth="0.8" opacity="0.5"/>
-      <line x1="40" y1="90" x2="80" y2="90" stroke="#60A5FA" strokeWidth="0.8" opacity="0.5"/>
-      <line x1="60" y1="20" x2="60" y2="100" stroke="#60A5FA" strokeWidth="0.6" opacity="0.35" strokeDasharray="3,3"/>
-      {/* Feature-control-frame horns */}
-      <rect x="34" y="2" width="20" height="9" rx="1" fill="#0B1E4D" stroke="#60A5FA" strokeWidth="1" transform="rotate(-12 44 6)"/>
-      <line x1="44" y1="2" x2="44" y2="11" stroke="#60A5FA" strokeWidth="0.8" transform="rotate(-12 44 6)"/>
-      <text x="36" y="9" fontSize="5.5" fill="#93C5FD" fontFamily="monospace" transform="rotate(-12 44 6)">⌖ .1</text>
-      <rect x="66" y="2" width="20" height="9" rx="1" fill="#0B1E4D" stroke="#60A5FA" strokeWidth="1" transform="rotate(12 76 6)"/>
-      <line x1="76" y1="2" x2="76" y2="11" stroke="#60A5FA" strokeWidth="0.8" transform="rotate(12 76 6)"/>
-      <text x="68" y="9" fontSize="5.5" fill="#93C5FD" fontFamily="monospace" transform="rotate(12 76 6)">⌭ .2</text>
+      <line x1="30" y1="44" x2="90" y2="44" stroke="#9D97E0" strokeWidth="0.8" opacity="0.7"/>
+      <path d="M30 44 L34 42 M30 44 L34 46 M90 44 L86 42 M90 44 L86 46" stroke="#9D97E0" strokeWidth="0.8" opacity="0.7"/>
+      <line x1="34" y1="62" x2="86" y2="62" stroke="#9D97E0" strokeWidth="0.8" opacity="0.5"/>
+      <line x1="40" y1="90" x2="80" y2="90" stroke="#9D97E0" strokeWidth="0.8" opacity="0.5"/>
+      <line x1="60" y1="20" x2="60" y2="100" stroke="#9D97E0" strokeWidth="0.6" opacity="0.35" strokeDasharray="3,3"/>
+      {/* Tolerance-zone bracket armor on shoulders/chest */}
+      <path d="M30 36 L24 36 L24 56 L30 56" stroke="#9D97E0" strokeWidth="1.6" fill="none" opacity="0.85"/>
+      <path d="M90 36 L96 36 L96 56 L90 56" stroke="#9D97E0" strokeWidth="1.6" fill="none" opacity="0.85"/>
+      <path d="M40 70 L36 70 L36 96 L40 96" stroke="#9D97E0" strokeWidth="1.4" fill="none" opacity="0.7"/>
+      <path d="M80 70 L84 70 L84 96 L80 96" stroke="#9D97E0" strokeWidth="1.4" fill="none" opacity="0.7"/>
+      {/* Dimension-line horns with arrowheads */}
+      <line x1="44" y1="9" x2="33" y2="1" stroke="#9D97E0" strokeWidth="1.4"/>
+      <path d="M33 1 L37 3.5 M33 1 L36 5" stroke="#9D97E0" strokeWidth="1.4" strokeLinecap="round"/>
+      <line x1="76" y1="9" x2="87" y2="1" stroke="#9D97E0" strokeWidth="1.4"/>
+      <path d="M87 1 L83 3.5 M87 1 L84 5" stroke="#9D97E0" strokeWidth="1.4" strokeLinecap="round"/>
+      <text x="18" y="6" fontSize="5.5" fill="#C7C2F0" fontFamily="monospace">⊥ .1</text>
+      <text x="92" y="6" fontSize="5.5" fill="#C7C2F0" fontFamily="monospace">= .2</text>
       {/* Glowing eyes */}
-      <ellipse cx="46" cy="38" rx="7" ry="9" fill="#0B1E4D" stroke="#3B82F6" strokeWidth="0.8"/>
-      <ellipse cx="74" cy="38" rx="7" ry="9" fill="#0B1E4D" stroke="#3B82F6" strokeWidth="0.8"/>
-      <ellipse cx="46" cy="38" rx="4" ry="5.5" fill="#60A5FA" opacity="0.9"/>
-      <ellipse cx="74" cy="38" rx="4" ry="5.5" fill="#60A5FA" opacity="0.9"/>
-      <ellipse cx="46" cy="38" rx="1.6" ry="2.4" fill="#DBEAFE"/>
-      <ellipse cx="74" cy="38" rx="1.6" ry="2.4" fill="#DBEAFE"/>
+      <ellipse cx="46" cy="38" rx="7" ry="9" fill="#1A1640" stroke="#9D97E0" strokeWidth="0.8"/>
+      <ellipse cx="74" cy="38" rx="7" ry="9" fill="#1A1640" stroke="#9D97E0" strokeWidth="0.8"/>
+      <ellipse cx="46" cy="38" rx="4" ry="5.5" fill="#9D97E0" opacity="0.9"/>
+      <ellipse cx="74" cy="38" rx="4" ry="5.5" fill="#9D97E0" opacity="0.9"/>
+      <ellipse cx="46" cy="38" rx="1.6" ry="2.4" fill="#E6E3F7"/>
+      <ellipse cx="74" cy="38" rx="1.6" ry="2.4" fill="#E6E3F7"/>
       {/* Tolerance-zone mouth */}
-      <rect x="44" y="58" width="32" height="10" rx="3" fill="#0B1E4D" stroke="#60A5FA" strokeWidth="0.8"/>
-      <line x1="44" y1="63" x2="76" y2="63" stroke="#3B82F6" strokeWidth="0.6" opacity="0.6"/>
-      <ellipse cx="60" cy="116" rx="26" ry="3.5" fill="#1E3A8A22"/>
+      <rect x="44" y="58" width="32" height="10" rx="3" fill="#1A1640" stroke="#9D97E0" strokeWidth="0.8"/>
+      <line x1="44" y1="63" x2="76" y2="63" stroke="#9D97E0" strokeWidth="0.6" opacity="0.6"/>
+      <ellipse cx="60" cy="116" rx="26" ry="3.5" fill="#483D8B22"/>
     </svg>
   )
 }
@@ -960,8 +1055,8 @@ function MonsterInspectionDragon() {
           <stop offset="100%" stopColor="#D4AF37" stopOpacity="0"/>
         </radialGradient>
         <linearGradient id="k6-scale" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#B91C1C"/>
-          <stop offset="100%" stopColor="#7F1D1D"/>
+          <stop offset="0%" stopColor="#2F6B6B"/>
+          <stop offset="100%" stopColor="#173434"/>
         </linearGradient>
         <linearGradient id="k6-scroll" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#fef3c7"/>
@@ -970,20 +1065,20 @@ function MonsterInspectionDragon() {
       </defs>
       <ellipse cx="60" cy="64" rx="54" ry="50" fill="url(#k6-glow)"/>
       {/* Tail ending in giant red rejection stamp */}
-      <path d="M86 96 Q102 98 108 90 Q112 84 106 80 Q102 78 100 84 Q104 88 98 90 Q92 92 86 96Z" fill="#9B1C1C" stroke="#DC2626" strokeWidth="0.5"/>
+      <path d="M86 96 Q102 98 108 90 Q112 84 106 80 Q102 78 100 84 Q104 88 98 90 Q92 92 86 96Z" fill="#1C3B3B" stroke="#3A8C8C" strokeWidth="0.5"/>
       <circle cx="110" cy="84" r="13" fill="#7F1D1D" stroke="#DC2626" strokeWidth="1.5"/>
       <circle cx="110" cy="84" r="10" fill="#DC2626"/>
       <text x="110" y="87" fontSize="8.5" fontWeight="900" fill="#fff" fontFamily="monospace" textAnchor="middle">NG</text>
       <circle cx="110" cy="84" r="11.5" fill="none" stroke="#FCD34D" strokeWidth="1" opacity="0.7"/>
       {/* Wings — QC checklist clipboards */}
-      <path d="M28 58 Q10 44 4 24 Q8 18 14 22 Q12 38 28 48" fill="#7F1D1D" opacity="0.9"/>
+      <path d="M28 58 Q10 44 4 24 Q8 18 14 22 Q12 38 28 48" fill="#1C3B3B" opacity="0.9"/>
       <rect x="4" y="16" width="14" height="20" rx="1.5" fill="url(#k6-scroll)" transform="rotate(-12 11 26)"/>
       {[20,24,28,32].map(y => <g key={y}>
         <rect x="6" y={y-2} width="2.4" height="2.4" fill="none" stroke="#16a34a" strokeWidth="0.6" transform="rotate(-12 11 26)"/>
         <line x1="9.5" y1={y-1.5} x2="16" y2={y-1.5} stroke="#92400E" strokeWidth="0.6" opacity="0.7" transform="rotate(-12 11 26)"/>
       </g>)}
       <path d="M6 19 L8 21 L11 17" stroke="#16a34a" strokeWidth="0.8" fill="none" transform="rotate(-12 11 26)"/>
-      <path d="M92 58 Q110 44 116 24 Q112 18 106 22 Q108 38 92 48" fill="#7F1D1D" opacity="0.9"/>
+      <path d="M92 58 Q110 44 116 24 Q112 18 106 22 Q108 38 92 48" fill="#1C3B3B" opacity="0.9"/>
       <rect x="102" y="16" width="14" height="20" rx="1.5" fill="url(#k6-scroll)" transform="rotate(12 109 26)"/>
       {[20,24,28,32].map(y => <g key={y+'r'}>
         <rect x="104" y={y-2} width="2.4" height="2.4" fill="none" stroke="#DC2626" strokeWidth="0.6" transform="rotate(12 109 26)"/>
@@ -991,29 +1086,29 @@ function MonsterInspectionDragon() {
       </g>)}
       <path d="M104 21 L106 19 M104 19 L106 21" stroke="#DC2626" strokeWidth="0.8" transform="rotate(12 109 26)"/>
       {/* Body */}
-      <path d="M32 58 L28 96 L92 96 L88 58 L76 50 L44 50Z" fill="#9B1C1C"/>
+      <path d="M32 58 L28 96 L92 96 L88 58 L76 50 L44 50Z" fill="#1C3B3B"/>
       <path d="M36 61 L33 93 L87 93 L84 61 L74 54 L46 54Z" fill="url(#k6-scale)"/>
-      {/* Scale texture */}
-      {[[44,62],[56,62],[68,62],[38,72],[50,72],[62,72],[74,72],[44,82],[56,82],[68,82]].map(([x,y],i) => <path key={i} d={`M${x} ${y} Q${x+6} ${y+7} ${x+12} ${y}`} fill="none" stroke="#DC2626" strokeWidth="1.2" opacity="0.5"/>)}
+      {/* Scale texture, gold-traced */}
+      {[[44,62],[56,62],[68,62],[38,72],[50,72],[62,72],[74,72],[44,82],[56,82],[68,82]].map(([x,y],i) => <path key={i} d={`M${x} ${y} Q${x+6} ${y+7} ${x+12} ${y}`} fill="none" stroke="#D4AF37" strokeWidth="1.2" opacity="0.45"/>)}
       {/* Gold pass-stamp marks */}
       {[[48,68],[72,70],[60,82],[42,80],[78,80]].map(([x,y],i) => <circle key={i} cx={x} cy={y} r="2.5" fill="none" stroke="#D4AF37" strokeWidth="1" opacity="0.6"/>)}
       {/* Left claw — holding a precision gauge */}
-      <path d="M32 66 Q16 60 10 72" stroke="#9B1C1C" strokeWidth="8" fill="none" strokeLinecap="round"/>
+      <path d="M32 66 Q16 60 10 72" stroke="#1C3B3B" strokeWidth="8" fill="none" strokeLinecap="round"/>
       <circle cx="10" cy="72" r="9" fill="#D4AF37"/>
       <circle cx="10" cy="72" r="7" fill="#FCD34D"/>
-      {[0,45,90,135,180,225,270,315].map(d => <line key={d} x1="10" y1="72" x2={10+6*Math.cos(d*Math.PI/180)} y2={72+6*Math.sin(d*Math.PI/180)} stroke="#7F1D1D" strokeWidth="0.6" opacity="0.6"/>)}
+      {[0,45,90,135,180,225,270,315].map(d => <line key={d} x1="10" y1="72" x2={10+6*Math.cos(d*Math.PI/180)} y2={72+6*Math.sin(d*Math.PI/180)} stroke="#173434" strokeWidth="0.6" opacity="0.6"/>)}
       <line x1="10" y1="72" x2="13" y2="68" stroke="#DC2626" strokeWidth="1.2" strokeLinecap="round"/>
       {/* Right claw */}
-      <path d="M88 66 Q102 58 108 50" stroke="#9B1C1C" strokeWidth="7" fill="none" strokeLinecap="round"/>
+      <path d="M88 66 Q102 58 108 50" stroke="#1C3B3B" strokeWidth="7" fill="none" strokeLinecap="round"/>
       <path d="M108 50 L112 44 M108 50 L114 52 M108 50 L110 58" stroke="#DC2626" strokeWidth="2" strokeLinecap="round"/>
       {/* Neck */}
-      <rect x="44" y="34" width="32" height="20" rx="4" fill="#9B1C1C"/>
-      <rect x="47" y="36" width="26" height="16" rx="3" fill="#B91C1C"/>
+      <rect x="44" y="34" width="32" height="20" rx="4" fill="#1C3B3B"/>
+      <rect x="47" y="36" width="26" height="16" rx="3" fill="#2F6B6B"/>
       {/* Head */}
-      <path d="M24 26 Q28 4 60 2 Q92 4 96 26 L92 42 L28 42Z" fill="#B91C1C"/>
-      <path d="M28 26 Q32 8 60 6 Q88 8 92 26 L89 40 L31 40Z" fill="#DC2626"/>
+      <path d="M24 26 Q28 4 60 2 Q92 4 96 26 L92 42 L28 42Z" fill="#2F6B6B"/>
+      <path d="M28 26 Q32 8 60 6 Q88 8 92 26 L89 40 L31 40Z" fill="#3A8C8C"/>
       {/* Head scales */}
-      {[[36,16],[48,16],[60,16],[72,16],[42,26],[54,26],[66,26]].map(([x,y],i) => <path key={i} d={`M${x} ${y} Q${x+5} ${y+6} ${x+10} ${y}`} fill="none" stroke="#9B1C1C" strokeWidth="1" opacity="0.6"/>)}
+      {[[36,16],[48,16],[60,16],[72,16],[42,26],[54,26],[66,26]].map(([x,y],i) => <path key={i} d={`M${x} ${y} Q${x+5} ${y+6} ${x+10} ${y}`} fill="none" stroke="#173434" strokeWidth="1" opacity="0.6"/>)}
       {/* Crown of rolled certificates */}
       {[{cx:38,cy:8,rx:5,ry:7},{cx:50,cy:4,rx:4,ry:6},{cx:60,cy:2,rx:5,ry:7},{cx:70,cy:4,rx:4,ry:6},{cx:82,cy:8,rx:5,ry:7}].map((s,i) => (
         <g key={i}>
@@ -1021,7 +1116,7 @@ function MonsterInspectionDragon() {
           <ellipse cx={s.cx} cy={s.cy} rx={s.rx-1.5} ry={s.ry-1.5} fill="#fde68a"/>
           <line x1={s.cx-s.rx+1} y1={s.cy-1} x2={s.cx+s.rx-1} y2={s.cy-1} stroke="#92400E" strokeWidth="0.6" opacity="0.6"/>
           <line x1={s.cx-s.rx+1} y1={s.cy+1} x2={s.cx+s.rx-1} y2={s.cy+1} stroke="#92400E" strokeWidth="0.6" opacity="0.5"/>
-          <circle cx={s.cx} cy={s.cy} r="1" fill="#DC2626" opacity="0.5"/>
+          <circle cx={s.cx} cy={s.cy} r="1" fill="#D4AF37" opacity="0.6"/>
         </g>
       ))}
       {/* Eyes */}
@@ -1033,12 +1128,12 @@ function MonsterInspectionDragon() {
       <circle cx="76" cy="22" r="2" fill="#FFB800"/>
       <circle cx="44" cy="21" r="1" fill="#fff" opacity="0.7"/>
       <circle cx="76" cy="21" r="1" fill="#fff" opacity="0.7"/>
-      <path d="M36 17 L50 21" stroke="#7F1D1D" strokeWidth="2.5" strokeLinecap="round"/>
-      <path d="M84 17 L70 21" stroke="#7F1D1D" strokeWidth="2.5" strokeLinecap="round"/>
+      <path d="M36 17 L50 21" stroke="#173434" strokeWidth="2.5" strokeLinecap="round"/>
+      <path d="M84 17 L70 21" stroke="#173434" strokeWidth="2.5" strokeLinecap="round"/>
       {/* Snout */}
-      <path d="M44 32 Q60 38 76 32 L74 36 Q60 42 46 36Z" fill="#9B1C1C"/>
-      <circle cx="54" cy="35" r="2" fill="#7F1D1D"/>
-      <circle cx="66" cy="35" r="2" fill="#7F1D1D"/>
+      <path d="M44 32 Q60 38 76 32 L74 36 Q60 42 46 36Z" fill="#1C3B3B"/>
+      <circle cx="54" cy="35" r="2" fill="#173434"/>
+      <circle cx="66" cy="35" r="2" fill="#173434"/>
       {/* Micrometer breath — measuring jaws extending from mouth */}
       <path d="M48 38 Q40 50 34 64" stroke="#9CA3AF" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.9"/>
       <path d="M72 38 Q80 50 86 64" stroke="#9CA3AF" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.9"/>
@@ -1052,7 +1147,7 @@ function MonsterInspectionDragon() {
       <circle cx="86" cy="70" r="2.5" fill="#fff" opacity="0.8"/>
       <line x1="34" y1="70" x2="28" y2="76" stroke="#E5E7EB" strokeWidth="1" opacity="0.7"/>
       <line x1="86" y1="70" x2="92" y2="76" stroke="#E5E7EB" strokeWidth="1" opacity="0.7"/>
-      <ellipse cx="60" cy="116" rx="26" ry="3.5" fill="#D4AF3722"/>
+      <ellipse cx="60" cy="116" rx="26" ry="3.5" fill="#2F4F4F22"/>
     </svg>
   )
 }
