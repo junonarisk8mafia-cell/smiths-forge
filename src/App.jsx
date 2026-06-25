@@ -4,7 +4,7 @@
 // ============================================================
 
 import { useState, useEffect, useRef } from 'react'
-import { QUIZ_STAGES } from './questions_smith.js'
+import { QUIZ_STAGES, SHIKAKU_EXAMS } from './questions_smith.js'
 
 // ── CONSTANTS ───────────────────────────────────────────────
 const P_HP   = 100   // player max HP
@@ -1600,6 +1600,539 @@ function Defeat({ si, correct, miss, onRetry, onQuit, onReview }) {
   )
 }
 
+// ── SHIKAKU DOJO — certification exam prep (battle-style) ──────
+const SHIKAKU_PASS_PCT = 60
+const SHIKAKU_DMG = 15
+
+// Renders app-authored strings containing <ruby> furigana markup.
+// Safe here because exp text comes only from questions_smith.js, never user input.
+function RubyHTML({ html, style }) {
+  return <span style={style} dangerouslySetInnerHTML={{ __html: html }} />
+}
+
+const LS_SHIKAKU = 'wf_en_shikaku_results'
+function loadShikakuResults() { try { return JSON.parse(localStorage.getItem(LS_SHIKAKU)||'{}') } catch { return {} } }
+function saveShikakuResult(examId, result) {
+  try {
+    const all = loadShikakuResults()
+    all[examId] = result
+    localStorage.setItem(LS_SHIKAKU, JSON.stringify(all))
+  } catch {}
+}
+
+function ExaminerBadge({ exam, anim, opacity }) {
+  return (
+    <div style={{ textAlign:'center', margin:'6px 0 2px', animation: anim, opacity }}>
+      <div style={{ fontSize:'4.2rem', lineHeight:1,
+        filter:`drop-shadow(0 0 14px ${exam.color}99)`, animation:'wf-bob 3s ease-in-out infinite' }}>
+        {exam.icon}
+      </div>
+      <div style={{ color:exam.color, fontSize:'clamp(0.7rem, 3vw, 0.85rem)', fontWeight:'700',
+        fontFamily:"'Orbitron',monospace", letterSpacing:'0.06em',
+        textShadow:`0 0 8px ${exam.color}88`, marginTop:2 }}>
+        {exam.examiner}
+      </div>
+    </div>
+  )
+}
+
+// ── EXAM SELECT ─────────────────────────────────────────────
+function ShikakuExamSelect({ exams, results, onSelect }) {
+  const [hovered, setHovered] = useState(null)
+  return (
+    <div style={{ ...styles.page, paddingBottom:16 }}>
+      <div style={{ marginBottom:14 }}>
+        <div style={{ color:'#1E90FF', fontWeight:'700',
+          fontFamily:"'Orbitron',monospace", fontSize:'0.95rem',
+          letterSpacing:'0.06em' }}>🎓 資格道場 — SHIKAKU DOJO</div>
+        <div style={{ color:'#555', fontSize:'0.62rem', marginTop:4,
+          fontFamily:"'Share Tech Mono',monospace" }}>
+          Pick a certification exam · 20 questions · {SHIKAKU_PASS_PCT}% to pass
+        </div>
+      </div>
+
+      {exams.map((ex, i) => {
+        const res    = results[ex.examId]
+        const isHov  = hovered === i
+        return (
+          <button key={ex.examId}
+            onClick={() => onSelect(i)}
+            onMouseEnter={() => setHovered(i)}
+            onMouseLeave={() => setHovered(null)}
+            style={{
+              display:'block', width:'100%', textAlign:'left',
+              background:'#161616',
+              border:`1px solid ${isHov ? ex.color : ex.color+'44'}`,
+              borderRadius:10, padding:'14px 14px', marginBottom:12,
+              cursor:'pointer', fontFamily:F_BODY, transition:'all 0.18s',
+              transform: isHov ? 'translateY(-3px)' : 'none',
+              boxShadow: isHov ? `0 8px 22px ${ex.color}55` : 'none',
+            }}>
+            <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+              <div style={{ fontSize:'2.2rem', flexShrink:0 }}>{ex.icon}</div>
+              <div style={{ flex:1, minWidth:0 }}>
+                <div style={{ color:ex.color, fontWeight:'700', fontFamily:"'Orbitron',monospace",
+                  fontSize:'0.85rem', letterSpacing:'0.04em', marginBottom:2 }}>
+                  {ex.label}
+                </div>
+                <div style={{ color:'#888', fontSize:'0.66rem', fontFamily:"'Share Tech Mono',monospace" }}>
+                  {ex.subtitle}
+                </div>
+                <div style={{ color:'#444', fontSize:'0.58rem', fontFamily:"'Share Tech Mono',monospace", marginTop:3 }}>
+                  {ex.questions.length} questions · vs {ex.examiner}
+                </div>
+              </div>
+              {res && (
+                <div style={{ textAlign:'center', flexShrink:0 }}>
+                  <div style={{
+                    fontSize:'0.6rem', fontWeight:'900', fontFamily:"'Orbitron',monospace",
+                    color: res.passed ? '#22c55e' : '#ef4444',
+                    border:`1px solid ${res.passed ? '#22c55e' : '#ef4444'}`,
+                    borderRadius:6, padding:'2px 7px', marginBottom:3,
+                  }}>
+                    {res.passed ? '合格 PASS' : '不合格 FAIL'}
+                  </div>
+                  <div style={{ color:'#666', fontSize:'0.58rem', fontFamily:"'Share Tech Mono',monospace" }}>
+                    Best {res.pct}%
+                  </div>
+                </div>
+              )}
+            </div>
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+// ── EXAM BATTLE ─────────────────────────────────────────────
+function ShikakuBattle({
+  exam, qs, qi, pHP, mHP, correct, wrong,
+  sel, done, bgFlash, monsterAnim, playerShake,
+  floatMonster, floatPlayer, onAnswer, onNext, onQuit,
+}) {
+  const q = qs[qi]
+  if (!q) return null
+  const OPTS = ['A','B','C','D']
+  const questionRef = useRef(null)
+
+  useEffect(() => {
+    if (playerShake) {
+      document.body.style.animation = 'wf-body-shake 0.4s ease'
+      const t = setTimeout(() => { document.body.style.animation = '' }, 420)
+      return () => clearTimeout(t)
+    }
+  }, [playerShake])
+
+  useEffect(() => {
+    if (questionRef.current) {
+      questionRef.current.scrollIntoView({ behavior:'smooth', block:'nearest' })
+    }
+  }, [qi])
+
+  function optStyle(i) {
+    const base = {
+      width:'100%', padding:'14px 16px', marginBottom:8,
+      background:'#141414', border:'1px solid #252525',
+      borderRadius:8, color:'#e8e8e8', textAlign:'left',
+      cursor: done ? 'default' : 'pointer',
+      fontSize:'clamp(0.75rem, 3.2vw, 0.82rem)', fontFamily:'monospace', lineHeight:1.5,
+      transition:'all 0.15s', minHeight:48,
+      wordWrap:'break-word', touchAction:'manipulation',
+      WebkitTapHighlightColor:'transparent',
+    }
+    if (!done) return base
+    if (i === q.a)              return { ...base, background:'#0f2a0f', border:'1px solid #22c55e', color:'#86efac', boxShadow:'0 0 12px #22c55e44' }
+    if (i === sel && sel!==q.a) return { ...base, background:'#2a0f0f', border:'1px solid #ef4444', color:'#fca5a5', boxShadow:'0 0 12px #ef444444' }
+    return { ...base, opacity:0.35 }
+  }
+
+  const bg = bgFlash === 'correct' ? '#081a08' : bgFlash === 'wrong' ? '#160404' : '#0d0d0d'
+  const monAnimStyle = monsterAnim === 'shake' ? 'wf-mshake 0.38s ease' : 'wf-mon-entry 0.4s ease'
+  const total = qs.length
+
+  return (
+    <div style={{ background:bg, minHeight:'100vh', fontFamily:'monospace',
+      transition:'background 0.3s', paddingBottom:70 }}>
+
+      {bgFlash === 'wrong' && (
+        <div style={{ position:'fixed', inset:0, background:'#cc0000',
+          animation:'wf-red-flash 0.4s ease forwards', pointerEvents:'none', zIndex:490 }}/>
+      )}
+
+      <div style={{ position:'sticky', top:0, zIndex:20,
+        background: bg === '#0d0d0d' ? '#0d0d0d' : bg,
+        borderBottom:'1px solid #222', padding:'8px 12px 8px',
+        transition:'background 0.3s' }}>
+        <div style={{ position:'relative', overflow:'hidden',
+          animation: playerShake ? 'wf-pshake 0.32s ease' : 'none' }}>
+          <HPBar cur={pHP} max={100} label="⚡ SMITH (YOU)"/>
+          {floatPlayer && (
+            <div key={floatPlayer.k} style={{
+              position:'absolute', top:'50%', left:'50%',
+              color:'#ff4444', fontWeight:'900', fontSize:'2rem',
+              fontFamily:"'Orbitron',monospace", pointerEvents:'none',
+              animation:'wf-dmg-float 0.9s ease forwards',
+              textShadow:'0 0 20px #ef4444, 0 0 40px #cc000099', whiteSpace:'nowrap',
+              zIndex:50,
+            }}>{floatPlayer.text}</div>
+          )}
+        </div>
+        <div style={{ marginTop:5, position:'relative', overflow:'hidden' }}>
+          <HPBar cur={mHP} max={100} label={exam.examiner}/>
+          {floatMonster && (
+            <div key={floatMonster.k} style={{
+              position:'absolute', top:'10%', right:'12px',
+              color:'#4ade80', fontWeight:'900', fontSize:'1.2rem',
+              fontFamily:"'Orbitron',monospace", pointerEvents:'none',
+              animation:'wf-float 0.8s ease forwards',
+              textShadow:'0 0 16px #22c55e, 0 0 32px #22c55e66', whiteSpace:'nowrap',
+            }}>{floatMonster.text}</div>
+          )}
+        </div>
+        <div style={{ display:'flex', justifyContent:'space-between',
+          alignItems:'center', marginTop:5 }}>
+          <button onClick={onQuit} style={{ ...styles.btnGhost, fontSize:'0.62rem', padding:'3px 9px' }}>
+            ✕ Quit
+          </button>
+          <div style={{ fontFamily:"'Orbitron',monospace", fontSize:'0.58rem',
+            color:'#555', letterSpacing:'0.05em', textAlign:'center' }}>
+            Q{qi+1}/{total}
+            &nbsp;·&nbsp;
+            <span style={{ color:'#22c55e' }}>✓{correct}</span>
+            &nbsp;
+            <span style={{ color:'#ef4444' }}>✗{wrong}</span>
+          </div>
+          <div style={{ fontSize:'0.56rem', color:'#444', fontFamily:"'Share Tech Mono',monospace",
+            maxWidth:100, textAlign:'right', lineHeight:1.2 }}>
+            {exam.label}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ padding:'8px 12px', position:'relative' }}>
+        <div style={{ background:'#111', borderRadius:10, padding:'8px 14px',
+          marginBottom:10, position:'relative', overflow:'hidden' }}>
+          <div style={{
+            position:'absolute', top:'50%', left:'50%',
+            transform:'translate(-50%,-50%)',
+            width:180, height:180, borderRadius:'50%',
+            background:`radial-gradient(ellipse, ${exam.color}22 0%, transparent 70%)`,
+            pointerEvents:'none',
+          }}/>
+          <div key={qi}>
+            <ExaminerBadge exam={exam} anim={monAnimStyle} opacity={0.4 + (mHP/100)*0.6}/>
+          </div>
+        </div>
+
+        <div ref={questionRef} style={{ background:'#111', borderRadius:10, padding:'12px 14px', marginBottom:10,
+          border:'1px solid #2a2a2a', borderLeft:'4px solid #1E90FF' }}>
+          <div style={{ fontSize:'0.58rem', color:'#1E90FF99', marginBottom:6,
+            fontFamily:"'Share Tech Mono',monospace", letterSpacing:'0.06em' }}>
+            [{q.cat}]
+          </div>
+          <div style={{ color:'#f0f0f0', fontSize:'clamp(0.8rem, 3.5vw, 0.9rem)', lineHeight:1.6, marginBottom:14,
+            fontFamily:"'Share Tech Mono',monospace" }}>
+            {q.q}
+          </div>
+          {q.opts.map((opt, i) => (
+            <button key={i}
+              className={`wf-answer-btn${done && i === q.a ? ' wf-correct-btn' : ''}`}
+              onClick={() => !done && onAnswer(i)} style={optStyle(i)}>
+              <span style={{ color:'#1E90FF', fontWeight:'bold', marginRight:8,
+                fontFamily:"'Orbitron',monospace", fontSize:'0.7rem' }}>{OPTS[i]}.</span>
+              {opt}
+            </button>
+          ))}
+        </div>
+
+        {done && (
+          <div style={{
+            background: sel===q.a ? '#081808' : '#180808',
+            border:`1px solid ${sel===q.a ? '#22c55e' : '#ef4444'}`,
+            borderRadius:10, padding:'12px 14px',
+          }}>
+            <div style={{ color: sel===q.a ? '#22c55e' : '#ef4444',
+              fontWeight:'bold', fontSize:'0.85rem', marginBottom:4,
+              fontFamily:"'Orbitron',monospace", letterSpacing:'0.04em' }}>
+              {sel===q.a
+                ? '✓ CORRECT!'
+                : `✗ WRONG! Correct: ${OPTS[q.a]}`}
+            </div>
+            <RubyHTML html={q.exp} style={{ color:'#ccc', fontSize:'0.72rem', lineHeight:1.55, marginBottom:10,
+              fontFamily:"'Share Tech Mono',monospace", display:'block' }}/>
+            <button onClick={() => { playSound('click'); onNext() }}
+              style={{ ...styles.btnPrimary, width:'100%' }}>
+              {qi+1 >= total ? 'FINISH EXAM →' : 'NEXT QUESTION →'}
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ── EXAM RESULT (PASS/FAIL) ──────────────────────────────────
+function ShikakuResult({ exam, correct, wrong, total, onRetry, onReview, onBack }) {
+  const pct    = Math.round((correct / total) * 100)
+  const passed = pct >= SHIKAKU_PASS_PCT
+  const [flash, setFlash] = useState(true)
+  useEffect(() => {
+    playSound(passed ? 'victory' : 'defeat')
+    const t = setTimeout(() => setFlash(false), 900)
+    return () => clearTimeout(t)
+  }, [])
+  return (
+    <div style={{ ...styles.page, background: passed ? '#060e06' : '#0e0606',
+      justifyContent:'center', alignItems:'center', textAlign:'center',
+      position:'relative', overflow:'hidden' }}>
+      {flash && (
+        <div style={{ position:'fixed', inset:0,
+          background: passed ? '#00ff0066' : '#33000099',
+          animation: passed ? 'wf-vflash 0.95s ease forwards' : 'wf-doverlay 0.6s ease forwards',
+          pointerEvents:'none', zIndex:100 }}/>
+      )}
+      <div style={{ fontSize:72, marginBottom:8,
+        animation: passed ? 'wf-trophy-bounce 1.4s ease-in-out infinite' : 'wf-skull-shake 0.6s ease' }}>
+        {passed ? '🎓' : '📝'}
+      </div>
+      <div style={{ color: passed ? '#22c55e' : '#ef4444', fontSize:'1.8rem', fontWeight:'900',
+        fontFamily:"'Orbitron',monospace", letterSpacing:'0.08em',
+        textShadow: passed ? '0 0 20px #22c55e88,0 0 40px #22c55e44' : '0 0 20px #ef444488,0 0 40px #ef444433',
+        marginBottom:4 }}>
+        {passed ? '合格 — PASS!' : '不合格 — FAIL'}
+      </div>
+      <div style={{ color:'#888', fontSize:'0.72rem', fontFamily:"'Share Tech Mono',monospace", marginBottom:16 }}>
+        {exam.label} · {exam.subtitle}
+      </div>
+
+      <div style={{ background: passed ? '#0a140a' : '#180404',
+        border:`1px solid ${passed ? '#22c55e22' : '#ef444422'}`,
+        borderRadius:12, padding:'14px 24px', marginBottom:16, width:'100%', maxWidth:280 }}>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:12 }}>
+          <div style={{ textAlign:'center' }}>
+            <div style={{ color:'#22c55e', fontSize:'1.6rem', fontWeight:'900',
+              fontFamily:"'Orbitron',monospace" }}>✓{correct}</div>
+            <div style={{ color:'#444', fontSize:'0.54rem', fontFamily:"'Share Tech Mono',monospace" }}>CORRECT</div>
+          </div>
+          <div style={{ textAlign:'center' }}>
+            <div style={{ color:'#ef4444', fontSize:'1.6rem', fontWeight:'900',
+              fontFamily:"'Orbitron',monospace" }}>✗{wrong}</div>
+            <div style={{ color:'#444', fontSize:'0.54rem', fontFamily:"'Share Tech Mono',monospace" }}>WRONG</div>
+          </div>
+        </div>
+        <div style={{ borderTop:`1px solid ${passed ? '#1a3a1a' : '#3a1010'}`, paddingTop:10, textAlign:'center' }}>
+          <div style={{ color: passed ? '#FFB800' : '#fca5a5', fontSize:'1.8rem', fontWeight:'900',
+            fontFamily:"'Orbitron',monospace" }}>{pct}%</div>
+          <div style={{ color:'#444', fontSize:'0.54rem', fontFamily:"'Share Tech Mono',monospace" }}>
+            SCORE · need {SHIKAKU_PASS_PCT}% to pass
+          </div>
+        </div>
+      </div>
+
+      <button onClick={() => { playSound('click'); onBack() }}
+        style={{ ...styles.btnPrimary,
+          background: passed ? 'linear-gradient(135deg,#16a34a,#15803d)' : 'linear-gradient(135deg,#1E90FF,#CC2200)',
+          marginBottom:10, padding:'14px 36px', fontSize:'1rem', letterSpacing:'0.1em' }}>
+        ← EXAM SELECT
+      </button>
+      <div style={{ display:'flex', gap:10 }}>
+        <button onClick={() => { playSound('click'); onRetry() }} style={{ ...styles.btnGhost, padding:'11px 18px' }}>
+          🔄 Retry
+        </button>
+        <button onClick={() => { playSound('click'); onReview() }} style={{ ...styles.btnGhost, padding:'11px 18px' }}>
+          📋 Review
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ── EXAM REVIEW ───────────────────────────────────────────────
+function ShikakuReview({ history, onBack }) {
+  const OPTS = ['A','B','C','D']
+  return (
+    <div style={{ minHeight:'100vh', background:'#0d0d0d', fontFamily:'monospace',
+      padding:'14px 12px', paddingBottom:70 }}>
+      <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}>
+        <div style={{ color:'#1E90FF', fontWeight:'bold', fontSize:'0.95rem' }}>📋 EXAM REVIEW</div>
+        <div style={{ marginLeft:'auto', fontSize:'0.68rem', color:'#555' }}>
+          <span style={{ color:'#22c55e' }}>✓ {history.filter(h=>h.wasCorrect).length}</span>
+          {' / '}
+          <span style={{ color:'#ef4444' }}>✗ {history.filter(h=>!h.wasCorrect).length}</span>
+        </div>
+      </div>
+
+      {history.map((item, i) => {
+        const { question: q, selected, wasCorrect } = item
+        return (
+          <div key={i} style={{
+            background:'#141414',
+            border:`1px solid ${wasCorrect ? '#22c55e22' : '#ef444422'}`,
+            borderRadius:10, padding:'12px 14px', marginBottom:12,
+          }}>
+            <div style={{ display:'flex', gap:8, alignItems:'flex-start', marginBottom:10 }}>
+              <span style={{ fontSize:'1rem', lineHeight:1, flexShrink:0,
+                color: wasCorrect ? '#22c55e' : '#ef4444' }}>
+                {wasCorrect ? '✓' : '✗'}
+              </span>
+              <div style={{ color:'#efefef', fontSize:'0.78rem', lineHeight:1.5 }}>
+                <span style={{ color:'#555', fontSize:'0.62rem', marginRight:6 }}>[{q.cat}]</span>
+                {q.q}
+              </div>
+            </div>
+            <div style={{ marginBottom:10 }}>
+              {q.opts.map((opt, oi) => {
+                const isCorrect  = oi === q.a
+                const isSelected = oi === selected
+                const wrongPick  = isSelected && !wasCorrect
+                let bg='transparent', border='1px solid #2a2a2a', color='#555', opacity=1
+                if (isCorrect) { bg='#0f2a0f'; border='1px solid #22c55e'; color='#86efac' }
+                else if (wrongPick) { bg='#2a0f0f'; border='1px solid #ef4444'; color='#fca5a5' }
+                else opacity=0.35
+                return (
+                  <div key={oi} style={{
+                    display:'flex', gap:8, alignItems:'flex-start',
+                    background:bg, border, borderRadius:6,
+                    padding:'7px 10px', marginBottom:5,
+                    opacity, color, fontSize:'0.72rem', lineHeight:1.4,
+                  }}>
+                    <span style={{ fontWeight:'bold', flexShrink:0,
+                      color: isCorrect ? '#22c55e' : wrongPick ? '#ef4444' : '#444' }}>
+                      {OPTS[oi]}.
+                    </span>
+                    <span>{opt}</span>
+                    {isCorrect && <span style={{ marginLeft:'auto', flexShrink:0, color:'#22c55e', fontSize:'0.65rem' }}>✓ correct</span>}
+                    {wrongPick && <span style={{ marginLeft:'auto', flexShrink:0, color:'#ef4444', fontSize:'0.65rem' }}>✗ your pick</span>}
+                  </div>
+                )
+              })}
+            </div>
+            <div style={{ background:'#0f0f0f', borderRadius:6, padding:'8px 10px', fontSize:'0.68rem',
+              color:'#999', lineHeight:1.55 }}>
+              <span style={{ color:'#FFB800', fontWeight:'bold', marginRight:6 }}>EXP:</span>
+              <RubyHTML html={q.exp}/>
+            </div>
+          </div>
+        )
+      })}
+
+      <button onClick={onBack} style={{
+        width:'100%', padding:'14px', marginTop:4,
+        background:'linear-gradient(135deg,#1E90FF,#CC2200)',
+        color:'#fff', border:'none', borderRadius:8,
+        fontWeight:'bold', cursor:'pointer', fontFamily:'monospace',
+        fontSize:'0.9rem', letterSpacing:'0.05em',
+        boxShadow:'0 4px 16px #1E90FF44',
+      }}>
+        ← BACK TO EXAM SELECT
+      </button>
+    </div>
+  )
+}
+
+// ── SHIKAKU DOJO — main controller ───────────────────────────
+function ShikakuScreen() {
+  const [screen,  setScreen]  = useState('select')   // 'select'|'exam'|'result'|'review'
+  const [examIdx, setExamIdx] = useState(0)
+  const [qs, setQs] = useState([])
+  const [qi, setQi] = useState(0)
+  const [pHP, setPHP] = useState(100)
+  const [mHP, setMHP] = useState(100)
+  const [correct, setCorrect] = useState(0)
+  const [wrong,   setWrong]   = useState(0)
+  const [sel,  setSel]  = useState(null)
+  const [done, setDone] = useState(false)
+  const [bgFlash,     setBgFlash]     = useState(null)
+  const [monsterAnim, setMonsterAnim] = useState(null)
+  const [playerShake, setPlayerShake] = useState(false)
+  const [floatMonster,setFloatMonster]= useState(null)
+  const [floatPlayer, setFloatPlayer] = useState(null)
+  const [floatKey,    setFloatKey]    = useState(0)
+  const [history, setHistory] = useState([])
+  const [results, setResults] = useState(() => loadShikakuResults())
+
+  function startExam(idx) {
+    setExamIdx(idx)
+    setQs(shuffle(SHIKAKU_EXAMS[idx].questions))
+    setQi(0); setPHP(100); setMHP(100)
+    setCorrect(0); setWrong(0)
+    setSel(null); setDone(false)
+    setBgFlash(null); setMonsterAnim(null); setPlayerShake(false)
+    setFloatMonster(null); setFloatPlayer(null)
+    setHistory([])
+    setScreen('exam')
+  }
+
+  function handleAnswer(optIdx) {
+    if (done) return
+    const q = qs[qi]
+    setSel(optIdx); setDone(true)
+    const wasCorrect = optIdx === q.a
+    const k = floatKey + 1
+    setFloatKey(k)
+    setHistory(h => [...h, { question: q, selected: optIdx, wasCorrect }])
+    const step = Math.round(100 / qs.length)
+
+    if (wasCorrect) {
+      playSound('correct')
+      setCorrect(c => c + 1)
+      setMHP(h => Math.max(0, h - step))
+      setBgFlash('correct')
+      setMonsterAnim('shake')
+      setFloatMonster({ text: `-${step}%`, k })
+      setTimeout(() => setFloatMonster(null), 800)
+      setTimeout(() => { setMonsterAnim(null); setBgFlash(null) }, 450)
+    } else {
+      playSound('wrong')
+      setWrong(w => w + 1)
+      setPHP(h => Math.max(0, h - SHIKAKU_DMG))
+      setBgFlash('wrong')
+      setPlayerShake(true)
+      setFloatPlayer({ text: `-${SHIKAKU_DMG} HP`, k })
+      setTimeout(() => setFloatPlayer(null), 800)
+      setTimeout(() => { setPlayerShake(false); setBgFlash(null) }, 450)
+    }
+  }
+
+  function handleNext() {
+    const isLast = qi + 1 >= qs.length
+    if (isLast) {
+      const total = qs.length
+      const pct   = Math.round((correct / total) * 100)
+      const examId = SHIKAKU_EXAMS[examIdx].examId
+      const result = { pct, passed: pct >= SHIKAKU_PASS_PCT, date: new Date().toISOString() }
+      saveShikakuResult(examId, result)
+      setResults(r => ({ ...r, [examId]: result }))
+      setScreen('result')
+    } else {
+      setQi(q => q + 1)
+    }
+    setSel(null); setDone(false)
+  }
+
+  const exam = SHIKAKU_EXAMS[examIdx]
+
+  if (screen === 'select')
+    return <ShikakuExamSelect exams={SHIKAKU_EXAMS} results={results} onSelect={startExam}/>
+  if (screen === 'exam' && qs.length)
+    return <ShikakuBattle exam={exam} qs={qs} qi={qi}
+      pHP={pHP} mHP={mHP} correct={correct} wrong={wrong}
+      sel={sel} done={done} bgFlash={bgFlash}
+      monsterAnim={monsterAnim} playerShake={playerShake}
+      floatMonster={floatMonster} floatPlayer={floatPlayer}
+      onAnswer={handleAnswer} onNext={handleNext}
+      onQuit={()=>setScreen('select')}/>
+  if (screen === 'result')
+    return <ShikakuResult exam={exam} correct={correct} wrong={wrong} total={qs.length}
+      onRetry={()=>startExam(examIdx)}
+      onReview={()=>setScreen('review')}
+      onBack={()=>setScreen('select')}/>
+  if (screen === 'review')
+    return <ShikakuReview history={history} onBack={()=>setScreen('select')}/>
+  return null
+}
+
 // ── SYMBOL TAB — metal fabrication drawing symbols ────────────
 
 // 1. Surface roughness (Ra) — JIS checkmark symbol
@@ -2863,6 +3396,7 @@ export default function App() {
 
   const TABS = [
     { id:'battle',  icon:'⚔️', label:'BATTLE'  },
+    { id:'shikaku', icon:'🎓', label:'資格'     },
     { id:'symbol',  icon:'📐', label:'SYMBOLS' },
     { id:'calc',    icon:'🔢', label:'CALC'    },
     { id:'career',  icon:'🗺️', label:'CAREER'  },
@@ -2904,6 +3438,7 @@ export default function App() {
       {/* Content */}
       <div style={{ paddingBottom:'calc(64px + env(safe-area-inset-bottom))' }}>
         {tab==='battle'  && battleContent()}
+        {tab==='shikaku' && <ShikakuScreen/>}
         {tab==='symbol'  && <SymbolTab/>}
         {tab==='calc'    && <CalcTab/>}
         {tab==='career'  && <CareerTab/>}

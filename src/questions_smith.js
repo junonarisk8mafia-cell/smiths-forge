@@ -1503,3 +1503,899 @@ export const QUIZ_STAGES = [
     ]
   }
 ];
+
+// ============================================================
+// 資格道場 (SHIKAKU DOJO) — National certification exam prep
+// 3 mock exams · 20 questions each · 60% pass threshold
+// exp fields use <ruby> tags for furigana on Japanese terms
+// ============================================================
+export const SHIKAKU_EXAMS = [
+  {
+    examId: 1,
+    label: "機械加工技能士 3級",
+    subtitle: "Machining Skills Test Lv.3",
+    color: "#1E90FF",
+    icon: "🥉",
+    examiner: "見習い試験官 (Minarai Shikenkan)",
+    questions: [
+      {
+        id: 6001, cat: "Measuring Tools",
+        q: "When reading a 'Nogisu (ノギス)', vernier caliper, what two scales do you compare to get a precise reading?",
+        opts: ["The main scale and the vernier (sliding) scale", "Only the main scale, read by eye", "The thimble scale and the sleeve scale", "The dial face and the bezel ring"],
+        a: 0, xp: 15,
+        exp: "A <ruby>ノギス<rt>ノギス</rt></ruby> (Nogisu, vernier caliper) has a fixed main scale in millimeters and a sliding vernier scale; you find where a line on the vernier scale aligns exactly with a line on the main scale to read the decimal portion. 🇯🇵 TIP: Modern digital calipers (デジタルノギス) are common in shops now, but the 3rd-grade exam often still tests the analog vernier-scale reading skill directly."
+      },
+      {
+        id: 6002, cat: "Measuring Tools",
+        q: "A 'Maikurometa (マイクロメータ)', micrometer, typically measures to what level of precision?",
+        opts: ["1mm", "0.01mm", "0.5mm", "10mm"],
+        a: 1, xp: 15,
+        exp: "A standard <ruby>マイクロメータ<rt>マイクロメータ</rt></ruby> (Maikurometa, micrometer) reads to 0.01mm using the sleeve and thimble scales, making it more precise than a vernier caliper for critical dimensions like shaft diameters. 🇯🇵 TIP: Always check the micrometer's zero point (零点, reiten) before use — a worn or misadjusted anvil throws off every reading you take that day."
+      },
+      {
+        id: 6003, cat: "Lathe Basics",
+        q: "On a lathe, what is the 'Chakku (チャック)' used for?",
+        opts: ["Cooling the cutting tool", "Measuring the finished diameter", "Holding and rotating the workpiece", "Lubricating the lead screw"],
+        a: 2, xp: 15,
+        exp: "The <ruby>チャック<rt>チャック</rt></ruby> (Chakku, chuck) is the clamping device mounted on the spindle that grips the workpiece so it can be rotated against the cutting tool. A 3-jaw chuck self-centers round stock; a 4-jaw chuck allows offset or irregular shapes. 🇯🇵 TIP: Never leave the chuck key in the chuck after tightening — it can be thrown out violently the instant the spindle starts."
+      },
+      {
+        id: 6004, cat: "Lathe Basics",
+        q: "'Sessoku Sokudo (切削速度)', cutting speed, on a lathe is typically expressed in what unit?",
+        opts: ["kg/cm² (kilograms per square centimeter)", "rpm only, with no distance unit", "liters per minute", "m/min (meters per minute)"],
+        a: 3, xp: 15,
+        exp: "<ruby>切削速度<rt>せっさくそくど</rt></ruby> (Sessoku Sokudo, cutting speed) is the surface speed of the workpiece relative to the tool, measured in meters per minute (m/min). Spindle RPM is then calculated from this speed and the workpiece diameter. 🇯🇵 TIP: Going over the recommended cutting speed for a material is one of the fastest ways to dull a tool or burn a finish in the 3rd-grade practical test."
+      },
+      {
+        id: 6005, cat: "Drilling",
+        q: "When drilling, what does 'Okuri (送り)', feed, refer to?",
+        opts: ["How far the drill advances into the material per revolution", "The spindle's rotational speed", "The diameter of the drill bit", "The angle of the drill point"],
+        a: 0, xp: 15,
+        exp: "<ruby>送り<rt>おくり</rt></ruby> (Okuri, feed) is the linear distance the drill (or any cutting tool) advances into the workpiece per revolution or per minute. Too fast a feed can snap a small drill; too slow can cause excessive heat and wear. 🇯🇵 TIP: For deep holes, periodically retracting the drill to clear chips (called 'pecking') is standard practice and is often checked in practical exams."
+      },
+      {
+        id: 6006, cat: "Milling Basics",
+        q: "What is the main difference between an 'Endo Miru (エンドミル)', end mill, and a 'Feisu Miru (フェイスミル)', face mill?",
+        opts: ["They are two names for the exact same tool", "End mills cut with their side and bottom for slots/profiles; face mills cut wide flat surfaces with edge-mounted inserts", "Face mills are only used on lathes, not mills", "End mills can only drill round holes"],
+        a: 1, xp: 20,
+        exp: "An <ruby>エンドミル<rt>エンドミル</rt></ruby> (Endo Miru, end mill) is a smaller rotating tool used for slotting, profiling, and pocketing, cutting with both its bottom and side edges. A <ruby>フェイスミル<rt>フェイスミル</rt></ruby> (Feisu Miru, face mill) is a larger tool with replaceable inserts around its face, designed to quickly flatten wide surfaces. 🇯🇵 TIP: Knowing which tool to select for a given drawing feature is a core judgment skill tested in the practical exam, not just a vocabulary question."
+      },
+      {
+        id: 6007, cat: "Hand Tools",
+        q: "What is 'Yasuri-gake (やすり掛け)', filing, typically used for in a machining workshop?",
+        opts: ["Cutting threads on a lathe", "Measuring surface roughness electronically", "Manually removing burrs and small amounts of material for a smooth finish", "Cooling a hot workpiece quickly"],
+        a: 2, xp: 15,
+        exp: "<ruby>やすり掛け<rt>やすりがけ</rt></ruby> (Yasuri-gake, filing) uses a hand file to remove sharp edges, burrs, or small high spots after machining, when a hand-finished feel or fine adjustment is needed that a machine can't easily achieve. 🇯🇵 TIP: The 3rd-grade practical exam often grades how evenly and squarely you can file a flat surface by hand — practice steady, full-length strokes."
+      },
+      {
+        id: 6008, cat: "Blueprint Reading",
+        q: "In Japan, 'Daisankakuhou (第三角法)', third-angle projection, places which view directly above the front view?",
+        opts: ["The bottom view", "The rear view", "The left side view", "The top view"],
+        a: 3, xp: 20,
+        exp: "<ruby>第三角法<rt>だいさんかくほう</rt></ruby> (Daisankakuhou, third-angle projection) is the standard used in most modern Japanese (JIS) drawings; the top view is placed directly above the front view, as if looking through a glass box toward each face. 🇯🇵 TIP: Some older or imported drawings use first-angle projection instead, so always check the drawing's title block for the projection symbol before reading dimensions."
+      },
+      {
+        id: 6009, cat: "Tolerances",
+        q: "What does 'Kousa (公差)', tolerance, define on a dimensioned drawing?",
+        opts: ["The allowable range of variation for a dimension between its maximum and minimum limits", "The exact theoretical size with zero variation allowed", "The surface roughness value only", "The material hardness requirement"],
+        a: 0, xp: 20,
+        exp: "<ruby>公差<rt>こうさ</rt></ruby> (Kousa, tolerance) is the permitted range between the upper and lower limit of a dimension, acknowledging that no part can be manufactured to a perfectly exact size. A part is acceptable as long as it falls within this stated range. 🇯🇵 TIP: Always check whether a tolerance is unilateral (one direction only) or bilateral (both directions) before machining to that dimension."
+      },
+      {
+        id: 6010, cat: "Surface Finish",
+        q: "On a drawing, a checkmark-style symbol with a number next to it (e.g., Ra 1.6) indicates what?",
+        opts: ["The required hardness after heat treatment", "The required surface roughness value after machining", "The total weight of the finished part", "The recommended cutting fluid type"],
+        a: 1, xp: 15,
+        exp: "The surface finish symbol with a value like Ra 1.6 specifies the maximum allowable <ruby>表面粗さ<rt>ひょうめんあらさ</rt></ruby> (Hyoumen Arasa, surface roughness) for that face after machining; a lower Ra number means a smoother, more polished surface. 🇯🇵 TIP: Achieving a tight Ra value often requires slower feeds and finishing passes, not just one rough cut — plan your machining sequence accordingly."
+      },
+      {
+        id: 6011, cat: "Materials",
+        q: "Compared to mild carbon steel, what is a key practical difference when machining aluminum, 'Aruminiumu (アルミニウム)'?",
+        opts: ["Aluminum is always harder than steel and requires slower cutting speeds", "Aluminum cannot be cut with any rotating tool", "Aluminum is much softer and machines faster but tends to gum up on cutting edges if speeds/tools aren't suited to it", "Aluminum requires the exact same speeds and feeds as steel"],
+        a: 2, xp: 20,
+        exp: "<ruby>アルミニウム<rt>アルミニウム</rt></ruby> (Aruminiumu, aluminum) is much softer than steel and can generally be machined at higher speeds, but its tendency to build up on cutting edges (built-up edge) means tool geometry and coolant choice matter a lot for a clean finish. 🇯🇵 TIP: Sharp tools with proper rake angles and good chip evacuation prevent the gummy buildup that ruins aluminum surface finish."
+      },
+      {
+        id: 6012, cat: "Heat Treatment",
+        q: "What does 'Yakiire (焼き入れ)', quenching, do to a steel part?",
+        opts: ["Slowly cools heated steel to make it as soft as possible", "Coats the surface with a protective paint layer", "Removes all carbon content from the steel", "Rapidly cools heated steel to greatly increase its hardness"],
+        a: 3, xp: 20,
+        exp: "<ruby>焼き入れ<rt>やきいれ</rt></ruby> (Yakiire, quenching) involves heating steel to a high temperature and then rapidly cooling it (often in oil or water), which locks in a hard but brittle microstructure. This is usually followed by tempering to reduce brittleness while keeping most of the hardness. 🇯🇵 TIP: Quenched-only parts are often too brittle for direct use — expect a tempering step right after in real production."
+      },
+      {
+        id: 6013, cat: "Safety Basics",
+        q: "Why must you wear 'Hogo Megane (保護メガネ)', safety glasses, when machining?",
+        opts: ["To protect your eyes from flying chips, sparks, and coolant splashes", "Because they are required only for paperwork compliance, not real protection", "To improve your vision while reading blueprints", "Only required when operating CNC machines, never manual machines"],
+        a: 0, xp: 15,
+        exp: "<ruby>保護メガネ<rt>ほごめがね</rt></ruby> (Hogo Megane, safety glasses) shield your eyes from metal chips, abrasive particles, and coolant mist that fly off at high speed during cutting operations — an eye injury from a single chip can be permanent. 🇯🇵 TIP: Wear safety glasses even when 'just watching' a machine run near you, since flying debris doesn't care whose hands are on the controls."
+      },
+      {
+        id: 6014, cat: "Safety Basics",
+        q: "What is the purpose of a machine's 'Anzen Souchi (安全装置)', safety guard or device?",
+        opts: ["To make the machine look more professional", "To physically block access to moving or dangerous parts during operation", "To increase the machine's cutting speed", "To reduce electricity costs"],
+        a: 1, xp: 15,
+        exp: "<ruby>安全装置<rt>あんぜんそうち</rt></ruby> (Anzen Souchi, safety device/guard) is engineered specifically to prevent hands, clothing, or hair from reaching rotating spindles, chucks, or cutting zones while the machine is running. 🇯🇵 TIP: Removing or propping open a safety guard 'to work faster' is treated as a serious violation in any certified workshop, exam or otherwise."
+      },
+      {
+        id: 6015, cat: "Cutting Tools",
+        q: "What does 'Hai-su (ハイス)', HSS (High Speed Steel), describe?",
+        opts: ["A type of coolant additive", "A measuring instrument for hardness", "A common cutting tool material known for toughness and heat resistance, used for drills and end mills", "A surface coating applied only to aluminum parts"],
+        a: 2, xp: 15,
+        exp: "<ruby>ハイス<rt>ハイス</rt></ruby> (Hai-su, HSS) is a tool steel alloy that retains hardness at higher temperatures than plain carbon tool steel, making it a common, tough, relatively affordable choice for drills, taps, and end mills in general shop work. 🇯🇵 TIP: Carbide tools cut faster and last longer than HSS at high speed, but HSS is more forgiving of vibration and interrupted cuts, which is why it's still widely used."
+      },
+      {
+        id: 6016, cat: "Cutting Fluid",
+        q: "What is the main purpose of 'Sessakuyu (切削油)', cutting fluid/coolant, during machining?",
+        opts: ["To make the finished part shinier with no functional purpose", "To replace the need for any tool changes", "To increase the hardness of the workpiece", "To cool the tool and workpiece while reducing friction and washing away chips"],
+        a: 3, xp: 15,
+        exp: "<ruby>切削油<rt>せっさくゆ</rt></ruby> (Sessakuyu, cutting fluid) reduces heat buildup and friction at the cutting edge, helps clear chips from the cut zone, and can improve surface finish and tool life. 🇯🇵 TIP: Using the wrong coolant type, or none at all, for a given material is a common cause of premature tool wear in the practical exam."
+      },
+      {
+        id: 6017, cat: "Measuring Tools",
+        q: "A 'Daiyaru Geji (ダイヤルゲージ)', dial gauge/dial indicator, is mainly used to measure what?",
+        opts: ["Small relative movements, runout, or flatness deviations", "Absolute room temperature", "The exact chemical composition of a metal", "Spindle RPM directly"],
+        a: 0, xp: 15,
+        exp: "A <ruby>ダイヤルゲージ<rt>ダイヤルゲージ</rt></ruby> (Daiyaru Geji, dial gauge) has a spring-loaded plunger connected to a needle that shows small deviations in position, commonly used to check a workpiece's runout on a lathe or the flatness of a surface. 🇯🇵 TIP: Always mount the dial gauge securely on a stable stand — a loose gauge gives readings that look precise but are completely unreliable."
+      },
+      {
+        id: 6018, cat: "Shop Math",
+        q: "If a workpiece diameter is larger and the desired cutting speed (m/min) stays the same, what happens to the required spindle RPM?",
+        opts: ["The RPM must increase no matter what", "The RPM must decrease, since the same surface speed is achieved with fewer rotations on a larger diameter", "The RPM stays exactly the same regardless of diameter", "RPM has no relationship to diameter at all"],
+        a: 1, xp: 20,
+        exp: "Spindle <ruby>回転数<rt>かいてんすう</rt></ruby> (Kaitensuu, RPM) is calculated from cutting speed divided by the workpiece circumference; since circumference grows with diameter, a larger diameter needs fewer revolutions per minute to maintain the same surface (cutting) speed. 🇯🇵 TIP: Forgetting to adjust RPM down when switching to a larger-diameter stock is a classic mistake that overheats the tool almost immediately."
+      },
+      {
+        id: 6019, cat: "Drilling",
+        q: "What is the typical 'Sentankaku (先端角)', point angle, of a standard general-purpose twist drill?",
+        opts: ["30 degrees", "180 degrees", "118 degrees", "45 degrees"],
+        a: 2, xp: 20,
+        exp: "The standard <ruby>先端角<rt>せんたんかく</rt></ruby> (Sentankaku, point angle) for a general-purpose twist drill is 118 degrees, a balance that works reasonably well across many common materials. Harder materials may use a steeper angle for a more durable cutting edge. 🇯🇵 TIP: Resharpening a drill point unevenly causes it to drill an oversized or off-center hole — symmetry of the two cutting lips matters as much as the angle itself."
+      },
+      {
+        id: 6020, cat: "Finishing",
+        q: "Why is 'Bari-tori (バリ取り)', deburring, an important final step after machining a part?",
+        opts: ["Burrs always improve a part's strength so removing them is optional", "Deburring is only done for decorative purposes", "Burrs only appear on plastic parts, never on metal", "Sharp burrs left from cutting can cause injury, assembly problems, or measurement errors if not removed"],
+        a: 3, xp: 15,
+        exp: "<ruby>バリ取り<rt>バリとり</rt></ruby> (Bari-tori, deburring) removes the thin, sharp edges of displaced material left behind after cutting, drilling, or shearing. Leftover burrs can cut hands, prevent mating parts from fitting correctly, or throw off precise measurements. 🇯🇵 TIP: Inspectors in Japanese shops routinely run a finger along edges (carefully) to feel for missed burrs before a part is approved."
+      }
+    ]
+  },
+  {
+    examId: 2,
+    label: "機械加工技能士 2級",
+    subtitle: "Machining Skills Test Lv.2",
+    color: "#FFB800",
+    icon: "🥈",
+    examiner: "上級試験官 (Joukyuu Shikenkan)",
+    questions: [
+      {
+        id: 6101, cat: "Lathe Advanced",
+        q: "What is the most common method for cutting a precise 'Teipa (テーパー)', taper, on a lathe?",
+        opts: ["Offsetting the tailstock or using a taper attachment/compound slide angle", "Increasing spindle speed only, with the tool held straight", "Using a face mill instead of a lathe tool", "Quenching the workpiece before cutting"],
+        a: 0, xp: 25,
+        exp: "Cutting a precise <ruby>テーパー<rt>テーパー</rt></ruby> (Teipa, taper) typically uses tailstock offset for shallow, long tapers, a taper attachment for repeatable production tapers, or angling the compound slide for steep, short tapers cut manually. 🇯🇵 TIP: Tailstock offset changes the centers' alignment, so it's unsuitable for parts that also need center-drilled holes machined afterward."
+      },
+      {
+        id: 6102, cat: "Lathe Advanced",
+        q: "When cutting threads on a lathe, what does the 'Pitchi (ピッチ)', pitch, of the thread specify?",
+        opts: ["The total length of the threaded section", "The distance between adjacent thread crests, which sets the lead screw/gear ratio needed", "The diameter of the minor thread root only", "The hardness required for the finished thread"],
+        a: 1, xp: 25,
+        exp: "<ruby>ピッチ<rt>ピッチ</rt></ruby> (Pitchi, pitch) is the axial distance from one thread crest to the next; the lathe's gear train or electronic lead screw must be set to match this pitch exactly so the single-point tool advances the correct amount per spindle revolution. 🇯🇵 TIP: Always cut a trial pass and check thread pitch with a thread gauge before committing to full depth — a wrong gear setting ruins the part instantly."
+      },
+      {
+        id: 6103, cat: "CNC Basics",
+        q: "In CNC programming, what is the key difference between a 'G00' and a 'G01' command?",
+        opts: ["G00 and G01 are identical commands with different names", "G00 only works on lathes; G01 only works on mills", "G00 is rapid positioning (non-cutting move); G01 is a controlled linear feed move used for cutting", "G01 always moves faster than G00"],
+        a: 2, xp: 25,
+        exp: "G00 commands rapid traverse movement at the machine's maximum non-cutting speed to reposition the tool quickly, while G01 commands a linear feed move at a programmed feed rate, used for actual cutting passes. 🇯🇵 TIP: Accidentally leaving a G01 feed rate active for a positioning move (or vice versa) is a common simulation error caught during 2nd-grade CNC practical checks."
+      },
+      {
+        id: 6104, cat: "Milling Advanced",
+        q: "What does a 'Bunkatsudai (分割台)', dividing head/indexing head, allow you to do on a milling machine?",
+        opts: ["Measure the surface roughness of a finished part", "Automatically change cutting tools", "Cool the workpiece during heavy cuts", "Rotate a workpiece by precise, repeatable angular increments for features like gear teeth or hex flats"],
+        a: 3, xp: 25,
+        exp: "A <ruby>分割台<rt>ぶんかつだい</rt></ruby> (Bunkatsudai, dividing/indexing head) holds a workpiece and rotates it through exact angular steps, letting a machinist mill evenly spaced features such as gear teeth, splines, or hexagonal flats. 🇯🇵 TIP: Always double-check the index plate hole count and crank ratio calculation before cutting — an error here repeats across every single division."
+      },
+      {
+        id: 6105, cat: "GD&T",
+        q: "On a drawing, what does a 'flatness' GD&T symbol (a parallelogram) control?",
+        opts: ["How much a single surface is allowed to deviate from a perfectly flat plane", "The angle between two separate surfaces", "The roundness of a cylindrical feature", "The exact location of a hole relative to a datum"],
+        a: 0, xp: 25,
+        exp: "The flatness symbol is a form tolerance that limits how much an individual surface can vary from being perfectly flat, independent of any other feature or datum. 🇯🇵 TIP: Flatness call-outs often appear on sealing surfaces or mounting faces where even a tiny bow can cause a leak or rocking assembly."
+      },
+      {
+        id: 6106, cat: "GD&T",
+        q: "What does 'Ichido (位置度)', position tolerance, control in geometric dimensioning?",
+        opts: ["The maximum allowable surface roughness", "How precisely a feature's true location must fall relative to specified datums, within a cylindrical or 2D tolerance zone", "The required heat treatment hardness", "The recommended cutting fluid for that feature"],
+        a: 1, xp: 25,
+        exp: "<ruby>位置度<rt>いちど</rt></ruby> (Ichido, position tolerance) defines a tolerance zone, often cylindrical for a hole, within which the feature's actual center must lie relative to datum references, rather than dimensioning location with simple plus/minus coordinates. 🇯🇵 TIP: Position tolerance is commonly paired with a Maximum Material Condition (MMC) modifier, which can effectively loosen the tolerance as the feature size departs from its limit — know this relationship for the written exam."
+      },
+      {
+        id: 6107, cat: "Fits & Tolerances",
+        q: "What does the 'IT Touukyuu (IT等級)', IT grade, system define in JIS tolerancing?",
+        opts: ["The hardness rating of a finished part", "The color-coding scheme for different metals", "A standardized tolerance band width that gets tighter (smaller) as the IT number decreases", "The required cutting fluid pressure"],
+        a: 2, xp: 25,
+        exp: "The <ruby>IT等級<rt>アイティーとうきゅう</rt></ruby> (IT Touukyuu, IT grade) system, standardized under JIS/ISO, assigns a tolerance band width for a given nominal size; lower IT numbers (like IT5) mean tighter, more precise tolerances, while higher numbers (like IT12) allow looser tolerances. 🇯🇵 TIP: Precision fits like bearing seats commonly call for low IT grades (IT5–IT7), while general clearance holes can use much looser grades."
+      },
+      {
+        id: 6108, cat: "Fits & Tolerances",
+        q: "What is the difference between 'Sukima-bame (すきまばめ)', clearance fit, and 'Shimari-bame (しまりばめ)', interference fit?",
+        opts: ["They describe the exact same fit condition with different names", "Clearance fit always requires heating the part; interference fit never does", "Interference fit is only used for plastic parts", "Clearance fit leaves a gap so parts move/assemble freely; interference fit makes the shaft larger than the hole so the parts must be pressed together"],
+        a: 3, xp: 25,
+        exp: "<ruby>すきまばめ<rt>すきまばめ</rt></ruby> (Sukima-bame, clearance fit) leaves a small gap between shaft and hole so parts can rotate or slide; <ruby>しまりばめ<rt>しまりばめ</rt></ruby> (Shimari-bame, interference fit) makes the shaft slightly larger than the hole, requiring press-fitting or thermal assembly to create a permanently tight joint. 🇯🇵 TIP: Bearings are a classic example where the outer race often uses a transition or interference fit, while the rotating shaft inside uses a clearance fit."
+      },
+      {
+        id: 6109, cat: "Precision Measurement",
+        q: "What is a 'Sain Baa (サインバー)', sine bar, used to measure or set up?",
+        opts: ["Precise angles, by combining the bar's known length with gauge block stacks and trigonometry", "Surface roughness values directly", "Spindle vibration frequency", "Coolant flow rate"],
+        a: 0, xp: 25,
+        exp: "A <ruby>サインバー<rt>サインバー</rt></ruby> (Sain Baa, sine bar) is a precision bar with two cylinders of known, equal diameter set a fixed distance apart; by raising one end with stacked gauge blocks of a calculated height, you can set up or verify a precise angle using sine trigonometry. 🇯🇵 TIP: Sine bars are most accurate for angles up to about 45 degrees — beyond that, small height errors translate into larger angular errors."
+      },
+      {
+        id: 6110, cat: "Precision Measurement",
+        q: "What is a 'Sanjigen Sokuteiki (三次元測定機)', CMM (coordinate measuring machine), primarily used for?",
+        opts: ["Cutting complex 3D shapes directly from raw stock", "Precisely measuring the 3D geometry of a part by probing points in X, Y, and Z coordinates", "Heat-treating parts to exact hardness specifications", "Cleaning oil and debris off finished parts"],
+        a: 1, xp: 25,
+        exp: "A <ruby>三次元測定機<rt>さんじげんそくていき</rt></ruby> (Sanjigen Sokuteiki, CMM) uses a precision probe to capture exact X, Y, Z coordinates of points on a part's surface, allowing comprehensive verification of complex geometry, GD&T callouts, and hole locations against the CAD model. 🇯🇵 TIP: CMM results are only as good as the part's fixturing — an unstable or contaminated setup surface will introduce measurement error no matter how good the machine is."
+      },
+      {
+        id: 6111, cat: "Precision Measurement",
+        q: "What does a 'Touei-ki (投影機)', optical comparator/profile projector, allow an inspector to do?",
+        opts: ["Measure the internal hardness of a part non-destructively", "Weigh a part to a precision of micrograms", "Magnify and project a part's silhouette onto a screen to compare it against an overlay chart or measure features optically", "Detect internal cracks using ultrasonic waves"],
+        a: 2, xp: 20,
+        exp: "A <ruby>投影機<rt>とうえいき</rt></ruby> (Touei-ki, optical comparator) shines light through or onto a part and projects a magnified silhouette onto a screen, where the operator can compare the profile to an overlay chart or take precise edge-to-edge measurements, especially useful for small or delicate parts like gears and threads. 🇯🇵 TIP: Because it measures silhouette/edge position, it's especially good for checking profiles like thread forms or gear tooth shapes that are awkward to probe mechanically."
+      },
+      {
+        id: 6112, cat: "Heat Treatment",
+        q: "What is the purpose of 'Yakimodoshi (焼き戻し)', tempering, after quenching a steel part?",
+        opts: ["To make the part as soft as the original unhardened steel", "To add carbon to the surface layer only", "To clean oil residue off the part's surface", "To reduce brittleness and relieve internal stress while retaining most of the hardness gained from quenching"],
+        a: 3, xp: 25,
+        exp: "<ruby>焼き戻し<rt>やきもどし</rt></ruby> (Yakimodoshi, tempering) reheats a quenched part to a lower, controlled temperature, which relieves internal stresses and reduces brittleness while sacrificing only a modest amount of the hardness achieved during quenching. 🇯🇵 TIP: Skipping tempering after quenching is a common cause of parts cracking unexpectedly in service, even though they tested 'hard enough' right after the quench."
+      },
+      {
+        id: 6113, cat: "Heat Treatment",
+        q: "What does 'Yakinamashi (焼きなまし)', annealing, do to a metal part?",
+        opts: ["Heats and slowly cools the metal to soften it, relieve internal stress, and improve machinability", "Rapidly cools the metal to maximize hardness", "Coats the surface in a hard ceramic layer", "Permanently magnetizes the part"],
+        a: 0, xp: 20,
+        exp: "<ruby>焼きなまし<rt>やきなまし</rt></ruby> (Yakinamashi, annealing) heats metal to a specific temperature and then cools it slowly, typically in the furnace or in still air, softening the material, relieving stresses from prior cold-working, and making it easier to machine or form. 🇯🇵 TIP: Stock that has been heavily cold-worked or welded is often annealed before final machining so it doesn't warp as internal stresses release during cutting."
+      },
+      {
+        id: 6114, cat: "Heat Treatment",
+        q: "What is 'Shintan (浸炭)', case hardening/carburizing, designed to achieve?",
+        opts: ["Uniform hardness all the way through the entire part", "A hard, wear-resistant outer surface while keeping a tough, ductile core underneath", "Removal of carbon from the part's surface", "A mirror-polished cosmetic finish only"],
+        a: 1, xp: 25,
+        exp: "<ruby>浸炭<rt>しんたん</rt></ruby> (Shintan, carburizing/case hardening) diffuses extra carbon into the surface layer of low-carbon steel at high temperature, then quenches it so the outer 'case' becomes very hard and wear-resistant while the core remains tougher and less brittle. 🇯🇵 TIP: Gears and shafts that need both surface wear resistance and impact toughness, like transmission gears, are classic carburizing applications."
+      },
+      {
+        id: 6115, cat: "Materials",
+        q: "What does the grade name 'SUS304' generally indicate about a material?",
+        opts: ["A type of cast iron used only for engine blocks", "A grade of aluminum alloy used in aerospace", "An austenitic stainless steel widely used for general corrosion resistance", "A low-carbon mild steel with no corrosion resistance"],
+        a: 2, xp: 20,
+        exp: "SUS304 is a JIS-designated austenitic stainless steel (roughly equivalent to AISI 304), prized for good general corrosion resistance, formability, and weldability, making it one of the most common stainless grades in food equipment, fittings, and general fabrication. 🇯🇵 TIP: SUS304 work-hardens noticeably during machining, so cutting tools and feeds suited for mild steel often need adjustment to avoid rapid tool wear."
+      },
+      {
+        id: 6116, cat: "Cutting Fluid",
+        q: "Why might a machinist choose a water-soluble cutting fluid over straight cutting oil for a high-speed steel-cutting operation?",
+        opts: ["Straight oil and water-soluble fluid always perform identically", "Water-soluble fluid is only used for plastic machining", "Straight oil is always required by JIS regardless of operation", "Water-soluble fluids generally cool better at high speed, while straight oils lubricate better at lower speed, heavy-duty cuts"],
+        a: 3, xp: 20,
+        exp: "Water-soluble (emulsion/synthetic) cutting fluids carry heat away efficiently due to water's high heat capacity, making them well suited to higher-speed operations where heat is the main concern, while straight cutting oils provide stronger lubrication for slower, heavy-duty, or low-speed cuts where friction and tool wear dominate. 🇯🇵 TIP: Mixing ratios for water-soluble coolant matter a lot — too weak invites rust and poor lubrication, too strong can cause skin irritation and residue buildup."
+      },
+      {
+        id: 6117, cat: "Blueprint Reading",
+        q: "What is the purpose of a 'Danmenzu (断面図)', sectional view, on a drawing?",
+        opts: ["To reveal internal features that would otherwise be hidden, by showing the part as if cut along a plane", "To show the part rotated 360 degrees as an animation", "To indicate the part's surface roughness only", "To list the bill of materials for an assembly"],
+        a: 0, xp: 20,
+        exp: "A <ruby>断面図<rt>だんめんず</rt></ruby> (Danmenzu, sectional view) imagines the part sliced along a defined cutting plane, exposing internal features like holes, ribs, or wall thickness that would be invisible or confusing in a normal exterior view. 🇯🇵 TIP: Always check the cutting-plane line and arrow direction in the original view — it tells you exactly where the 'slice' was taken from and which way you're looking."
+      },
+      {
+        id: 6118, cat: "Quality Control",
+        q: "In statistical process control (SPC), what does a low 'Koutei Nouryoku (工程能力)', process capability, value generally indicate?",
+        opts: ["The process is producing parts perfectly every single time", "The process variation is wide relative to the tolerance, so more parts risk falling outside specification", "The measuring instrument needs recalibration only, with no process issue", "The tolerance band on the drawing is too wide"],
+        a: 1, xp: 25,
+        exp: "<ruby>工程能力<rt>こうていのうりょく</rt></ruby> (Koutei Nouryoku, process capability), often expressed as Cp or Cpk, compares the spread of a process's natural variation to the width of the specification tolerance; a low value means the process variation is large relative to that tolerance, raising the risk of out-of-spec parts even without an obvious single defect cause. 🇯🇵 TIP: Improving a low Cpk usually means reducing variation in the process itself (tooling, fixturing, machine condition), not just tightening inspection after the fact."
+      },
+      {
+        id: 6119, cat: "Tooling",
+        q: "What is the main purpose of a 'Jigu (治具)', jig, in a machining setup?",
+        opts: ["To replace the need for a chuck on every machine", "To automatically sharpen cutting tools", "To hold and/or guide a tool or workpiece consistently, improving accuracy and repeatability across multiple parts", "To measure final part hardness after machining"],
+        a: 2, xp: 20,
+        exp: "A <ruby>治具<rt>じぐ</rt></ruby> (Jigu, jig) holds a workpiece in a fixed, repeatable position and often also guides the cutting tool (such as a drill jig with bushings), dramatically improving consistency and speed when many identical parts must be made. 🇯🇵 TIP: A 'fixture' technically only holds the part, while a true 'jig' also guides the tool — but in everyday shop talk the two terms are frequently used interchangeably."
+      },
+      {
+        id: 6120, cat: "Surface Finish",
+        q: "If a drawing specifies Ra 0.4 on a critical bearing surface versus Ra 6.3 on a non-critical cast surface, what does this difference primarily reflect?",
+        opts: ["Ra values have no real effect on part function, only appearance", "Both values actually call for the identical surface condition", "Ra 6.3 always indicates a tighter requirement than Ra 0.4", "The bearing surface requires a much smoother, finer finish than the rough cast surface"],
+        a: 3, xp: 25,
+        exp: "A smaller Ra number means a smoother surface; Ra 0.4 demands a fine, almost polish-like finish appropriate for a precision bearing surface, while Ra 6.3 allows a much rougher texture acceptable on a non-critical, as-cast or rough-machined area. 🇯🇵 TIP: Chasing an unnecessarily fine Ra value on a non-critical surface wastes machining time and cost — match your finishing effort to the functional requirement on the drawing."
+      }
+    ]
+  },
+  {
+    examId: 3,
+    label: "安全衛生・特定技能",
+    subtitle: "Safety & Tokutei Ginou",
+    color: "#22c55e",
+    icon: "🛡️",
+    examiner: "安全管理官 (Anzen Kanrikan)",
+    questions: [
+      {
+        id: 6201, cat: "Tokutei Ginou Basics",
+        q: "What is the 'Tokutei Ginou (特定技能)', Specific Skilled Worker, visa status primarily designed for?",
+        opts: ["Foreign workers with a certain level of skill and Japanese ability working directly in designated labor-shortage industries", "Tourists visiting Japan for short stays", "Foreign students enrolled full-time at a Japanese university", "Foreign executives transferring within their own company's overseas branch"],
+        a: 0, xp: 20,
+        exp: "<ruby>特定技能<rt>とくていぎのう</rt></ruby> (Tokutei Ginou, Specific Skilled Worker) is a visa category created to bring foreign workers with verified skill and Japanese language ability directly into specific industries facing labor shortages, such as manufacturing, construction, and caregiving. 🇯🇵 TIP: Unlike a tourist or student visa, Tokutei Ginou explicitly authorizes full-time paid work in the designated field from the start."
+      },
+      {
+        id: 6202, cat: "Tokutei Ginou Basics",
+        q: "How does 'Tokutei Ginou (特定技能)' generally differ from 'Ginou Jisshu (技能実習)', the Technical Intern Training program?",
+        opts: ["They are exactly the same visa with two different names", "Tokutei Ginou is primarily an employment status for skilled work, while Ginou Jisshu is framed around training and technology transfer", "Ginou Jisshu allows changing employers freely, while Tokutei Ginou never does", "Tokutei Ginou is only available to university graduates"],
+        a: 1, xp: 25,
+        exp: "<ruby>技能実習<rt>ぎのうじっしゅう</rt></ruby> (Ginou Jisshu, Technical Intern Training) is officially framed as international skills transfer and training, while <ruby>特定技能<rt>とくていぎのう</rt></ruby> (Tokutei Ginou) is an employment-focused status for workers who have already demonstrated a defined skill level. In practice, many workers move from Ginou Jisshu into Tokutei Ginou after completing their training and passing required exams. 🇯🇵 TIP: Job-change flexibility differs between the two statuses, so always confirm your specific visa's actual rules with your employer or a qualified advisor rather than assuming."
+      },
+      {
+        id: 6203, cat: "Tokutei Ginou Basics",
+        q: "Besides a skills test in your field, what other type of test is generally also required to qualify for Tokutei Ginou (特定技能)?",
+        opts: ["A physical fitness exam with no language component", "A driving test for a Japanese license", "A Japanese language proficiency test (such as the JFT-Basic or JLPT)", "A separate exam on Japanese history and literature"],
+        a: 2, xp: 20,
+        exp: "Most Tokutei Ginou (特定技能) routes require passing both a field-specific skills test and a Japanese language proficiency check, such as the JFT-Basic or an equivalent JLPT level, to confirm the worker can communicate adequately on the job and in daily life. 🇯🇵 TIP: Workers who completed Ginou Jisshu (技能実習) satisfactorily are often exempted from retaking these tests when transitioning to Tokutei Ginou."
+      },
+      {
+        id: 6204, cat: "Labor Law",
+        q: "Under Japan's 'Roudou Kijun Hou (労働基準法)', Labor Standards Act, what is the standard maximum working time before overtime rules apply?",
+        opts: ["10 hours per day with no weekly limit", "12 hours per day, 6 days per week", "There is no legal limit at all", "8 hours per day and 40 hours per week"],
+        a: 3, xp: 20,
+        exp: "<ruby>労働基準法<rt>ろうどうきじゅんほう</rt></ruby> (Roudou Kijun Hou, Labor Standards Act) sets the standard working hours at 8 hours per day and 40 hours per week; work beyond this generally requires overtime agreements and overtime pay premiums. 🇯🇵 TIP: This law applies to foreign workers exactly the same as Japanese employees — know your rights regarding overtime pay and rest breaks."
+      },
+      {
+        id: 6205, cat: "Labor Law",
+        q: "What does Japan's 'Saitei Chingin Hou (最低賃金法)', Minimum Wage Act, guarantee to workers?",
+        opts: ["A legally mandated minimum hourly wage that varies by region and industry", "A fixed national salary identical in every prefecture", "Free housing provided by every employer", "Automatic yearly raises regardless of performance"],
+        a: 0, xp: 20,
+        exp: "<ruby>最低賃金法<rt>さいていちんぎんほう</rt></ruby> (Saitei Chingin Hou, Minimum Wage Act) sets a legally required minimum hourly wage that differs by prefecture and sometimes by industry; paying below this rate is illegal, including for foreign workers under any visa status. 🇯🇵 TIP: Always check the current minimum wage for your specific prefecture, since it's reviewed and adjusted annually and varies significantly between regions."
+      },
+      {
+        id: 6206, cat: "Tokutei Ginou Basics",
+        q: "Under Tokutei Ginou Type 1 (特定技能1号), can a worker generally change employers within the same designated industry field?",
+        opts: ["No, changing employers is completely forbidden under any circumstance", "Yes, changing employers within the same field is generally permitted, unlike the older Ginou Jisshu framework", "Only if they switch to a completely unrelated industry", "Only after first returning to their home country permanently"],
+        a: 1, xp: 25,
+        exp: "One key design feature of <ruby>特定技能<rt>とくていぎのう</rt></ruby> 1号 (Tokutei Ginou Type 1) is that workers can generally change employers within the same designated field, offering more flexibility than the older Ginou Jisshu (技能実習) structure, which was much more restrictive about transfers. 🇯🇵 TIP: Even with this flexibility, proper visa and paperwork procedures must still be followed when changing employers — it isn't automatic or paperwork-free."
+      },
+      {
+        id: 6207, cat: "Risk Prevention",
+        q: "What is the purpose of 'Kiken Yochi Katsudou (危険予知活動)', KY activity / risk prediction activity, done before starting work?",
+        opts: ["A formal investigation conducted only after an accident has already happened", "A once-a-year company safety lecture", "A short team discussion to identify potential hazards in the day's task and plan how to avoid them", "A test given only to new hires, never repeated"],
+        a: 2, xp: 20,
+        exp: "<ruby>危険予知活動<rt>きけんよちかつどう</rt></ruby> (Kiken Yochi Katsudou, KY activity) is a brief, proactive team discussion held before starting work, where everyone identifies what could go wrong with the day's specific task and agrees on countermeasures in advance. 🇯🇵 TIP: KY activity is meant to be quick and routine, often done as a standing huddle each morning — treat it as a real safety tool, not just a formality to rush through."
+      },
+      {
+        id: 6208, cat: "Chemical Safety",
+        q: "What information does an 'Anzen Deeta Shiito (安全データシート)', SDS (Safety Data Sheet), provide for a chemical product?",
+        opts: ["Only the purchase price and supplier contact information", "The exact machining parameters for cutting fluid", "A list of unrelated company holiday schedules", "Hazards, safe handling instructions, storage requirements, and emergency response measures for that chemical"],
+        a: 3, xp: 20,
+        exp: "An <ruby>安全データシート<rt>あんぜんデータシート</rt></ruby> (Anzen Deeta Shiito, SDS) details a chemical's hazards, required PPE, safe handling and storage procedures, and what to do in case of spills, fire, or exposure. 🇯🇵 TIP: SDS sheets for chemicals you handle, such as cutting fluids or solvents, should be readily accessible in the workplace, not locked away in an office file."
+      },
+      {
+        id: 6209, cat: "Fire Safety",
+        q: "Why is it important to know the different types of 'Shoukaki (消火器)', fire extinguishers, available in your workplace?",
+        opts: ["Different extinguisher types are designed for different fire classes, and using the wrong type can be ineffective or dangerous", "All fire extinguishers work identically on every type of fire", "Fire extinguishers are only decorative and rarely actually usable", "Only trained firefighters are ever permitted to touch any extinguisher"],
+        a: 0, xp: 20,
+        exp: "<ruby>消火器<rt>しょうかき</rt></ruby> (Shoukaki, fire extinguishers) come in types suited to different fire classes — for example, using water on an electrical or oil fire can make things worse, while a CO2 or powder extinguisher may be appropriate instead. 🇯🇵 TIP: Learn the location and type of the nearest extinguisher to your workstation during orientation, before you ever need it in an emergency."
+      },
+      {
+        id: 6210, cat: "First Aid",
+        q: "What is the generally recommended first step after witnessing a coworker's injury at the worksite?",
+        opts: ["Immediately move the injured person regardless of the injury type", "Ensure the immediate area is safe, then call for help and provide basic first aid within your training level", "Wait silently for someone else to notice and react first", "Continue working and report it only at the end of the shift"],
+        a: 1, xp: 20,
+        exp: "<ruby>応急処置<rt>おうきゅうしょち</rt></ruby> (Oukyuu Shochi, first aid) response should start by checking that the surrounding area is safe for both you and the victim, then promptly calling for trained help while providing only the basic first aid appropriate to your training — moving an injured person carelessly can worsen certain injuries, like suspected spinal trauma. 🇯🇵 TIP: Know your factory's emergency contact procedure and the location of the nearest first aid kit and AED before an emergency happens, not during one."
+      },
+      {
+        id: 6211, cat: "Accident Reporting",
+        q: "What is 'Rousai (労災)', short for Roudou Saigai (労働災害), workplace accident/injury?",
+        opts: ["A type of annual bonus payment", "A voluntary overtime work arrangement", "A work-related injury, illness, or accident that is generally covered by workers' compensation insurance", "A penalty fee charged to workers for safety violations"],
+        a: 2, xp: 20,
+        exp: "<ruby>労災<rt>ろうさい</rt></ruby> (Rousai), short for <ruby>労働災害<rt>ろうどうさいがい</rt></ruby> (Roudou Saigai, workplace accident), refers to injuries or illnesses arising from work, which are generally covered under Japan's workers' compensation insurance system regardless of the worker's nationality or visa status. 🇯🇵 TIP: Always report even minor workplace injuries promptly through the proper channel — delayed reporting can complicate insurance claims later."
+      },
+      {
+        id: 6212, cat: "Workplace Organization",
+        q: "What do the principles behind '5S (整理・整頓・清掃・清潔・しつけ)' aim to improve in a workshop?",
+        opts: ["Only the visual appearance of the shop for customer tours", "The legal minimum wage calculation", "The company's annual tax filing process", "Organization, cleanliness, and standardized habits that reduce hazards and improve efficiency"],
+        a: 3, xp: 20,
+        exp: "5S, covering <ruby>整理<rt>せいり</rt></ruby> (sort), <ruby>整頓<rt>せいとん</rt></ruby> (set in order), <ruby>清掃<rt>せいそう</rt></ruby> (shine), <ruby>清潔<rt>せいけつ</rt></ruby> (standardize), and しつけ (sustain), is a workplace organization system aimed at reducing clutter and hazards, making tools easy to find, and building consistent habits that improve both safety and productivity. 🇯🇵 TIP: A genuinely well-run 5S floor makes hazards like spilled coolant or blocked walkways immediately obvious, because anything out of place stands out."
+      },
+      {
+        id: 6213, cat: "Noise & Hearing",
+        q: "Why are 'Bouon Hogo Guzu (防音保護具)', hearing protection devices, important in a loud machining shop?",
+        opts: ["Prolonged exposure to high noise levels can cause permanent hearing damage over time", "Loud noise only causes temporary headaches with no lasting effect", "Hearing protection is purely a comfort item with no real health benefit", "Only office workers are ever at risk from workshop noise"],
+        a: 0, xp: 20,
+        exp: "<ruby>防音保護具<rt>ぼうおんほごぐ</rt></ruby> (Bouon Hogo Guzu, hearing protection equipment) such as earplugs or earmuffs reduce exposure to harmful noise levels; repeated exposure to loud machinery over months or years can cause gradual, permanent hearing loss that often isn't noticed until it's already significant. 🇯🇵 TIP: If you have to raise your voice to be heard by someone an arm's length away, that area's noise level likely calls for hearing protection."
+      },
+      {
+        id: 6214, cat: "Chemical Safety",
+        q: "What precaution is especially important when handling 'Yuuki Youzai (有機溶剤)', organic solvents, such as degreasers or thinners?",
+        opts: ["No precautions are needed since organic solvents are completely harmless", "Use proper ventilation and PPE, since vapors can be toxic, flammable, or cause long-term health effects with repeated exposure", "Only eye protection is required; skin and lung exposure don't matter", "Organic solvents may be safely mixed together without checking compatibility"],
+        a: 1, xp: 25,
+        exp: "<ruby>有機溶剤<rt>ゆうきようざい</rt></ruby> (Yuuki Youzai, organic solvents) often produce vapors that are flammable and can be harmful to the nervous system or other organs with repeated exposure, so proper ventilation, suitable gloves, and respiratory protection where specified are essential, and mixing unknown chemicals can create unexpected hazardous reactions. 🇯🇵 TIP: Workers regularly handling certain organic solvents in Japan may legally require specific special education (特別教育) or a qualified operator license, similar to other hazardous-equipment training."
+      },
+      {
+        id: 6215, cat: "Heat Illness",
+        q: "What is 'Necchuushou (熱中症)', heat stroke/heat illness, a serious risk for in summer factory work?",
+        opts: ["A minor skin irritation with no other symptoms", "An allergic reaction limited to outdoor workers only", "Dangerous overheating and dehydration of the body, which can be fatal if not treated quickly", "A condition that only affects machines, not people"],
+        a: 2, xp: 20,
+        exp: "<ruby>熱中症<rt>ねっちゅうしょう</rt></ruby> (Necchuushou, heat illness/heat stroke) occurs when the body can't regulate its temperature in hot, often humid conditions, leading to symptoms ranging from cramps and dizziness to life-threatening organ failure if untreated. 🇯🇵 TIP: Regular hydration breaks, monitoring for early symptoms like dizziness or confusion in coworkers, and adjusting work pace on extremely hot days are standard summer safety practices in Japanese workshops."
+      },
+      {
+        id: 6216, cat: "Machine Safety",
+        q: "What is the purpose of an 'Hijou Teishi Botan (非常停止ボタン)', emergency stop button, on a machine?",
+        opts: ["To pause the machine for a scheduled lunch break only", "To adjust the machine's cutting speed gradually", "To restart the machine automatically after a power outage", "To immediately halt all hazardous motion the instant a dangerous situation is detected"],
+        a: 3, xp: 20,
+        exp: "An <ruby>非常停止ボタン<rt>ひじょうていしボタン</rt></ruby> (Hijou Teishi Botan, emergency stop button) is designed to cut power to hazardous motion instantly when pressed, intended for genuine emergencies where any delay could cause injury. 🇯🇵 TIP: Know the exact location of every emergency stop near your workstation before you start a shift, not after something goes wrong."
+      },
+      {
+        id: 6217, cat: "Machine Safety",
+        q: "What is the core idea behind a 'lockout/tagout' style procedure when servicing a machine?",
+        opts: ["Physically isolate the machine's energy source and clearly tag it so it cannot be accidentally re-energized while someone is working on it", "Simply turning off the main room lights before maintenance", "Posting a sign only, with the machine left fully powered and ready to run", "Allowing only the newest employee to perform the lockout"],
+        a: 0, xp: 25,
+        exp: "A lockout/tagout style procedure physically isolates and locks a machine's energy source (electrical, hydraulic, pneumatic, etc.) and attaches a clear tag identifying who is working on it, preventing the machine from being unexpectedly started or energized while maintenance is in progress. 🇯🇵 TIP: Never remove someone else's lockout tag or lock, even if the machine 'looks finished' — only the person who applied it should remove it after confirming the work is truly complete."
+      },
+      {
+        id: 6218, cat: "Personal Protective Equipment",
+        q: "When selecting 'Hogo-gu (保護具)', personal protective equipment, for a specific task, what should primarily guide your choice?",
+        opts: ["Whichever equipment looks the newest in the supply locker", "The specific hazards present in that task, such as flying debris, chemicals, noise, or heavy loads", "Cost alone, regardless of the actual hazard", "Personal preference for color or style only"],
+        a: 1, xp: 20,
+        exp: "<ruby>保護具<rt>ほごぐ</rt></ruby> (Hogo-gu, PPE) selection should match the actual hazards of the task at hand — for example, cut-resistant gloves for sharp metal handling, a respirator for solvent fumes, or hearing protection in loud areas — rather than wearing generic gear that may not address the real risk. 🇯🇵 TIP: Wearing the wrong PPE, such as loose gloves near a rotating chuck, can sometimes create a new hazard instead of preventing one — always think through fit and task compatibility."
+      },
+      {
+        id: 6219, cat: "Near-Miss Reporting",
+        q: "What is the value of reporting a 'Hiyari Hatto (ヒヤリハット)', near-miss incident, even when no one was actually injured?",
+        opts: ["Near-misses have no practical value since nothing bad actually happened", "Only incidents resulting in injury are ever worth discussing", "It identifies a hazard before it causes a real injury, allowing preventive action to be taken", "Reporting near-misses is solely for punishing the worker involved"],
+        a: 2, xp: 20,
+        exp: "A <ruby>ヒヤリハット<rt>ヒヤリハット</rt></ruby> (Hiyari Hatto, near-miss) report captures a situation that almost caused harm, giving the workplace a chance to fix the underlying hazard before it actually injures someone. Japanese safety culture treats near-miss reporting as proactive and valuable, not as an admission of fault to be hidden. 🇯🇵 TIP: Reporting your own near-miss honestly is generally viewed positively in Japanese workplaces — it helps protect the next person, including yourself."
+      },
+      {
+        id: 6220, cat: "Tokutei Ginou Basics",
+        q: "What is generally required to renew or maintain valid Tokutei Ginou (特定技能) residence status over time?",
+        opts: ["No action is ever needed once the visa is first issued", "Only a one-time renewal fee with no further requirements", "Switching employers every year is mandatory by law", "Continuing to meet the conditions of the status, such as employment in the designated field and timely renewal procedures with immigration authorities"],
+        a: 3, xp: 20,
+        exp: "Maintaining valid <ruby>特定技能<rt>とくていぎのう</rt></ruby> (Tokutei Ginou) status generally requires continuing to satisfy the conditions tied to that status, such as remaining employed in the designated field, and completing renewal procedures with immigration authorities before the current period of stay expires. 🇯🇵 TIP: Always track your visa expiration date well in advance and confirm renewal requirements with your employer or an immigration specialist — letting status lapse can create serious legal problems."
+      }
+    ]
+  },
+  {
+    examId: 4, label: "CAD技能検定", subtitle: "CAD Proficiency Certification",
+    color: "#9932CC", icon: "🖥️", examiner: "図面審査官 (Zuumen Shinsakan)",
+    questions: [
+      {
+        id: 7001, cat: "JIS Drawing Standards",
+        q: "What is the primary purpose of 'JIS B 0001 (JIS B 0001)', the Japanese Industrial Standard for engineering drawings?",
+        opts: ["To set minimum wages for CAD operators in Japan", "To standardize rules for engineering drawing creation so drawings are universally readable across Japan", "To define the maximum file size for CAD software", "To certify individual CAD operators as nationally licensed professionals"],
+        a: 1, xp: 15,
+        exp: "<ruby>JIS B 0001<rt>ジェイアイエスビーれいれいれいいち</rt></ruby> establishes rules for creating engineering drawings — line types, dimensioning, symbols, views — so that any trained person reading the drawing gets the same information regardless of which company or software created it. 🇯🇵 TIP: JIS stands for <ruby>日本産業規格<rt>にほんさんぎょうきかく</rt></ruby> (Nihon Sangyo Kikaku), Japan Industrial Standards."
+      },
+      {
+        id: 7002, cat: "CAD Layers",
+        q: "In CAD drawings, why are 'layers (レイヤー)' used to organize different types of drawing information?",
+        opts: ["To make the file size larger so it is easier to share", "To randomly assign colors to different lines for visual variety", "To separate different types of information (dimensions, centerlines, hidden lines) so each can be controlled, displayed, or printed independently", "Layers are only used in 3D modeling, never in 2D drafting"],
+        a: 2, xp: 15,
+        exp: "<ruby>レイヤー<rt>れいやー</rt></ruby> (Layer) organization in CAD allows, for example, dimensions to be on one layer that can be hidden during review, while visible outlines remain on another. This makes drawings easier to manage, modify, and control when printing. 🇯🇵 TIP: A common JIS-compliant layer scheme separates outlines, hidden lines, centerlines, dimensions, and annotation into distinct layers."
+      },
+      {
+        id: 7003, cat: "Projection Method",
+        q: "In 'Daisan-kakuhou (第三角法)', third-angle projection used in Japanese JIS drawings, where is the right-side view placed relative to the front view?",
+        opts: ["Directly below the front view", "To the left of the front view", "Directly above the front view", "To the right of the front view"],
+        a: 3, xp: 15,
+        exp: "In <ruby>第三角法<rt>だいさんかくほう</rt></ruby> (Daisan-kakuhou, third-angle projection), the view is placed on the side from which it was seen — so the right-side view goes to the right of the front view. Japan uses third-angle projection per JIS B 0001. 🇯🇵 TIP: The ISO/European first-angle projection places views on the opposite side — always check the drawing symbol in the title block to confirm which method is used."
+      },
+      {
+        id: 7004, cat: "Line Types",
+        q: "On a JIS engineering drawing, what does a 'kakusen (破線)', dashed line, represent?",
+        opts: ["A visible edge of the part that is clearly seen from the viewing direction", "A centerline showing the axis of a circular feature", "A hidden edge or surface that cannot be seen from the current viewing direction", "A phantom line showing an alternate position of a moving part"],
+        a: 2, xp: 15,
+        exp: "<ruby>破線<rt>はせん</rt></ruby> (Kakusen, dashed/hidden line) represents edges or surfaces that exist inside or behind the visible surface — you know they are there but cannot see them from that viewpoint. Distinguishing visible from hidden lines is fundamental to reading multi-view drawings. 🇯🇵 TIP: Overusing hidden lines in complex drawings can make them very hard to read; section views are often a cleaner alternative for showing internal features."
+      },
+      {
+        id: 7005, cat: "Dimensioning",
+        q: "What is the key advantage of 'baseline dimensioning (基点寸法記入法)' over chain dimensioning for manufactured parts?",
+        opts: ["It requires fewer dimension lines, making the drawing look cleaner", "It is only used for circular holes and never for flat surfaces", "All measurements originate from a single reference point, so tolerances do not accumulate (stack up) from feature to feature", "It automatically adjusts tolerances based on the material used"],
+        a: 2, xp: 15,
+        exp: "<ruby>基点寸法記入法<rt>きてんすんぽうきにゅうほう</rt></ruby> (Kiten Sunpou Kirnyuuhou, baseline/datum dimensioning) measures each feature from a single datum. In chain dimensioning, each tolerance adds to the next, potentially causing large cumulative error at the last feature. Baseline dimensioning avoids this tolerance stack-up. 🇯🇵 TIP: For precision assemblies, baseline dimensioning combined with GD&T datums gives the tightest control over functional requirements."
+      },
+      {
+        id: 7006, cat: "Section Views",
+        q: "What is the purpose of a 'danmen-zu (断面図)', section view, in an engineering drawing?",
+        opts: ["To show only the external outline of a part for quick identification", "To imaginary cut the part along a cutting plane to reveal internal features that would otherwise be hidden", "To display the part from an isometric 3D perspective", "To indicate the part's material composition using color coding"],
+        a: 1, xp: 15,
+        exp: "<ruby>断面図<rt>だんめんず</rt></ruby> (Danmen-zu, section view) is created by imagining a cutting plane slicing through the part, then showing the internal cross-section as if the front portion were removed. Interior features that would require many hidden lines in a standard view become clearly visible. 🇯🇵 TIP: The cut surface is indicated by section lines (hatch lines at 45°), and the cutting-plane line in the other view shows exactly where the cut was made."
+      },
+      {
+        id: 7007, cat: "GD&T Datums",
+        q: "In 'kikagaku koucha (幾何公差)', geometric dimensioning and tolerancing, what is a 'datum (データム)'?",
+        opts: ["A type of tolerance symbol used only for surface finish", "A theoretically exact reference point, axis, or plane from which geometric measurements are made", "The maximum allowable deviation for a dimension, expressed in millimeters", "A CAD file format used for sharing drawings between different software packages"],
+        a: 1, xp: 15,
+        exp: "A <ruby>データム<rt>でーたむ</rt></ruby> (Datum) in GD&T is a theoretically perfect reference — a flat surface (plane), a bore axis, or a center point — from which all geometric tolerances on that part are measured. Real part surfaces are imperfect, so we simulate datums by contacting them with precision tooling or a CMM. 🇯🇵 TIP: Datums are labeled with capital letters (A, B, C) in a square frame and referenced in feature control frames to establish measurement direction and order of precedence."
+      },
+      {
+        id: 7008, cat: "GD&T Symbols",
+        q: "In a GD&T feature control frame, what does the symbol '⌀' (circle with a diagonal line) indicate when it appears before a tolerance value?",
+        opts: ["That the tolerance applies to a flat surface only", "That the tolerance zone is a sphere", "That the tolerance zone is cylindrical (a diametral zone) rather than a linear width zone", "That the feature must be measured at room temperature only"],
+        a: 2, xp: 15,
+        exp: "The ⌀ symbol in a feature control frame means the tolerance zone is a <ruby>円筒形<rt>えんとうけい</rt></ruby> (Entou-kei, cylindrical) zone with that diameter, not two parallel planes. For a position tolerance on a hole axis, ⌀0.05 means the axis must fall within a cylinder 0.05mm in diameter — not within ±0.025mm in two separate directions. 🇯🇵 TIP: Cylindrical tolerance zones are larger than equivalent bilateral zones, giving manufacturers slightly more usable tolerance while still controlling function."
+      },
+      {
+        id: 7009, cat: "Parametric Modeling",
+        q: "What does 'parametric modeling (パラメトリックモデリング)' in 3D CAD allow a designer to do that traditional drawing methods do not?",
+        opts: ["Create drawings by hand-sketching and scanning them into the computer", "Change a design dimension and have the 3D model and related drawings update automatically throughout", "Only view parts from a single fixed angle without rotation", "Convert raster images directly into machined parts without further design work"],
+        a: 1, xp: 15,
+        exp: "<ruby>パラメトリックモデリング<rt>ぱらめとりっくもでりんぐ</rt></ruby> (Parametric Modeling) links dimensions, features, and constraints so that changing one parameter — say, a hole diameter — cascades through the model and all associated drawings automatically. This dramatically reduces rework when design changes occur. 🇯🇵 TIP: The parametric relationships are stored as a history tree (feature tree); deleting a base feature can break downstream features, so understanding the modeling sequence is important."
+      },
+      {
+        id: 7010, cat: "Assembly Drawings",
+        q: "What is the main purpose of a 'sou-kumitate-zu (総組立図)', assembly drawing, compared to an individual 'buhin-zu (部品図)', part drawing?",
+        opts: ["An assembly drawing shows all the internal dimensions of every single component in detail", "An assembly drawing shows how multiple parts fit together and their relative positions, while part drawings provide detailed dimensions of individual components", "Assembly drawings are only used for artistic presentation and have no manufacturing function", "An assembly drawing replaces the need for individual part drawings by combining all details into one sheet"],
+        a: 1, xp: 15,
+        exp: "<ruby>総組立図<rt>そうくみたてず</rt></ruby> (Sou-kumitate-zu, assembly drawing) communicates how parts are assembled — which hole aligns with which pin, what is the fit relationship, which direction a bearing is pressed — while individual <ruby>部品図<rt>ぶひんず</rt></ruby> (Buhin-zu) provide the dimensions needed to actually manufacture each part. 🇯🇵 TIP: Assembly drawings often use part numbers (品番) that link to a parts list (部品表, BOM) identifying quantity, material, and part name."
+      },
+      {
+        id: 7011, cat: "Line Types",
+        q: "What is the correct JIS line type for a 'chuu-shin-sen (中心線)', centerline indicating the axis of a cylindrical feature or hole?",
+        opts: ["A thick solid line, same as visible outlines", "A thin dashed line, same as hidden edges", "A thin chain line (alternating long and short dashes)", "A thick wavy line indicating a break in the drawing"],
+        a: 2, xp: 15,
+        exp: "<ruby>中心線<rt>ちゅうしんせん</rt></ruby> (Chuu-shin-sen, centerline) is a thin chain line — alternating long dash, short dash — per JIS B 0001. It passes through the center of holes, cylinders, and symmetric features to show the axis without being confused with a visible edge or a hidden line. 🇯🇵 TIP: Centerlines should extend slightly beyond the feature outline on both sides, and crossing centerlines at hole centers should cross at the short dashes, not the spaces."
+      },
+      {
+        id: 7012, cat: "Drawing Scale",
+        q: "A drawing is labeled 'scale 2:1'. What does this mean?",
+        opts: ["The part is drawn at actual size", "The drawing is twice as large as the real part — the drawn object is enlarged", "The part is half the size shown in the drawing", "The drawing shows only half of the part, with the other half implied by symmetry"],
+        a: 1, xp: 15,
+        exp: "Scale 2:1 means 2 drawing units equal 1 real unit — the drawing is drawn twice the actual size (enlarged). This is used for very small parts to improve readability. Conversely, 1:2 means the drawing is half actual size (reduced). 🇯🇵 TIP: Always dimension to the actual part size regardless of drawing scale — the numbers represent the real part, not the drawing measurement."
+      },
+      {
+        id: 7013, cat: "GD&T Tolerances",
+        q: "The GD&T symbol for 'heimen-do (平面度)', flatness, appears in a feature control frame. What does this tolerance control?",
+        opts: ["The parallelism of a surface relative to a datum plane", "The deviation of a surface from a theoretically perfect flat plane — it controls how much the surface can vary from perfectly flat", "The perpendicularity of a surface to a datum axis", "The position of a surface relative to other features on the part"],
+        a: 1, xp: 15,
+        exp: "<ruby>平面度<rt>へいめんど</rt></ruby> (Heimen-do, Flatness) in GD&T controls how much the surface deviates from a perfect theoretical plane, without reference to any datum. All points on the surface must fall within two parallel planes separated by the tolerance value. 🇯🇵 TIP: Flatness is different from parallelism — parallelism compares the surface to a datum, but flatness only looks at the surface itself. A surface can be perfectly flat but still tilted relative to a datum."
+      },
+      {
+        id: 7014, cat: "Parts List",
+        q: "What information is typically found in a 'buhin-hyou (部品表)', bill of materials or parts list, on an assembly drawing?",
+        opts: ["Only the total weight of the finished assembly", "Part numbers, part names, quantity required, material specification, and sometimes finish or supplier information for each component", "Only the part numbers, with all other information kept in a separate secret document", "Only the drawing scale and title, with no component-specific information"],
+        a: 1, xp: 15,
+        exp: "<ruby>部品表<rt>ぶひんひょう</rt></ruby> (Buhin-hyou, BOM/Parts List) is the structured table on or associated with an assembly drawing that lists each component: its part number (<ruby>品番<rt>ひんばん</rt></ruby>), name (<ruby>品名<rt>ひんめい</rt></ruby>), quantity (<ruby>数量<rt>すうりょう</rt></ruby>), and material (<ruby>材料<rt>ざいりょう</rt></ruby>). It links the numbered balloons on the assembly view to actual component information. 🇯🇵 TIP: BOM accuracy is critical for purchasing and production — a wrong quantity or material in the BOM creates real procurement and manufacturing problems."
+      },
+      {
+        id: 7015, cat: "Tolerance Stack-up",
+        q: "In an assembly where Part A has a length tolerance of ±0.1mm and Part B has ±0.2mm, what is the worst-case total variation if they are placed end-to-end?",
+        opts: ["±0.1mm, because tolerances cancel out in assemblies", "±0.2mm, only the largest single tolerance matters", "±0.3mm, because worst-case stack-up adds the maximum variations directly", "±0.05mm, because tolerances always average out in practice"],
+        a: 2, xp: 15,
+        exp: "Worst-case <ruby>公差積み重ね<rt>こうさつみかさね</rt></ruby> (Kousa Tsumikasane, tolerance stack-up) adds the maximum individual tolerances: ±0.1 + ±0.2 = ±0.3mm total variation. This means the assembly could be 0.3mm shorter or longer than nominal in the worst case. 🇯🇵 TIP: Statistical tolerance analysis (RSS method) gives a more realistic (less conservative) estimate when many parts are involved, but worst-case is safest for critical assemblies."
+      },
+      {
+        id: 7016, cat: "GD&T Tolerances",
+        q: "What does the GD&T symbol for 'chokakudo (直角度)', perpendicularity, control?",
+        opts: ["How flat a surface is compared to a theoretical perfect plane", "How round a circular feature is in a 2D cross-section", "The angular deviation of a surface or axis from 90 degrees relative to a datum", "The location of a feature's center relative to its true position"],
+        a: 2, xp: 15,
+        exp: "<ruby>直角度<rt>ちょっかくど</rt></ruby> (Chokakudo, Perpendicularity) is an orientation GD&T tolerance that controls how much a surface or axis deviates from being exactly 90° to a specified datum. The tolerance zone is two parallel planes (or a cylinder for an axis) perpendicular to the datum within which the controlled feature must fall. 🇯🇵 TIP: Perpendicularity always requires a datum reference — unlike flatness, which is self-referential. A tall bore in a plate needs perpendicularity to ensure it does not tilt and cause misalignment in assembly."
+      },
+      {
+        id: 7017, cat: "3D CAD Features",
+        q: "In 3D parametric CAD, what does the 'extrude (押し出し)' feature do to a 2D sketch profile?",
+        opts: ["It rotates the sketch around an axis to create a surface of revolution", "It projects the sketch onto another surface to create a pattern", "It pushes the sketch profile along a straight path to create a 3D solid volume", "It mirrors the sketch about a plane to create a symmetric feature"],
+        a: 2, xp: 15,
+        exp: "<ruby>押し出し<rt>おしだし</rt></ruby> (Oshidashi, Extrude) takes a 2D sketch and sweeps it a defined distance perpendicular to the sketch plane, creating solid material. A rectangular sketch extruded 20mm becomes a rectangular block. It is the most fundamental 3D feature operation. 🇯🇵 TIP: Many other operations — cuts, bosses, holes — are also based on extrusion logic (adding or removing material by pushing a profile through space)."
+      },
+      {
+        id: 7018, cat: "Title Block",
+        q: "Which information is standardly included in the 'hyoudai-ran (標題欄)', title block, of a JIS engineering drawing?",
+        opts: ["Only the part number and nothing else", "Only the name of the CAD software used", "Part name, part number, drawing scale, material, tolerance class, revision level, and approval signatures", "The manufacturing process sequence and machine settings for production"],
+        a: 2, xp: 15,
+        exp: "<ruby>標題欄<rt>ひょうだいらん</rt></ruby> (Hyoudai-ran, Title Block) per JIS B 0001 typically includes: part name (<ruby>品名<rt>ひんめい</rt></ruby>), drawing number (<ruby>図番<rt>ずばん</rt></ruby>), scale, material (<ruby>材料<rt>ざいりょう</rt></ruby>), drawing revision (<ruby>改訂<rt>かいてい</rt></ruby>), projection method symbol, and approval/signature columns. 🇯🇵 TIP: The title block is the first place to look to understand a drawing — it tells you what the part is, what it is made of, how big it is relative to the drawing, and whether it is current."
+      },
+      {
+        id: 7019, cat: "GD&T Tolerances",
+        q: "A position tolerance of ⌀0.05mm is specified for a hole relative to datums A, B, and C. What does this mean for the hole's axis?",
+        opts: ["The hole diameter must be within 0.05mm of the nominal diameter", "The hole surface roughness must not exceed Ra 0.05", "The axis of the hole must fall within a cylindrical zone 0.05mm in diameter located at the true (theoretically exact) position defined by the datums", "The hole must be drilled within 0.05mm of the nearest edge of the part"],
+        a: 2, xp: 15,
+        exp: "<ruby>位置度<rt>いちど</rt></ruby> (Ichido, Position) GD&T tolerance defines where the axis of a feature (hole, boss, slot) must be located. The ⌀0.05 means the axis must fall inside a cylinder 0.05mm in diameter centered on the theoretically exact position relative to datums A, B, C. This controls all positional error in one tolerance. 🇯🇵 TIP: Position tolerance with a cylindrical zone (⌀) gives about 57% more usable tolerance than ±0.025mm in X and Y separately, because the circular zone corner region is relaxed."
+      },
+      {
+        id: 7020, cat: "CAD File Formats",
+        q: "What are 'STEP (STEP)' and 'IGES (IGES)' file formats used for in CAD work?",
+        opts: ["They are proprietary formats that can only be opened by the same brand of software that created them", "They are raster image formats for scanning hand-drawn sketches into CAD", "They are neutral/open exchange formats that allow 3D CAD model data to be transferred between different CAD software systems", "They are numerical control (NC) programs used directly to control CNC machine tools"],
+        a: 2, xp: 15,
+        exp: "<ruby>STEP<rt>すてっぷ</rt></ruby> (Standard for the Exchange of Product model data, ISO 10303) and <ruby>IGES<rt>あいじゅず</rt></ruby> (Initial Graphics Exchange Specification) are neutral file formats that allow 3D geometry to be shared between different CAD systems — for example, from CATIA to SolidWorks without losing the model geometry. STEP is the more modern and preferred standard. 🇯🇵 TIP: Even with STEP, complex parametric features and design intent (feature tree history) are often lost in translation — you receive the shape but not the construction history."
+      }
+    ]
+  },
+  {
+    examId: 5, label: "品質管理検定 QC", subtitle: "Quality Control Certification",
+    color: "#FF8C00", icon: "📊", examiner: "品質管理官 (Hinshitsu Kanrikan)",
+    questions: [
+      {
+        id: 7101, cat: "Process Capability",
+        q: "The process capability index 'Cp (工程能力指数)' is calculated as (USL - LSL) / (6σ). What does a Cp value of 1.33 or greater indicate?",
+        opts: ["The process is barely capable and needs immediate attention", "The process spread is exactly equal to the specification range, with no safety margin", "The process is considered capable with an adequate safety margin, producing very few defects when centered", "The process has too much variation and is completely out of control"],
+        a: 2, xp: 15,
+        exp: "<ruby>工程能力指数<rt>こうていのうりょくしすう</rt></ruby> (Koutei Nouryoku Shisuu, Process Capability Index) Cp ≥ 1.33 means the process natural spread (6σ) fits within 75% of the specification width, leaving 12.5% margin on each side. This is the typical Japanese automotive and JIS target for capable processes. 🇯🇵 TIP: Cp only measures spread — it says nothing about centering. A process can have Cp = 2.0 but still produce defects if it is shifted far to one side of the specification."
+      },
+      {
+        id: 7102, cat: "Process Capability",
+        q: "What is the key difference between 'Cpk (工程能力指数Cpk)' and 'Cp (Cp)'?",
+        opts: ["Cpk uses the full specification range while Cp uses only half of it", "Cpk accounts for how centered the process mean is within the specification, while Cp only measures the spread relative to the total tolerance", "Cp and Cpk are identical formulas with no practical difference", "Cpk is used only for one-sided specifications while Cp is used for two-sided specifications"],
+        a: 1, xp: 15,
+        exp: "<ruby>Cpk<rt>しーぴーけー</rt></ruby> = min[(USL - mean)/(3σ), (mean - LSL)/(3σ)]. It takes the smaller of the two sides, so if the mean is shifted toward one limit, Cpk drops below Cp. A process can have Cp = 1.5 (good spread) but Cpk = 0.8 (bad centering), producing many defects near one limit. 🇯🇵 TIP: Always report both Cp and Cpk together — Cp tells you the potential capability, Cpk tells you the actual performance including centering."
+      },
+      {
+        id: 7103, cat: "Control Charts",
+        q: "What is the primary purpose of a 'kanri-zu (管理図)', control chart, in statistical process control?",
+        opts: ["To calculate the final average quality level for a completed production batch", "To distinguish between natural (common cause) process variation and special cause variation that signals something has changed in the process", "To set the specification limits (tolerance) for a part dimension", "To count and categorize all defects found during a final inspection"],
+        a: 1, xp: 15,
+        exp: "<ruby>管理図<rt>かんりず</rt></ruby> (Kanri-zu, Control Chart) was developed by Walter Shewhart and adopted deeply in Japanese manufacturing. It plots process measurements over time with control limits (UCL/LCL) set at ±3σ. Points beyond the limits or showing non-random patterns signal a special cause — something has actually changed and should be investigated. 🇯🇵 TIP: Control limits are NOT the same as specification limits. Control limits describe what the process actually does; specifications describe what the customer needs."
+      },
+      {
+        id: 7104, cat: "Control Charts",
+        q: "On an X-bar control chart, what does the 'UCL (上方管理限界)', upper control limit, represent?",
+        opts: ["The maximum specification limit set by the customer drawing", "The highest value ever observed in the process history", "A statistical boundary (typically mean + 3σ) beyond which a point is unlikely to occur by chance alone, signaling a possible special cause", "The target value the process should aim for on every cycle"],
+        a: 2, xp: 15,
+        exp: "<ruby>上方管理限界<rt>じょうほうかんりげんかい</rt></ruby> (UCL, Upper Control Limit) is set at process mean + 3 standard deviations of the subgroup averages. Statistically, only ~0.27% of points should fall outside ±3σ by random chance. A point above UCL is a strong signal (>99% confidence) that something has changed. 🇯🇵 TIP: The famous Western Electric (and JIS) rules provide additional pattern-based signals — eight consecutive points on one side of the centerline, for example — even when no single point breaks the control limits."
+      },
+      {
+        id: 7105, cat: "QC7 Tools",
+        q: "In a 'Pareto chart (パレート図)', what principle does it visually demonstrate?",
+        opts: ["That all defect types contribute equally to total quality problems", "That approximately 80% of problems come from approximately 20% of causes, helping prioritize improvement efforts", "That defects follow a normal distribution pattern across all categories", "That defect rates always increase over time without intervention"],
+        a: 1, xp: 15,
+        exp: "<ruby>パレート図<rt>ぱれーとず</rt></ruby> (Pareto Chart) arranges defect categories from highest to lowest frequency, with a cumulative line showing the running total percentage. The 80/20 rule (Pareto Principle) means attacking the top 2-3 categories often resolves 80% of the problem. 🇯🇵 TIP: Pareto charts are one of the QC7 tools (<ruby>QC七つ道具<rt>きゅーしーななつどうぐ</rt></ruby>). The chart focuses limited resources on where they will have the biggest impact — working on the last 20% of causes typically takes much more effort for much less return."
+      },
+      {
+        id: 7106, cat: "QC7 Tools",
+        q: "A 'fishbone diagram (特性要因図)' — also called an Ishikawa or cause-and-effect diagram — organizes potential causes of a problem into what typical main categories?",
+        opts: ["Plan, Do, Check, Act (the PDCA cycle phases)", "Customer, Company, Country, Cost (the 4C framework)", "Man, Machine, Material, Method (and often Measurement, Environment)", "Input, Process, Output, Feedback (system diagram categories)"],
+        a: 2, xp: 15,
+        exp: "<ruby>特性要因図<rt>とくせいよういんず</rt></ruby> (Tokusei Youin Zu, Fishbone/Ishikawa Diagram) organizes possible causes into branches: <ruby>人<rt>ひと</rt></ruby> (Man), <ruby>機械<rt>きかい</rt></ruby> (Machine), <ruby>材料<rt>ざいりょう</rt></ruby> (Material), <ruby>方法<rt>ほうほう</rt></ruby> (Method) — and often <ruby>測定<rt>そくてい</rt></ruby> (Measurement) and <ruby>環境<rt>かんきょう</rt></ruby> (Environment) — the 4M/6M categories. 🇯🇵 TIP: The fishbone was developed by Prof. Kaoru Ishikawa at the University of Tokyo. It prevents the team from jumping to conclusions by systematically exploring all possible cause categories before selecting the most likely root cause."
+      },
+      {
+        id: 7107, cat: "QC7 Tools",
+        q: "What does the shape and spread of a 'histogram (ヒストグラム)' reveal about a manufacturing process?",
+        opts: ["Only the single most common value (mode) in the data set", "The order in which measurements were made during the shift", "The distribution shape, center, and spread of a set of measurements, showing whether the process is normally distributed and centered within specifications", "Only whether any individual measurement exceeded the specification limit"],
+        a: 2, xp: 15,
+        exp: "<ruby>ヒストグラム<rt>ひすとぐらむ</rt></ruby> (Histogram) groups measurements into bars showing frequency. A bell-shaped histogram centered between spec limits suggests a capable, centered process. A bimodal (two-humped) shape may suggest two different machines or shifts being mixed. A skewed shape shows asymmetric variation. 🇯🇵 TIP: Adding specification limit lines to the histogram immediately shows how much of the distribution falls outside the limits, giving a visual estimate of defect rate before calculating Cp/Cpk."
+      },
+      {
+        id: 7108, cat: "ISO 9001",
+        q: "What is the core requirement of 'ISO 9001 (ISO 9001)' that organizations must fulfill?",
+        opts: ["They must achieve zero defects in all products shipped to customers", "They must establish, document, implement, and continually improve a quality management system (QMS) that consistently meets customer and applicable statutory requirements", "They must use specific QC tools such as SPC and Pareto charts in all production processes", "They must be certified by the Japanese government, not an international body"],
+        a: 1, xp: 15,
+        exp: "<ruby>ISO 9001<rt>あいえすおーきゅうぜろぜろいち</rt></ruby> is the international standard for Quality Management Systems (<ruby>品質管理システム<rt>ひんしつかんりしすてむ</rt></ruby>). It does not specify what quality level you must achieve, but it does require that you have a documented, systematic approach and that you continually improve it. 🇯🇵 TIP: ISO 9001:2015 introduced risk-based thinking — organizations must identify quality risks and plan actions to address them, not just document procedures reactively."
+      },
+      {
+        id: 7109, cat: "PDCA Cycle",
+        q: "What are the four steps of the 'PDCA cycle (PDCAサイクル)', also known as the Deming Cycle?",
+        opts: ["Produce, Deliver, Count, Archive", "Plan, Do, Check, Act", "Prepare, Design, Confirm, Adjust", "Process, Document, Control, Audit"],
+        a: 1, xp: 15,
+        exp: "<ruby>PDCAサイクル<rt>ぴーでぃーしーえーさいくる</rt></ruby>: <ruby>計画<rt>けいかく</rt></ruby> (Plan) → <ruby>実行<rt>じっこう</rt></ruby> (Do) → <ruby>確認<rt>かくにん</rt></ruby> (Check) → <ruby>処置<rt>しょち</rt></ruby> (Act). This continuous improvement cycle was promoted by W. Edwards Deming, who greatly influenced Japanese post-war manufacturing quality. 🇯🇵 TIP: The 'Act' step is often the most important and most neglected — it means standardizing what worked and preventing backsliding, not just moving to the next problem. Without Act, the cycle becomes a loop that repeats the same errors."
+      },
+      {
+        id: 7110, cat: "Sampling",
+        q: "What does 'AQL (合格品質水準)', Acceptable Quality Level, represent in sampling inspection?",
+        opts: ["The maximum percentage of defectives in a batch that will cause automatic rejection with zero exceptions", "The worst quality level that is still considered acceptable as a process average; lots at this level have a high probability of acceptance", "The average quality level actually achieved in the most recent production month", "The minimum number of samples that must be inspected from every production lot"],
+        a: 1, xp: 15,
+        exp: "<ruby>合格品質水準<rt>ごうかくひんしつすいじゅん</rt></ruby> (AQL, Acceptable Quality Level) is the worst tolerable process average defective percentage for routine acceptance. At the AQL, the sampling plan is designed to accept the lot with high probability (typically ~95%). It is NOT the target — the target should be far better. 🇯🇵 TIP: AQL tables (JIS Z 9015 / ISO 2859) specify sample sizes and acceptance/rejection numbers based on lot size and the chosen AQL level. Tighter AQL (smaller number like 0.065%) means more stringent inspection."
+      },
+      {
+        id: 7111, cat: "Measurement Systems",
+        q: "What is the purpose of 'Gage Repeatability and Reproducibility (GR&R / ゲージR&R)' study?",
+        opts: ["To calibrate measurement instruments to a national standard reference", "To evaluate how much of the observed measurement variation comes from the measurement system itself (gauge and operators) versus actual part-to-part variation", "To set the upper and lower control limits for a production SPC chart", "To determine the sample size needed for acceptance sampling of incoming material"],
+        a: 1, xp: 15,
+        exp: "<ruby>ゲージR&R<rt>げーじあーるあんどあーる</rt></ruby> (Gage R&R) separates total observed variation into: part variation, repeatability (same operator re-measuring same part), and reproducibility (different operators measuring same part). If the gauge system variation is too large relative to the part variation or tolerance, you cannot trust the measurements to make good decisions. 🇯🇵 TIP: A Gage R&R %GRR below 10% is generally acceptable; 10-30% may be acceptable depending on application; above 30% usually requires improvement."
+      },
+      {
+        id: 7112, cat: "FMEA",
+        q: "What is the primary purpose of 'FMEA (故障モード影響解析)', Failure Mode and Effects Analysis?",
+        opts: ["To document all defects that occurred during the previous production month for the quality record", "To proactively identify potential failure modes in a design or process, assess their risk, and prioritize actions to prevent them before production begins", "To perform root cause analysis after a major customer complaint is received", "To calculate the cost of quality for all products in the current product line"],
+        a: 1, xp: 15,
+        exp: "<ruby>故障モード影響解析<rt>こしょうもーどえいきょうかいせき</rt></ruby> (FMEA) is a proactive risk tool — identify what could go wrong (<ruby>故障モード<rt>こしょうもーど</rt></ruby>), what effect it has on the customer (<ruby>影響<rt>えいきょう</rt></ruby>), and what the cause is (<ruby>原因<rt>げんいん</rt></ruby>). Risk Priority Number (RPN) = Severity × Occurrence × Detection guides which risks to address first. 🇯🇵 TIP: FMEA is most valuable when done early in design or process planning — finding a failure mode on paper costs a fraction of finding it in production or at the customer."
+      },
+      {
+        id: 7113, cat: "QC7 Tools",
+        q: "In quality work, what is a 'check sheet (チェックシート)' primarily used for?",
+        opts: ["To create 3D charts for presentation to management", "To systematically collect and record data in real time on the production floor, making data collection easy and organized", "To analyze the correlation between two different process variables", "To calculate the process capability index from measurement data"],
+        a: 1, xp: 15,
+        exp: "<ruby>チェックシート<rt>ちぇっくしーと</rt></ruby> (Check Sheet) is a simple, structured form for collecting data as events happen, usually with tally marks. Because it is designed around the specific data being collected, it minimizes recording errors and makes patterns immediately visible. 🇯🇵 TIP: The key to a good check sheet is design before deployment — think carefully about what categories matter and build the sheet to capture that data easily, so operators on the floor are not guessing what to write."
+      },
+      {
+        id: 7114, cat: "QC7 Tools",
+        q: "A 'scatter diagram (散布図)' is plotted with two variables (e.g., cutting speed and surface roughness). What does it show?",
+        opts: ["The time sequence in which individual measurements were taken during the shift", "The frequency distribution of a single measurement variable in a production batch", "The potential correlation or relationship between two variables — whether they tend to move together or independently", "The cumulative percentage of defects by category, from most to least frequent"],
+        a: 2, xp: 15,
+        exp: "<ruby>散布図<rt>さんぷず</rt></ruby> (Sanpu-zu, Scatter Diagram) plots pairs of data points (X, Y) to reveal whether a relationship exists between two variables. A tight upward-sloping pattern suggests strong positive correlation. No pattern suggests no correlation. This helps identify which process input variables most affect the output quality characteristic. 🇯🇵 TIP: Correlation is not causation — a scatter diagram shows a relationship exists but cannot prove one variable causes the other. Designed experiments (DOE) are needed to establish causal relationships."
+      },
+      {
+        id: 7115, cat: "Variation",
+        q: "In SPC, what is the distinction between 'common cause variation (偶然原因)' and 'special cause variation (異常原因)'?",
+        opts: ["Common cause variation only occurs in manual operations; special cause only occurs with automated machines", "Common cause variation is the inherent, random background noise of a stable process; special cause variation is due to a specific, identifiable event or change that is not part of the normal process", "Common cause variation always produces defects while special cause variation is harmless", "They are two different names for the same concept in SPC"],
+        a: 1, xp: 15,
+        exp: "<ruby>偶然原因<rt>ぐうぜんげんいん</rt></ruby> (Common Cause, also called chance/random variation) is the sum of many small, uncontrollable factors in a stable process — tool wear rate, ambient temperature changes, raw material variation within spec. It can only be reduced by changing the process system. <ruby>異常原因<rt>いじょうげんいん</rt></ruby> (Special Cause) is a specific, identifiable event — a broken tool, a new operator mistake, a bad batch of material. 🇯🇵 TIP: Reacting to common cause variation as if it were special cause (over-adjustment) actually increases total variation — this is the key lesson of Deming's funnel experiment."
+      },
+      {
+        id: 7116, cat: "Sampling",
+        q: "When conducting sampling inspection per 'JIS Z 9015 (JIS Z 9015)' (equivalent to ISO 2859), what three inputs determine the required sample size?",
+        opts: ["The part weight, material cost, and production speed", "Lot size, inspection level (IL), and the chosen AQL", "The number of machine operators, shift duration, and plant size", "The part drawing tolerance, surface finish specification, and material hardness"],
+        a: 1, xp: 15,
+        exp: "<ruby>JIS Z 9015<rt>ジェイアイエスゼットきゅうぜろいちご</rt></ruby> attribute sampling tables require three inputs: (1) lot size (batch quantity), (2) inspection level (typically General Level II), and (3) AQL (the acceptable quality level). These three determine the sample letter code and thus the actual sample size and accept/reject numbers from the table. 🇯🇵 TIP: Tighter (smaller) AQL and larger lot sizes generally require larger sample sizes. Switching from General Level II to Level S-1 dramatically reduces sample size but also reduces discriminating power."
+      },
+      {
+        id: 7117, cat: "Problem Solving",
+        q: "In the '8D problem-solving (8Dほうほう)' process, what is the purpose of 'Step D3 (D3ステップ)', containment action?",
+        opts: ["To identify and verify the root cause of the problem through data analysis", "To implement and verify permanent corrective actions that eliminate the root cause", "To immediately protect the customer from receiving further defective product while the root cause investigation is underway", "To celebrate the team's success after the problem has been permanently resolved"],
+        a: 2, xp: 15,
+        exp: "8D Step D3 is containment — emergency actions like sorting all existing inventory, adding 100% inspection, or holding shipments to prevent the defective product from reaching the customer while the team investigates the true root cause. D3 buys time for D4 (root cause analysis) without abandoning the customer. 🇯🇵 TIP: Containment is temporary by definition — it must be replaced by permanent corrective action (D5/D6) once the root cause is confirmed. Leaving containment in place indefinitely means the root cause was never truly fixed."
+      },
+      {
+        id: 7118, cat: "Problem Solving",
+        q: "What is the purpose of 'Naze Naze Bunseki (なぜなぜ分析)', the 5-Why analysis technique?",
+        opts: ["To count the total number of defects in a production batch using a structured tally method", "To continuously ask 'Why?' (typically five times) about a problem to drill down from the symptom to the true underlying root cause", "To rank potential causes in order of severity using a numerical scoring system", "To select which quality tool to apply to a given problem based on available data types"],
+        a: 1, xp: 15,
+        exp: "<ruby>なぜなぜ分析<rt>なぜなぜぶんせき</rt></ruby> (Naze Naze Bunseki, 5-Why) repeatedly asks 'Why did this happen?' to each previous answer until reaching a root cause — typically a systemic issue like missing standards, insufficient training, or flawed process design — rather than stopping at a symptom like 'the operator made a mistake.' 🇯🇵 TIP: The number 5 is a guideline, not a rule. Some problems need 3 Whys; complex ones might need 7. Stop when you reach a cause you can actually fix that will prevent recurrence, not just the immediate symptom."
+      },
+      {
+        id: 7119, cat: "Kaizen",
+        q: "What is the core meaning of 'Kaizen (改善)' in a manufacturing quality context?",
+        opts: ["A radical, technology-driven overhaul of an entire production line requiring large capital investment", "Continuous, incremental improvement involving everyone at all levels, focusing on eliminating waste and improving quality one small step at a time", "A top-down management directive to reduce costs by cutting workforce headcount", "A Japanese word for defect inspection, specifically the final quality check before shipment"],
+        a: 1, xp: 15,
+        exp: "<ruby>改善<rt>かいぜん</rt></ruby> (Kaizen) literally means 'change for the better.' In the Toyota Production System (TPS) context, it means continuous small improvements involving all workers — not just managers or engineers. Even a small suggestion from a floor operator that saves 30 seconds per shift is valued Kaizen. 🇯🇵 TIP: Kaizen differs from innovation (<ruby>革新<rt>かくしん</rt></ruby>, Kakushin) which is large, disruptive change. Japan's manufacturing strength built on accumulating thousands of small Kaizen improvements, each individually modest but collectively powerful."
+      },
+      {
+        id: 7120, cat: "Measurement Systems",
+        q: "What is the purpose of 'MSA (測定システム解析)', Measurement System Analysis, in quality management?",
+        opts: ["To calibrate all instruments to traceable national standards only", "To evaluate the entire measurement system — including the gauge, operators, measurement procedure, and environment — to ensure measurement results are reliable and trustworthy for making quality decisions", "To determine the minimum number of measurements required to calculate a valid average value", "To convert analog measurements from manual gauges into digital format for computerized data collection"],
+        a: 1, xp: 15,
+        exp: "<ruby>測定システム解析<rt>そくていしすてむかいせき</rt></ruby> (MSA, Measurement System Analysis) is broader than Gage R&R — it evaluates all sources of measurement error: bias, linearity, stability over time, repeatability, and reproducibility. If the measurement system is not reliable, all data-driven quality decisions (SPC, capability studies, inspection) are built on a flawed foundation. 🇯🇵 TIP: MSA is a prerequisite in AIAG (automotive) quality systems and is increasingly required by Japanese automotive OEM supplier standards as well. Fix the measurement system before trying to control the process."
+      }
+    ]
+  },
+  {
+    examId: 6, label: "計測・測定技術", subtitle: "Measurement & Metrology Technology",
+    color: "#00CED1", icon: "📏", examiner: "計測技術官 (Keisoku Gijutsukan)",
+    questions: [
+      {
+        id: 7201, cat: "Measurement Fundamentals",
+        q: "What does 'bunkai-nou (分解能)', resolution, mean in the context of a measuring instrument?",
+        opts: ["The maximum load the instrument can measure before it breaks", "The smallest difference in measured value that the instrument can detect and display", "The maximum distance from a reference datum at which the instrument can be used", "The number of digits displayed on the instrument's readout screen"],
+        a: 1, xp: 15,
+        exp: "<ruby>分解能<rt>ぶんかいのう</rt></ruby> (Bunkai-nou, Resolution) is the smallest increment that the instrument can distinguish and display. A micrometer with 0.001mm resolution can detect a 0.001mm difference; it cannot reliably detect 0.0005mm. Resolution is not the same as accuracy — a high-resolution instrument can still be inaccurate if not calibrated. 🇯🇵 TIP: For measurement to be meaningful, resolution should be at least 1/10 of the tolerance being measured — so a 0.1mm tolerance feature needs a gauge with at least 0.01mm resolution."
+      },
+      {
+        id: 7202, cat: "Measurement Fundamentals",
+        q: "What is the difference between 'seikakusa (正確さ)', accuracy, and 'seido (精度)', precision, in measurement?",
+        opts: ["Accuracy and precision are two different words for the same concept in Japanese metrology", "Accuracy describes how close a measurement is to the true value; precision describes how repeatable measurements are when the same part is measured multiple times", "Precision describes how close a measurement is to the true value; accuracy describes how repeatable measurements are", "Accuracy only applies to length measurements; precision only applies to angle measurements"],
+        a: 1, xp: 15,
+        exp: "<ruby>正確さ<rt>せいかくさ</rt></ruby> (Seikakusa, Accuracy) = closeness to the true/reference value. <ruby>精度<rt>せいど</rt></ruby> (Seido, Precision) = repeatability, how tightly clustered repeated measurements are — regardless of where they cluster. A dartboard analogy: tight cluster near the bullseye = accurate AND precise. Tight cluster away from bullseye = precise but NOT accurate. Scattered near bullseye = accurate on average but not precise. 🇯🇵 TIP: A gauge can be very precise (consistent results) but systematically inaccurate (biased away from true value) due to calibration error or thermal expansion."
+      },
+      {
+        id: 7203, cat: "Micrometer",
+        q: "A micrometer reading shows the sleeve at 7.5mm and the thimble scale at 0.22mm. What is the correct measurement?",
+        opts: ["7.22mm", "7.50mm", "7.72mm", "8.72mm"],
+        a: 2, xp: 15,
+        exp: "<ruby>マイクロメーター<rt>まいくろめーたー</rt></ruby> (Micrometer) reading = sleeve reading + thimble reading = 7.5mm + 0.22mm = 7.72mm. The sleeve shows 0.5mm increments; the thimble shows 0.01mm increments per division (one full thimble rotation = 0.5mm). 🇯🇵 TIP: Always use the micrometer ratchet stop (<ruby>ラチェットストップ<rt>らちぇっとすとっぷ</rt></ruby>) to apply consistent measuring force — overtightening introduces error and can damage fine threads."
+      },
+      {
+        id: 7204, cat: "Surface Roughness",
+        q: "What does 'Ra (算術平均粗さ)' measure in surface roughness evaluation?",
+        opts: ["The maximum single peak height above the mean line within the evaluation length", "The arithmetic mean of the absolute deviations of the surface profile from the mean line over the evaluation length", "The total height from the highest peak to the lowest valley in the evaluation length", "The number of surface peaks per millimeter above a defined threshold height"],
+        a: 1, xp: 15,
+        exp: "<ruby>算術平均粗さ<rt>さんじゅつへいきんあらさ</rt></ruby> (Ra, Arithmetic Mean Roughness) averages the absolute heights of all peaks and depths of all valleys from the mean line. It is the most widely used surface roughness parameter in Japanese manufacturing (JIS B 0601). A lower Ra means a smoother surface. 🇯🇵 TIP: Ra is insensitive to occasional very high spikes or very deep scratches — a few deep scratches barely change Ra but can critically affect function (sealing, bearing fit). Rz and Rmax are more sensitive to such outliers."
+      },
+      {
+        id: 7205, cat: "Surface Roughness",
+        q: "How does 'Rz (最大高さ粗さ)' differ from 'Ra (Ra)' in surface roughness measurement?",
+        opts: ["Rz and Ra are identical parameters using different notation conventions", "Rz measures the average roughness while Ra measures only the maximum peak height", "Rz measures the average of the five highest peaks plus five deepest valleys in the evaluation length, making it more sensitive to extreme surface events than Ra", "Rz is used only for grinding operations while Ra is used for turning and milling"],
+        a: 2, xp: 15,
+        exp: "<ruby>最大高さ粗さ<rt>さいだいたかさあらさ</rt></ruby> (Rz) measures the sum of the five highest peak heights and five deepest valley depths averaged over the evaluation length — making it much more sensitive to scratches, burrs, or extreme surface events that Ra would mask by averaging. 🇯🇵 TIP: For sealing surfaces and critical contact surfaces, Rz or Rmax is specified alongside Ra because a single deep scratch that doesn't affect Ra much could still prevent a proper seal."
+      },
+      {
+        id: 7206, cat: "Gauge Blocks",
+        q: "What are 'gauge blocks (ゲージブロック)', also called Johansson blocks or Jo blocks, primarily used for in a precision measurement environment?",
+        opts: ["To grind parts to a final accurate dimension directly on the machine tool", "To provide a set of precision-ground reference blocks that can be wrung together to create a specific reference length for calibrating instruments or setting comparators", "To check surface roughness Ra values of machined parts on the production floor", "To measure the roundness of turned cylindrical parts using the V-block method"],
+        a: 1, xp: 15,
+        exp: "<ruby>ゲージブロック<rt>げーじぶろっく</rt></ruby> (Gauge Block / Jo Block) are precisely ground steel or ceramic blocks with flatness and parallelism in the sub-micron range. They 'wring' together (adhere by molecular attraction and surface tension) to create a desired reference length. Used to calibrate micrometers, set dial gauges, and verify measurement instruments. 🇯🇵 TIP: Gauge blocks must be wrung — not bolted or forced — and handled with care to avoid thermal changes from hand heat. Store in a temperature-controlled room at 20°C and handle with clean leather gloves."
+      },
+      {
+        id: 7207, cat: "Dial Gauge",
+        q: "When using a dial gauge (dial indicator) to measure part dimensions, why must it be mounted on a rigid stand?",
+        opts: ["To allow the dial gauge needle to rotate freely without friction from the contact point", "To prevent the gauge from accidentally measuring the stand's temperature instead of the part", "To eliminate movement of the gauge body itself, ensuring that all needle deflection represents actual part feature variation and not gauge body movement", "To comply with a mandatory JIS regulation that all dial gauges must be stand-mounted in Japan"],
+        a: 2, xp: 15,
+        exp: "<ruby>ダイヤルゲージ<rt>だいやるげーじ</rt></ruby> (Dial Gauge/Indicator) measures relative displacement at its contact point. If the gauge body itself moves during measurement, that movement is indistinguishable from part feature variation, creating measurement error. A rigid magnetic stand on a granite surface plate ensures only the part surface variation is measured. 🇯🇵 TIP: Always re-zero the dial gauge after final tightening of all clamp knobs, not before — tightening can shift the zero."
+      },
+      {
+        id: 7208, cat: "CMM",
+        q: "What is a key advantage of using a 'CMM (三次元測定機)', Coordinate Measuring Machine, over traditional manual gauge measurement?",
+        opts: ["CMMs are always faster than manual gauges for every type of measurement", "CMMs can only measure flat surfaces and cannot handle curved or complex 3D geometry", "A CMM can measure complex 3D geometry, multiple features, and GD&T characteristics in a single setup with high accuracy and traceability, replacing multiple specialized gauges", "CMMs do not require calibration because they use laser technology"],
+        a: 2, xp: 15,
+        exp: "<ruby>三次元測定機<rt>さんじげんそくていき</rt></ruby> (CMM, Coordinate Measuring Machine) moves a ruby-tipped probe in X, Y, and Z to collect 3D point data. It can measure position, diameter, flatness, perpendicularity, and complex free-form surfaces — replacing dozens of specialized gauges with one instrument. Results are fully traceable and can be directly compared to CAD models. 🇯🇵 TIP: CMM accuracy depends heavily on part clamping, probe qualification, temperature (reference 20°C per ISO 1), and vibration isolation."
+      },
+      {
+        id: 7209, cat: "GD&T Measurement",
+        q: "When measuring 'heimen-do (平面度)', flatness, what exactly is being evaluated?",
+        opts: ["Whether the surface is parallel to a reference datum plane", "How smooth the surface finish is, measured as Ra roughness value", "How much the surface deviates from a theoretically perfect flat plane — the minimum zone between two parallel planes that contain all surface points", "The angle between two adjacent surfaces on the part"],
+        a: 2, xp: 15,
+        exp: "<ruby>平面度<rt>へいめんど</rt></ruby> (Heimen-do, Flatness) is measured by finding the minimum separation between two parallel planes that contain all measured points on the surface. No datum is needed — flatness is evaluated purely from the surface itself. 🇯🇵 TIP: Flatness does not control location or orientation relative to anything — a surface can be perfectly flat but still be tilted 45° relative to the part datum. Use parallelism or perpendicularity when the orientation to a datum also matters."
+      },
+      {
+        id: 7210, cat: "Go/No-Go Gauges",
+        q: "For a go/no-go gauge (限界ゲージ) set to check a shaft diameter, what is the correct result for an acceptable part?",
+        opts: ["The No-Go gauge enters the part and the Go gauge does not", "Both gauges should enter the part with equal ease", "The Go gauge enters the part and the No-Go gauge does not enter", "Neither gauge should enter the part — they should both stop at the surface"],
+        a: 2, xp: 15,
+        exp: "<ruby>限界ゲージ<rt>げんかいげーじ</rt></ruby> (Limit Gauge / Go/No-Go Gauge): The <ruby>通り<rt>とおり</rt></ruby> (Go) gauge checks the maximum material condition — it must pass freely. The <ruby>止まり<rt>とまり</rt></ruby> (No-Go) gauge checks the minimum material condition — it must NOT enter. Both conditions satisfied = part is within specification. 🇯🇵 TIP: Go/No-Go gauges provide fast, skill-independent go/fail decisions ideal for high-volume production."
+      },
+      {
+        id: 7211, cat: "GD&T Measurement",
+        q: "What does 'shinen-do (真円度)', roundness (circularity), measure in GD&T?",
+        opts: ["The straightness of a cylindrical part's central axis over its full length", "How consistently round a cross-section of a circular feature is at a single plane — the deviation from a perfect circle in that 2D slice", "The total cylindrical form error of a bore over its full length and across all cross-sections", "The surface roughness Ra of the bore wall in a circular direction"],
+        a: 1, xp: 15,
+        exp: "<ruby>真円度<rt>しんえんど</rt></ruby> (Shinen-do, Roundness/Circularity) evaluates a single 2D cross-sectional slice of a cylinder or cone — how close that ring-shaped slice is to a perfect circle. It is measured by the radial distance between the smallest circumscribed circle and the largest inscribed circle that fit the profile. 🇯🇵 TIP: Roundness is checked one cross-section at a time. If you need to control the entire cylinder surface, you need cylindricity (<ruby>円筒度<rt>えんとうど</rt></ruby>) instead."
+      },
+      {
+        id: 7212, cat: "GD&T Measurement",
+        q: "How does 'entou-do (円筒度)', cylindricity, differ from roundness (真円度)?",
+        opts: ["Cylindricity is evaluated at a single cross-section; roundness evaluates the full 3D cylinder surface", "Cylindricity controls the entire 3D surface of a cylinder — both the roundness of every cross-section and the straightness of the axis — simultaneously", "Cylindricity is the GD&T symbol for internal bores only; roundness applies to external shafts only", "Cylindricity and roundness are equivalent GD&T controls with no practical difference between them"],
+        a: 1, xp: 15,
+        exp: "<ruby>円筒度<rt>えんとうど</rt></ruby> (Entou-do, Cylindricity) simultaneously controls: roundness at every cross-section AND straightness of the axis AND taper (constant diameter along the length). All surface points must fall within a tolerance zone between two coaxial cylinders. 🇯🇵 TIP: Cylindricity is difficult and expensive to measure — a CMM or dedicated cylindricity measuring instrument is needed. Separate roundness and straightness callouts may be more practical for most manufacturing applications."
+      },
+      {
+        id: 7213, cat: "GD&T Measurement",
+        q: "What does 'circular runout (振れ)', a GD&T runout tolerance, measure when a part is rotated about a datum axis?",
+        opts: ["The total accumulated form error of the entire cylindrical surface during one full rotation about the datum axis", "The variation in the indicator reading at a single cross-sectional circle as the part makes one complete rotation about the datum axis", "The wobble of the datum axis itself during rotation", "The surface finish Ra value in the circumferential direction of a rotating part"],
+        a: 1, xp: 15,
+        exp: "<ruby>振れ<rt>ふれ</rt></ruby> (Fure, Circular Runout) is measured by holding a dial indicator at one radial cross-section while rotating the part one full revolution about the datum axis. The total indicator reading (TIR) at that slice must not exceed the runout tolerance. It combines effects of roundness error and axis offset at that single slice. 🇯🇵 TIP: Circular runout is checked slice by slice. Total runout (<ruby>全振れ<rt>ぜんふれ</rt></ruby>) keeps the indicator in contact across the full surface simultaneously, controlling both runout and taper at once."
+      },
+      {
+        id: 7214, cat: "GD&T Measurement",
+        q: "What is the key difference between 'total runout (全振れ)' and 'circular runout (振れ)' in GD&T?",
+        opts: ["Total runout is only for flat surfaces; circular runout is only for cylindrical surfaces", "Total runout sweeps the indicator across the entire surface during rotation, controlling all surface errors simultaneously; circular runout only captures variation at individual cross-sectional slices independently", "Circular runout requires two datum references; total runout requires only one", "Total runout and circular runout are identical in their measurement and meaning"],
+        a: 1, xp: 15,
+        exp: "<ruby>全振れ<rt>ぜんふれ</rt></ruby> (Zen-fure, Total Runout) holds the indicator in contact and traverses the full length of the surface during rotation — simultaneously capturing roundness error, taper, straightness deviation, and coaxiality error in a single measurement. Circular runout only captures the worst slice independently. Total runout is the stricter, more complete control. 🇯🇵 TIP: Specify total runout when the functional requirement truly requires the entire surface to run true — it is more difficult to achieve and verify than circular runout."
+      },
+      {
+        id: 7215, cat: "Fits and Tolerances",
+        q: "In the JIS/ISO hole-based fit system, what does the capital letter 'H' in 'H7/g6' signify about the hole tolerance?",
+        opts: ["The hole tolerance is centered symmetrically about the nominal diameter", "The lower deviation (EI) of the hole is zero — the hole tolerance zone starts exactly at the nominal size and extends upward only", "The hole tolerance class is the tightest available in the JIS standard", "The letter H indicates the hole must be machined by honing only, not by boring or reaming"],
+        a: 1, xp: 15,
+        exp: "In the ISO/JIS hole tolerance system, capital letter H always means the lower deviation (EI) = 0. The hole is never smaller than nominal; it is at or above nominal. This is the basis of the hole-based system (<ruby>穴基準<rt>あなきじゅん</rt></ruby>) — the hole is the fixed reference, and shaft tolerances vary to achieve clearance, transition, or interference fits. 🇯🇵 TIP: Using a hole-based system simplifies tooling: you can use a standard reamer or bore to the H tolerance, then grind shafts to various fits."
+      },
+      {
+        id: 7216, cat: "Calibration",
+        q: "What is the purpose of 'kousei (校正)', calibration, of a measuring instrument?",
+        opts: ["To physically clean and lubricate the instrument's internal mechanism to reduce friction", "To compare the instrument's readings against a traceable reference standard and determine (and possibly correct) any systematic error (bias)", "To replace worn measuring surfaces with new precision-ground components", "To certify the instrument as legally approved for use in commercial transactions"],
+        a: 1, xp: 15,
+        exp: "<ruby>校正<rt>こうせい</rt></ruby> (Kousei, Calibration) establishes the relationship between the instrument's output and a traceable reference — determining any bias. Calibration may include adjustment (correcting the bias) or may simply document the error for use as a correction factor. Traceability to national/international standards (NITE in Japan) is essential. 🇯🇵 TIP: Calibration records must document: instrument ID, calibration date, standard used, results, calibration interval, and who performed it."
+      },
+      {
+        id: 7217, cat: "Reference Temperature",
+        q: "According to 'ISO 1 (ISO 1)' and JIS B 0680, at what reference temperature are precision length measurements defined?",
+        opts: ["0°C (ice point)", "25°C (typical laboratory temperature)", "20°C", "37°C (human body temperature)"],
+        a: 2, xp: 15,
+        exp: "ISO 1 (and JIS B 0680) establishes <ruby>基準温度<rt>きじゅんおんど</rt></ruby> (Kijun Ondo, Reference Temperature) as 20°C for all precision length measurements. Gauge blocks, instruments, and parts should all be at 20°C when taking precision measurements. Steel expands ~12 ppm/°C — a 100mm part at 25°C is about 0.006mm longer than at 20°C. 🇯🇵 TIP: Allow adequate thermal soak time before measuring precision parts — large castings or freshly machined parts can take hours to stabilize to room temperature."
+      },
+      {
+        id: 7218, cat: "Vernier Caliper",
+        q: "What is the correct technique for holding a vernier caliper when measuring an external dimension?",
+        opts: ["Hold the caliper vertically with the scale facing down so gravity assists in closing the jaws", "Grip both jaws firmly and squeeze to apply high force to ensure the jaws contact the part", "Hold the fixed jaw against a reference surface and move only the sliding jaw with the thumb wheel", "Hold the caliper with the main scale horizontal, close the jaws gently onto the part using the thumb, then read the scale at eye level to avoid parallax error"],
+        a: 3, xp: 15,
+        exp: "<ruby>ノギス<rt>のぎす</rt></ruby> (Vernier Caliper) technique: close jaws gently onto the part (no heavy squeezing), hold scale horizontal, read at eye level perpendicular to the scale to avoid <ruby>視差<rt>しさ</rt></ruby> (parallax) error. 🇯🇵 TIP: When measuring a bore with a vernier caliper's inside jaws, rock the caliper gently to find the maximum reading — that is the true diameter. Always verify zero on a closed caliper before measuring."
+      },
+      {
+        id: 7219, cat: "Surface Roughness",
+        q: "What method does a contact-type surface roughness tester use to measure surface texture?",
+        opts: ["A laser beam that reflects off the surface and measures the scattered light intensity", "A pneumatic nozzle that measures back-pressure changes as it moves over the surface", "A diamond-tipped stylus that physically traces the surface profile, and the vertical stylus displacement is recorded and converted to roughness parameters", "An electrical current that flows through the surface and measures conductivity variations"],
+        a: 2, xp: 15,
+        exp: "Contact-type surface roughness testers (<ruby>触針式<rt>しょくしんしき</rt></ruby>) use a diamond stylus with a tip radius of typically 2μm or 5μm that physically drags along the surface. The up-and-down movement is measured and converted to the surface profile, from which Ra, Rz, and other parameters are calculated. 🇯🇵 TIP: The stylus must move perpendicular to the machining lay (cutting direction) for meaningful roughness data. Measuring parallel to tool marks gives falsely low roughness readings."
+      },
+      {
+        id: 7220, cat: "Measurement Uncertainty",
+        q: "What does 'sokutei-fukakujitsu-sa (測定不確かさ)', measurement uncertainty, express about a measurement result?",
+        opts: ["That the measurement is wrong and must be repeated until a consistent value is obtained", "A quantified range that characterizes the dispersion of values that could reasonably be attributed to the measurand — expressing doubt about how well the true value is known", "The maximum specification tolerance for the part being measured", "That the measuring instrument is out of calibration and cannot be trusted"],
+        a: 1, xp: 15,
+        exp: "<ruby>測定不確かさ<rt>そくていふかくじつさ</rt></ruby> (Measurement Uncertainty) is not a mistake — it quantifies the range of doubt inherent in any measurement. A result stated as 25.003mm ± 0.002mm means the true value is estimated to lie between 25.001mm and 25.005mm with a defined confidence level (typically 95%). 🇯🇵 TIP: When a part dimension is close to a tolerance limit, measurement uncertainty becomes critical — if your gauge uncertainty is ±0.002mm and the part is 0.001mm over the limit, you cannot reliably determine if the part truly fails."
+      }
+    ]
+  }
+];
