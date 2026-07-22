@@ -5,6 +5,28 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { QUIZ_STAGES, SHIKAKU_EXAMS } from './questions_smith.js'
+import { getLang, setLang, nextLang, LANG_LABEL, attachTranslations } from './i18n.js'
+
+// Attach VI/ID translations onto the question objects once.
+attachTranslations(QUIZ_STAGES, SHIKAKU_EXAMS)
+
+// Renders a colored sub-line under the English text for the current language.
+// `field` is 'q' | 'exp'; for options pass field="opts" and idx.
+function TrSub({ tr, field, idx, size = '0.66rem' }) {
+  if (!tr) return null
+  const lang = getLang()
+  if (lang === 'en') return null
+  const t = tr[lang]
+  if (!t) return null
+  const text = field === 'opts' ? (t.opts && t.opts[idx]) : t[field]
+  if (!text) return null
+  return (
+    <div style={{ color: '#5AA9E6', fontSize: size, fontStyle: 'italic',
+      lineHeight: 1.45, marginTop: 3, fontFamily: "'Share Tech Mono',monospace" }}>
+      {text}
+    </div>
+  )
+}
 
 // ── CONSTANTS ───────────────────────────────────────────────
 const P_HP   = 100   // player max HP
@@ -1332,6 +1354,7 @@ function Battle({
           <div style={{ color:'#f0f0f0', fontSize:'clamp(0.8rem, 3.5vw, 0.9rem)', lineHeight:1.6, marginBottom:14,
             fontFamily:"'Share Tech Mono',monospace" }}>
             {q.q}
+            <TrSub tr={q.tr} field="q" size="0.72rem"/>
           </div>
           {q.opts.map((opt, i) => (
             <button key={i}
@@ -1340,6 +1363,7 @@ function Battle({
               <span style={{ color:'#1E90FF', fontWeight:'bold', marginRight:8,
                 fontFamily:"'Orbitron',monospace", fontSize:'0.7rem' }}>{OPTS[i]}.</span>
               {opt}
+              <TrSub tr={q.tr} field="opts" idx={i}/>
             </button>
           ))}
         </div>
@@ -1361,6 +1385,7 @@ function Battle({
             <div style={{ color:'#ccc', fontSize:'0.72rem', lineHeight:1.55, marginBottom:10,
               fontFamily:"'Share Tech Mono',monospace" }}>
               {q.exp}
+              <TrSub tr={q.tr} field="exp" size="0.68rem"/>
             </div>
             <button onClick={() => { playSound('click'); onNext() }}
               style={{ ...styles.btnPrimary, width:'100%' }}>
@@ -1834,6 +1859,7 @@ function ShikakuBattle({
           <div style={{ color:'#f0f0f0', fontSize:'clamp(0.8rem, 3.5vw, 0.9rem)', lineHeight:1.6, marginBottom:14,
             fontFamily:"'Share Tech Mono',monospace" }}>
             {q.q}
+            <TrSub tr={q.tr} field="q" size="0.72rem"/>
           </div>
           {q.opts.map((opt, i) => (
             <button key={i}
@@ -1842,6 +1868,7 @@ function ShikakuBattle({
               <span style={{ color:'#1E90FF', fontWeight:'bold', marginRight:8,
                 fontFamily:"'Orbitron',monospace", fontSize:'0.7rem' }}>{OPTS[i]}.</span>
               {opt}
+              <TrSub tr={q.tr} field="opts" idx={i}/>
             </button>
           ))}
         </div>
@@ -1861,6 +1888,7 @@ function ShikakuBattle({
             </div>
             <RubyHTML html={q.exp} style={{ color:'#ccc', fontSize:'0.72rem', lineHeight:1.55, marginBottom:10,
               fontFamily:"'Share Tech Mono',monospace", display:'block' }}/>
+            <TrSub tr={q.tr} field="exp" size="0.68rem"/>
             <button onClick={() => { playSound('click'); onNext() }}
               style={{ ...styles.btnPrimary, width:'100%' }}>
               {qi+1 >= total ? 'FINISH EXAM →' : 'NEXT QUESTION →'}
@@ -1979,6 +2007,7 @@ function ShikakuReview({ history, onBack }) {
               <div style={{ color:'#efefef', fontSize:'0.78rem', lineHeight:1.5 }}>
                 <span style={{ color:'#555', fontSize:'0.62rem', marginRight:6 }}>[{q.cat}]</span>
                 {q.q}
+                <TrSub tr={q.tr} field="q" size="0.68rem"/>
               </div>
             </div>
             <div style={{ marginBottom:10 }}>
@@ -2001,7 +2030,7 @@ function ShikakuReview({ history, onBack }) {
                       color: isCorrect ? '#22c55e' : wrongPick ? '#ef4444' : '#444' }}>
                       {OPTS[oi]}.
                     </span>
-                    <span>{opt}</span>
+                    <span>{opt}<TrSub tr={q.tr} field="opts" idx={oi}/></span>
                     {isCorrect && <span style={{ marginLeft:'auto', flexShrink:0, color:'#22c55e', fontSize:'0.65rem' }}>✓ correct</span>}
                     {wrongPick && <span style={{ marginLeft:'auto', flexShrink:0, color:'#ef4444', fontSize:'0.65rem' }}>✗ your pick</span>}
                   </div>
@@ -2012,6 +2041,7 @@ function ShikakuReview({ history, onBack }) {
               color:'#999', lineHeight:1.55 }}>
               <span style={{ color:'#FFB800', fontWeight:'bold', marginRight:6 }}>EXP:</span>
               <RubyHTML html={q.exp}/>
+              <TrSub tr={q.tr} field="exp" size="0.66rem"/>
             </div>
           </div>
         )
@@ -2941,6 +2971,7 @@ function ReviewScreen({ history, onBack }) {
                   [{q.cat}]
                 </span>
                 {q.q}
+                <TrSub tr={q.tr} field="q" size="0.68rem"/>
               </div>
             </div>
 
@@ -2977,7 +3008,7 @@ function ReviewScreen({ history, onBack }) {
                     }}>
                       {OPTS[oi]}.
                     </span>
-                    <span>{opt}</span>
+                    <span>{opt}<TrSub tr={q.tr} field="opts" idx={oi}/></span>
                     {isCorrect && (
                       <span style={{ marginLeft:'auto', flexShrink:0, color:'#22c55e', fontSize:'0.65rem' }}>
                         ✓ correct
@@ -3001,6 +3032,7 @@ function ReviewScreen({ history, onBack }) {
             }}>
               <span style={{ color:'#FFB800', fontWeight:'bold', marginRight:6 }}>EXP:</span>
               {q.exp}
+              <TrSub tr={q.tr} field="exp" size="0.66rem"/>
             </div>
           </div>
         )
@@ -3268,6 +3300,8 @@ const styles = {
 // ── MAIN APP ─────────────────────────────────────────────────
 export default function App() {
   const [tab,   setTab]   = useState('battle')
+  const [lang,  setLangState] = useState(getLang())
+  function cycleLang() { const n = nextLang(); setLang(n); setLangState(n) }
   const [screen,setScreen]= useState('title')
   const [si,    setSi]    = useState(0)      // stage index
   const [qs,    setQs]    = useState([])     // shuffled question pool
@@ -3435,6 +3469,14 @@ export default function App() {
   return (
     <div style={{ maxWidth:480, margin:'0 auto', background:'#0d0d0d', minHeight:'100vh',
       touchAction:'manipulation', overscrollBehavior:'none' }}>
+      {/* Language toggle */}
+      <button onClick={cycleLang} title="Language / Ngôn ngữ / Bahasa" style={{
+        position:'fixed', top:8, right:'calc(50% - 232px)', zIndex:300,
+        background:'#141414', color:'#5AA9E6', border:'1px solid #2a4a66',
+        borderRadius:8, padding:'5px 9px', fontSize:'0.62rem', fontWeight:'bold',
+        fontFamily:"'Share Tech Mono',monospace", cursor:'pointer' }}>
+        {LANG_LABEL[lang]}
+      </button>
       {/* Content */}
       <div style={{ paddingBottom:'calc(64px + env(safe-area-inset-bottom))' }}>
         {tab==='battle'  && battleContent()}
